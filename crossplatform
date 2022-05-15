@@ -1,0 +1,52 @@
+ifeq ($(OS),Windows_NT)
+	FAMILIAR_NAME = win
+	SHELLNAME = $(shell (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell)
+
+	S = \\
+	MAKE_NATIVE = $(subst /,$(S),$(1))
+	USE_NATIVE = $(subst %2,$(call MAKE_NATIVE,$(3)),$(subst %1,$(call MAKE_NATIVE,$(2)),$(1)))
+
+	EXECUTABLE = $(1).exe
+	DLL = $(1).dll
+
+	ifeq ($(SHELLNAME),CMD)
+		MKDIR = $(call USE_NATIVE,IF NOT exist %1 ( md %1 ),$(1))
+	else
+		MKDIR = $(call USE_NATIVE,if (-not(Test-Path %1)) { md %1 },$(1))
+	endif
+
+	COPY = $(call USE_NATIVE,copy %1 %2 /y,$(1),$(2))
+	COPYALL = $(call USE_NATIVE,xcopy %1 %2 /e/h/q/y,$(1),$(2))
+
+	MOVE = $(call USE_NATIVE,move %1 %2 /y,$(1),$(2))
+
+	RM = $(call USE_NATIVE,del %1 /q,$(1))
+	RMALL = $(call USE_NATIVE,rmdir %1 /q/s,$(1))
+
+	ENV = $(call USE_NATIVE,$env:%1="%2")
+else
+	UNAME_S := $(shell uname -s)
+
+	S = /
+	MAKE_NATIVE = $(subst \\,$(S),$(1))
+
+	EXECUTABLE = $(1)
+
+	ifeq ($(UNAME_S),Darwin)
+		FAMILIAR_NAME = mac
+		DLL = $(1).dylib
+	else
+		FAMILIAR_NAME = linux
+		DLL = $(1).so
+	endif
+
+	COPY = cp $(1) $(2)
+	COPYALL = cp -R $(1) $(2)
+
+	MOVE = mv -f $(1) $(2)
+
+	RM = rm $(1)
+	RMALL = rm -rf $(1)
+
+	ENV = $(call USE_NATIVE,export %1="%2")
+endif

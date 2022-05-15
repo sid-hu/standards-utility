@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+import "proto/local/types.proto";
+import "proto/local/generic.proto";
+
+message Piece {
+    string id = 1;
+    string name = 2;
+    string author = 3;
+
+    repeated Page pages = 4;
+}
+
+//measure data
+
+message Row {
+    float offset = 1;
+    float thickness = 2;
+    repeated float lines = 3;
+}
+
+message Measures {
+    Box bounds = 1;
+    repeated Row rows = 2;
+}
+
+//practice data
+
+message Page {
+    bytes image = 1;
+    repeated Section sections = 2;
+    Measures measures = 3;
+}
+
+message Section {
+    repeated int32 measures = 1;
+    repeated Task tasks = 2;
+}
+
+message Task {
+    repeated Tool tools = 1;
+    TaskState state = 2;
+}
+
+//task state variants
+
+message SingleState {
+    bool completed = 1;
+}
+
+message HandsSeparate {
+    bool right = 1;
+    bool left = 2;
+}
+
+message TaskState {
+    oneof hands {
+        SingleState handsTogether = 1;
+        HandsSeparate handsSeparate = 2;
+    }
+
+    optional SingleState eyesClosed = 3;
+    optional SingleState memorized = 4;
+}
