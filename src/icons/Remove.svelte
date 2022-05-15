@@ -1,11 +1,10 @@
 <script lang="ts">
   export let className: string | null = null;
-  export let expand = true;
 </script>
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  class={`${expand ? "w-full h-full " : ""}${className}`}
+  class={className}
   viewBox="0 0 24 24"
   width="24"
   height="24"

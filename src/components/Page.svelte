@@ -2,7 +2,7 @@
   import BoxComponent from "./Box.svelte";
   import Image from "./Image.svelte";
   import type { Page } from "../proto/local/data_pb";
-  import { Box } from "../common/types";
+  import { Box } from "../types/generic";
 
   export let page: Page;
   export let alt: string;

@@ -3,7 +3,7 @@
   import PageComponent from "../components/Page.svelte";
 
   import { Measures, Page, Piece, Row } from "../proto/local/data_pb";
-  import { Box } from "../common/types";
+  import { Box } from "../types/generic";
 
   const piece = new Piece();
 

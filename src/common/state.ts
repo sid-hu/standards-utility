@@ -1,5 +1,5 @@
 import { capitalize } from "./general"
-import type { PB } from "./types"
+import type { PB } from "../types/generic"
 
 export function proxify(o: any, handler: ProxyHandler<any>) {
     if (typeof o !== "object") {

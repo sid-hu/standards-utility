@@ -17,3 +17,17 @@ export function imageFromBytes(array: Uint8Array): string {
         )
     )
 }
+
+export function removeWhitespace(strings: string[]): string[] {
+    return strings.filter(s => s.length > 0)
+}
+
+export function classList(...classes: string[]): string {
+    const list: string[] = []
+    for (const c of classes) {
+        for (const inner of removeWhitespace(c.split(" "))) {
+            list.push(inner)
+        }
+    }
+    return list.join(" ")
+}

@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat May 14 15:07:27 2022
+# Make data base, printed on Sun May 15 08:43:35 2022
 
 # Variables
 
@@ -27,9 +27,9 @@ USERPROFILE = C:\Users\bramb
 # environment
 LOCALAPPDATA = C:\Users\bramb\AppData\Local
 # environment
-VSCODE_IPC_HOOK_EXTHOST = \\.\pipe\vscode-ipc-a010dfc9-a575-45ec-8089-e5b61ca9325c-sock
+VSCODE_IPC_HOOK_EXTHOST = \\.\pipe\vscode-ipc-ca05bb95-18e8-474c-9a8d-e0045c3287d3-sock
 # environment
-VSCODE_CWD = C:\Users\bramb\AppData\Local\Programs\Microsoft VS Code
+VSCODE_CWD = C:\WINDOWS\system32
 # environment
 CHOCOLATEYINSTALL = C:\ProgramData\chocolatey
 # environment
@@ -45,7 +45,7 @@ GOPATH = C:\Users\bramb\Documents\Codes\Go
 # automatic
 @D = $(patsubst %/,%,$(patsubst %\,%,$(dir $@)))
 # environment
-CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_21728_IDTQHYTRPVXQGVLP
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_18216_WESXKTAXWLJIITLH
 # environment
 FPS_BROWSER_USER_PROFILE_STRING = Default
 # environment
@@ -105,7 +105,7 @@ MAKEFILE_LIST := makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 21728
+VSCODE_PID = 18216
 # environment
 CUDA_PATH = D:\NVIDIA GPU Computing Toolkit\CUDA\v11.6
 # automatic
@@ -237,9 +237,9 @@ PROCESSOR_IDENTIFIER = AMD64 Family 23 Model 113 Stepping 0, AuthenticAMD
 
 # Directories
 
-# . (key c:/Users/bramb/Documents/Codes/Hybrid/standards-utility, mtime 1652546147): 17 files, no impossibilities.
+# . (key c:/Users/bramb/Documents/Codes/Hybrid/standards-utility, mtime 1652591044): 18 files, no impossibilities.
 
-# 17 files, no impossibilities in 1 directories.
+# 18 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -261,8 +261,8 @@ protobuf:
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 5):
 	protoc -I=. $(PROTO_IN) \
-		--js_out=import_style=commonjs:. \
-		--grpc-web_out=import_style=typescript,mode=grpcwebtext:.
+		--js_out=import_style=commonjs:$(PROTO_OUT) \
+		--grpc-web_out=import_style=typescript,mode=grpcwebtext:$(PROTO_OUT)
 
 # Not a target:
 .DEFAULT:
@@ -280,7 +280,7 @@ all:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-14 09:21:02
+#  Last modified 2022-05-14 17:35:52
 #  File has been updated.
 #  Successfully updated.
 
@@ -292,12 +292,12 @@ makefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 22 / storage = 223 B / avg = 10 B
-# current buf: size = 8174 B / used = 223 B / count = 22 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 23 / storage = 228 B / avg = 9 B
+# current buf: size = 8174 B / used = 228 B / count = 23 / avg = 9 B
 
-# strcache performance: lookups = 28 / hit rate = 21%
+# strcache performance: lookups = 29 / hit rate = 20%
 # hash-table stats:
-# Load=22/8192=0%, Rehash=0, Collisions=0/28=0%
-# Finished Make data base on Sat May 14 15:07:27 2022
+# Load=23/8192=0%, Rehash=0, Collisions=0/29=0%
+# Finished Make data base on Sun May 15 08:43:35 2022
 
  

@@ -1,4 +1,4 @@
-import { Box } from "../../common/types"
+import { Box } from "../../types/generic"
 
 export class Layer {
     parent?: Layer

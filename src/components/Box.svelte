@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Box } from "../common/types";
+  import { Box } from "../types/generic";
   import type { Box as PBBox } from "../proto/local/generic_pb";
 
   export let box: PBBox;

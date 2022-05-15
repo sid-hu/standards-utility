@@ -1,9 +1,9 @@
 <script lang="ts">
-  import PieceEditor from "./screens/PieceEditor.svelte";
+  import CreatePiece from "./debug/CreatePiece.svelte";
 </script>
 
 <main>
-  <PieceEditor />
+  <CreatePiece />
 </main>
 
 <style global lang="postcss">
@@ -15,30 +15,29 @@
     box-sizing: border-box;
   }
 
-  body, html, main {
+  body,
+  html,
+  main {
     height: 100%;
     width: 100%;
     margin: 0;
   }
 
-  input {
-    @apply bg-transparent my-1 rounded-sm;
-  }
-
-  p, h1, h2, h3, h4, h5, h6 {
-    @apply centered;
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply flex items-center text-slate-900;
   }
 
   .centered {
     @apply flex items-center justify-center;
   }
 
-  .as-slate-900 {
-    filter: invert(6%)
-      sepia(17%)
-      saturate(4745%)
-      hue-rotate(200deg)
-      brightness(97%)
-      contrast(94%);
+  .spring {
+    transition-timing-function: cubic-bezier(0, 1.18, 0.95, 1.18);
   }
 </style>

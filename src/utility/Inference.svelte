@@ -4,11 +4,13 @@
   import type { NamedTensorMap } from "@tensorflow/tfjs-core";
 
   import { Box } from "../proto/local/generic_pb";
+  import { createEventDispatcher } from "svelte";
 
   export let model: TFLiteModel;
   export let image: File;
   export let threshold = 0.2;
-  export let onFinish: (results: Box[]) => void;
+
+  const dispatcher = createEventDispatcher<{ finish: Box[] }>();
 
   let element: HTMLImageElement;
 
@@ -44,7 +46,7 @@
       }
     }
 
-    onFinish(results);
+    dispatcher("finish", results)
   };
 </script>
 

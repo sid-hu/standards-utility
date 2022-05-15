@@ -19,7 +19,7 @@
     <Inference
       {image}
       model={value[0]}
-      onFinish={(results) => {
+      on:finish={(results) => {
         console.log(results);
       }}
     />

@@ -10,5 +10,7 @@
   height="24"
 >
   <path fill="none" d="M0 0h24v24H0z" />
-  <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" />
+  <path
+    d="M2 18h10v2H2v-2zm0-7h20v2H2v-2zm0-7h20v2H2V4zm16 14v-3h2v3h3v2h-3v3h-2v-3h-3v-2h3z"
+  />
 </svg>
