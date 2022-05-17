@@ -1,9 +1,9 @@
 <script lang="ts">
-  import CreatePiece from "./debug/CreatePiece.svelte";
+  import PieceBrowser from "./debug/PieceBrowser.svelte";
 </script>
 
 <main>
-  <CreatePiece />
+  <PieceBrowser />
 </main>
 
 <style global lang="postcss">
@@ -35,6 +35,18 @@
 
   .centered {
     @apply flex items-center justify-center;
+  }
+
+  .p-centered-x {
+    @apply absolute left-1/2 translate-x-[-50%];
+  }
+
+  .p-centered-y {
+    @apply absolute top-1/2 translate-y-[-50%];
+  }
+
+  .p-centered {
+    @apply p-centered-x p-centered-y;
   }
 
   .spring {

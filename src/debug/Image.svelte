@@ -17,6 +17,6 @@
   {#if loaded}
     <Image bytes={page.getImage_asU8()} alt="test image here" />
   {:else}
-    <div style="m-auto">Loading image...</div>
+    <div class="m-auto">Loading image...</div>
   {/if}
 </Loader>

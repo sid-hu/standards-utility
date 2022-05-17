@@ -1,6 +1,6 @@
 <script lang="ts">
   import { afterUpdate, onDestroy } from "svelte";
-import { imageFromUint8Array } from "../common/general";
+  import { imageStore } from "../store/image";
 
   export let bytes: Uint8Array;
   export let alt: string;
@@ -9,7 +9,7 @@ import { imageFromUint8Array } from "../common/general";
   let container: HTMLDivElement;
   let image: HTMLImageElement;
 
-  let observer: ResizeObserver
+  let observer: ResizeObserver;
 
   afterUpdate(async () => {
     await new Promise((r) => (image.onload = r));
@@ -45,17 +45,13 @@ import { imageFromUint8Array } from "../common/general";
   });
 
   onDestroy(() => {
-    observer.disconnect()
-  })
+    observer.disconnect();
+  });
 </script>
 
 <div bind:this={root} class="centered h-full">
   <div bind:this={container} class="relative">
-    <img
-      bind:this={image}
-      src={imageFromUint8Array(bytes)}
-      {alt}
-    />
+    <img bind:this={image} src={imageStore.fetch(bytes)} {alt} />
     <slot />
   </div>
 </div>

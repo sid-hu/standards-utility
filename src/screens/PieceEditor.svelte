@@ -2,7 +2,8 @@
   import { fly } from "svelte/transition";
 
   import { Page, Piece } from "../proto/local/data_pb";
-  import { classList, imageFromBytes } from "../common/general";
+  import { classList } from "../common/general";
+  import { imageStore } from "../store/image";
 
   import Uploader from "../utility/Uploader.svelte";
   import Panel from "../components/Panel.svelte";
@@ -15,7 +16,7 @@
   import TextInput from "../form/TextInput.svelte";
   import Expandable from "../form/Expandable.svelte";
   import Range from "../form/Range.svelte";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
 
   export let piece: Piece;
   export let title: string;
@@ -36,6 +37,12 @@
     ];
     piece.setPagesList(pages);
   };
+
+  onDestroy(() => {
+    for (const p of pages) {
+      imageStore.release(p.getImage_asU8());
+    }
+  });
 </script>
 
 <Uploader
@@ -55,30 +62,29 @@
   {#each pages as image, i}
     <div class="h-full relative">
       <img
-        transition:fly={{ x: -20 }}
+        transition:fly|local={{ x: -20 }}
         class="p-10 h-full object-contain"
-        src={imageFromBytes(image.getImage_asU8())}
+        src={imageStore.fetch(image.getImage_asU8())}
         alt={`page ${i + 1}`}
       />
       <Panel
+        styleHover
         rounded="rounded-full"
-        className={[
-          "absolute bottom-16 left-1/2 translate-x-[-50%]",
-          "hover:cursor-pointer hover:bg-opacity-30 transition-all",
-        ].join(" ")}
+        className="bottom-16 p-centered-x"
         on:click={() => {
           pages = [...pages.slice(0, i), ...pages.slice(i + 1)];
           piece.setPagesList(pages);
+          imageStore.release(image.getImage_asU8());
         }}
         let:hovered
       >
         {#if hovered}
-          <div in:fly={{ duration: 300, y: -5 }}>
+          <div in:fly|local={{ duration: 300, y: -5 }}>
             <Remove className="w-10 h-10 p-2 fill-slate-900" />
           </div>
         {:else}
           <p
-            in:fly={{ duration: 300, y: 5 }}
+            in:fly|local={{ duration: 300, y: 5 }}
             class="w-10 h-10 centered text-slate-600 font-bold"
           >
             {i + 1}
@@ -96,6 +102,7 @@
       <h4 class="text-md font-semibold mr-5">Title</h4>
       <TextInput
         on:change={(s) => piece.setName(s.detail)}
+        value={piece.getName()}
         className="italic"
         placeholder="title"
       />
@@ -104,6 +111,7 @@
       <h4 class="text-md font-semibold mr-5">Author</h4>
       <TextInput
         on:change={(s) => piece.setAuthor(s.detail)}
+        value={piece.getAuthor()}
         className="italic"
         placeholder="composer"
       />

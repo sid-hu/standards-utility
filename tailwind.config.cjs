@@ -4,7 +4,11 @@ module.exports = {
     "./src/**/*.svelte"
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        "xs": "400px"
+      }
+    }
   },
   plugins: [],
 }
