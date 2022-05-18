@@ -32,7 +32,7 @@
   </div>
   <div
     class={classList(
-      "overflow-hidden transition-all duration-200 spring",
+      "overflow-hidden transition-all duration-300 spring",
       grow ? "w-full" : ""
     )}
     style={`height: ${expanded ? `${child.clientHeight}px` : "0px"}`}

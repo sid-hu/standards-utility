@@ -40,7 +40,7 @@
 
 <Loader promise={imagePromise} let:loaded>
   {#if editing}
-    <div class="h-full" in:fly={{ y: 10 }}>
+    <div class="h-full" in:fly={{ duration: 400, y: 10 }}>
       <PieceEditor
         piece={editing}
         title="Editing piece"
@@ -48,7 +48,7 @@
       />
     </div>
   {:else if loaded}
-    <div class="h-full" in:fly={{ y: 10 }}>
+    <div class="h-full" in:fly={{ duration: 400, y: 10 }}>
       <PieceBrowser
         pieces={[p1, p2]}
         on:choose={(p) => console.log("chose", p)}
