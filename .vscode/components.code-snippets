@@ -1,0 +1,13 @@
+{
+	"svelte icon component": {
+		"scope": "svelte",
+		"prefix": "icon-component",
+		"body": [
+			"<script lang=\"ts\">",
+			"\texport let className: string | null = null;",
+			"</script>",
+			"",
+		],
+		"description": "generate a component that exposes the className"
+	}
+}

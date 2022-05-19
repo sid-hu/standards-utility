@@ -18,6 +18,8 @@
     const heightRatio = image.clientHeight / image.clientWidth;
 
     observer = new ResizeObserver(() => {
+      if (!image) return;
+
       const rx = (image.clientHeight * widthRatio) / root.clientWidth;
       const ry = (image.clientWidth * heightRatio) / root.clientHeight;
       if (
@@ -44,9 +46,7 @@
     observer.observe(root);
   });
 
-  onDestroy(() => {
-    observer.disconnect();
-  });
+  onDestroy(() => observer.disconnect());
 </script>
 
 <div bind:this={root} class="centered h-full">

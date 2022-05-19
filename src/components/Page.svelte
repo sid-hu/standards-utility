@@ -7,8 +7,8 @@
   export let page: Page;
   export let alt: string;
 
-  const bounds = page.getMeasures()?.getBounds();
-  const rows = page.getMeasures()?.getRowsList();
+  $: bounds = page.getMeasures()?.getBounds();
+  $: rows = page.getMeasures()?.getRowsList();
 </script>
 
 <div class="w-full h-full">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fly } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
 
   import { Page, Piece } from "../proto/local/data_pb";
   import { classList } from "../common/general";
@@ -21,7 +21,7 @@
 
   import { form, field } from "svelte-forms";
   import { required } from "svelte-forms/validators";
-import LinkButton from "../form/LinkButton.svelte";
+  import LinkButton from "../form/LinkButton.svelte";
 
   export let piece: Piece;
   export let title: string;
@@ -94,12 +94,12 @@ import LinkButton from "../form/LinkButton.svelte";
           let:hovered
         >
           {#if hovered}
-            <div in:fly|local={{ duration: 300, y: -5 }}>
+            <div in:fade|local={{ duration: 300 }}>
               <Remove className="w-10 h-10 p-2 fill-slate-900" />
             </div>
           {:else}
             <p
-              in:fly|local={{ duration: 300, y: 5 }}
+              in:fade|local={{ duration: 300 }}
               class="w-10 h-10 centered text-slate-600 font-bold"
             >
               {i + 1}
