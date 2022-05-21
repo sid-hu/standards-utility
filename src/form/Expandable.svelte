@@ -27,7 +27,7 @@
     <div
       class={classList(expanded ? "rotate-180" : "", "transition-all spring")}
     >
-      <ArrowUp className="w-6 h-6 fill-slate-900" />
+      <ArrowUp className="w-6 h-6" />
     </div>
   </div>
   <div

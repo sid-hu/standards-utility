@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { flip } from "svelte/animate";
   import { fly } from "svelte/transition";
 
   import { imageStore } from "../store/image";
@@ -25,9 +26,13 @@
   });
 </script>
 
-<div class="flex flex-wrap justify-center sm:justify-start">
-  {#each pieces as p}
-    <div class="m-10 centered flex-col transition-all">
+<div class="flex flex-wrap items-start justify-center h-full sm:justify-start">
+  {#each pieces as p (p.getId())}
+    <div
+      transition:fly|local={{ x: -10 }}
+      animate:flip={{ duration: 400 }}
+      class="m-10 centered flex-col transition-all"
+    >
       <Panel
         bare
         className="relative w-fit h-fit"
@@ -77,4 +82,9 @@
       <h4>{p.getAuthor()}</h4>
     </div>
   {/each}
+  {#if pieces.length === 0}
+    <h4 class="m-auto font-semibold">
+      there are no pieces to practice at the moment
+    </h4>
+  {/if}
 </div>

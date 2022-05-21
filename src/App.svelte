@@ -1,9 +1,9 @@
 <script lang="ts">
-  import PieceBrowser from "./debug/PieceBrowser.svelte";
+  import Home from "./screens/Home.svelte";
 </script>
 
 <main>
-  <PieceBrowser />
+  <Home />
 </main>
 
 <style global lang="postcss">
@@ -31,6 +31,14 @@
   h5,
   h6 {
     @apply flex items-center text-slate-900;
+  }
+
+  svg {
+    @apply fill-slate-900;
+  }
+
+  .ellipses {
+    @apply text-ellipsis overflow-hidden whitespace-nowrap;
   }
 
   .centered {

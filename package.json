@@ -14,6 +14,7 @@
     "@rollup/plugin-replace": "^4.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
     "@tsconfig/svelte": "^2.0.0",
+    "@types/uuid": "^8.3.4",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.13",
     "rollup": "^2.73.0",
@@ -38,6 +39,7 @@
     "seedrandom": "^2.4.3",
     "sha1-uint8array": "^0.10.3",
     "sirv-cli": "^2.0.2",
-    "svelte-forms": "^2.3.1"
+    "svelte-forms": "^2.3.1",
+    "uuid": "^8.3.2"
   }
 }

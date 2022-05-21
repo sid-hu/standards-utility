@@ -34,7 +34,7 @@
     "hover:scale-110 hover:cursor-pointer"
   )}
 >
-  <Back className="w-full h-full fill-slate-900" />
+  <Back className="w-full h-full" />
 </div>
 
 <Page page={piece.getPagesList()[page]} alt={`page ${page + 1}`} />
@@ -49,7 +49,7 @@
     <ArrowUp
       className={classList(
         "p-2 w-10 h-10 -rotate-90",
-        page > 0 ? "fill-slate-900" : "fill-slate-600"
+        page > 0 ? "" : "fill-slate-600"
       )}
     />
   </Panel>
@@ -66,7 +66,7 @@
       className={classList(
         "p-2 w-10 h-10 rotate-90",
         page < piece.getPagesList().length - 1
-          ? "fill-slate-900"
+          ? ""
           : "fill-slate-600"
       )}
     />

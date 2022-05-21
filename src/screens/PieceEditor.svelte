@@ -1,14 +1,17 @@
 <script lang="ts">
+  import { v4 } from "uuid";
   import { fade, fly } from "svelte/transition";
 
+  import { createEventDispatcher, onDestroy } from "svelte";
+  import { form, field } from "svelte-forms";
+  import { required } from "svelte-forms/validators";
+
   import { Page, Piece } from "../proto/local/data_pb";
-  import { classList } from "../common/general";
   import { imageStore } from "../store/image";
 
   import Uploader from "../utility/Uploader.svelte";
   import Panel from "../components/Panel.svelte";
 
-  import Add from "../icons/Add.svelte";
   import Remove from "../icons/Remove.svelte";
   import PlaylistAdd from "../icons/PlaylistAdd.svelte";
 
@@ -17,16 +20,13 @@
   import Expandable from "../form/Expandable.svelte";
   import Range from "../form/Range.svelte";
 
-  import { createEventDispatcher, onDestroy } from "svelte";
-
-  import { form, field } from "svelte-forms";
-  import { required } from "svelte-forms/validators";
   import LinkButton from "../form/LinkButton.svelte";
+  import AddButton from "../components/AddButton.svelte";
 
   export let piece: Piece;
   export let title: string;
 
-  const dispatcher = createEventDispatcher<{ submit: void }>();
+  const dispatcher = createEventDispatcher<{ submit: Piece | null }>();
 
   const config = { validateOnChange: true };
 
@@ -43,10 +43,16 @@
     ],
     config
   );
+  pages.validate();
 
   const pieceForm = form(name, author, pages);
 
+  piece.setId(v4());
+
   const uploadHandler = async (files: File[]) => {
+    name.validate();
+    author.validate();
+
     pages.set([
       ...$pages.value,
       ...(await Promise.all(
@@ -95,7 +101,7 @@
         >
           {#if hovered}
             <div in:fade|local={{ duration: 300 }}>
-              <Remove className="w-10 h-10 p-2 fill-slate-900" />
+              <Remove className="w-10 h-10 p-2" />
             </div>
           {:else}
             <p
@@ -111,7 +117,7 @@
   {/each}
   {#if $pages.value.length === 0}
     <div class="m-auto centered flex-col">
-      <PlaylistAdd className="w-12 h-12 mb-5 fill-slate-900" />
+      <PlaylistAdd className="w-12 h-12 mb-5" />
       <p class="font-semibold max-w-xs text-center">
         use the plus at the bottom right to add a page!
       </p>
@@ -152,23 +158,13 @@
         piece.setName($name.value);
         piece.setAuthor($author.value);
         piece.setPagesList($pages.value);
-        dispatcher("submit");
+        dispatcher("submit", piece);
       }}
     >
       Done
     </Button>
-    <LinkButton text="cancel" on:click={() => dispatcher("submit")} />
+    <LinkButton text="cancel" on:click={() => dispatcher("submit", null)} />
   </div>
 </Panel>
 
-<label
-  for="file-input"
-  class={classList(
-    "fixed bottom-10 right-10 w-16 h-16",
-    "border-4 border-transparent rounded-full transition-all",
-    "hover:border-slate-900 hover:scale-110 hover:cursor-pointer",
-    "active:translate-y-1"
-  )}
->
-  <Add className="w-full h-full fill-slate-900" />
-</label>
+<AddButton labelFor="file-input" />
