@@ -4,26 +4,25 @@ ifeq ($(OS),Windows_NT)
 
 	S = \\
 	MAKE_NATIVE = $(subst /,$(S),$(1))
-	USE_NATIVE = $(subst %2,$(call MAKE_NATIVE,$(3)),$(subst %1,$(call MAKE_NATIVE,$(2)),$(1)))
 
 	EXECUTABLE = $(1).exe
 	DLL = $(1).dll
 
 	ifeq ($(SHELLNAME),CMD)
-		MKDIR = $(call USE_NATIVE,IF NOT exist %1 ( md %1 ),$(1))
+		MKDIR = IF NOT exist $(1) ( md $(1) )
 	else
-		MKDIR = $(call USE_NATIVE,if (-not(Test-Path %1)) { md %1 },$(1))
+		MKDIR = if (-not(Test-Path $(1))) { md $(1) }
 	endif
 
-	COPY = $(call USE_NATIVE,copy %1 %2 /y,$(1),$(2))
-	COPYALL = $(call USE_NATIVE,xcopy %1 %2 /e/h/q/y,$(1),$(2))
+	COPY = copy $(1) $(2) /y
+	COPYALL = xcopy $(1) $(2) /e/h/q/y
 
-	MOVE = $(call USE_NATIVE,move %1 %2 /y,$(1),$(2))
+	MOVE = move $(1) $(2) /y
 
-	RM = $(call USE_NATIVE,del %1 /q,$(1))
-	RMALL = $(call USE_NATIVE,rmdir %1 /q/s,$(1))
+	RM = del $(1) /q
+	RMALL = rmdir $(1) /q/s
 
-	ENV = $(call USE_NATIVE,$env:%1="%2")
+	ENV = set $(1)="$(2)"
 else
 	UNAME_S := $(shell uname -s)
 
@@ -48,5 +47,5 @@ else
 	RM = rm $(1)
 	RMALL = rm -rf $(1)
 
-	ENV = $(call USE_NATIVE,export %1="%2")
+	ENV = $(call USE_NATIVE,export %1="%2",$(1),$(2))
 endif

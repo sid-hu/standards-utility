@@ -11,7 +11,7 @@
   import Remove from "../icons/Remove.svelte";
   import { createEventDispatcher, onDestroy } from "svelte";
 
-  export let pieces: Piece[];
+  import { pieces } from "../store/pieces"
 
   const dispatcher = createEventDispatcher<{
     choose: Piece;
@@ -20,14 +20,14 @@
   }>();
 
   onDestroy(() => {
-    for (const p of pieces) {
+    for (const p of $pieces) {
       imageStore.release(p.getPagesList()[0].getImage_asU8());
     }
   });
 </script>
 
 <div class="flex flex-wrap items-start justify-center h-full sm:justify-start">
-  {#each pieces as p (p.getId())}
+  {#each $pieces as p (p.getId())}
     <div
       transition:fly|local={{ x: -10 }}
       animate:flip={{ duration: 400 }}
@@ -82,7 +82,7 @@
       <h4>{p.getAuthor()}</h4>
     </div>
   {/each}
-  {#if pieces.length === 0}
+  {#if $pieces.length === 0}
     <h4 class="m-auto font-semibold">
       there are no pieces to practice at the moment
     </h4>

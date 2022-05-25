@@ -12,7 +12,7 @@ export function capitalize(s: string): string {
 export function imageFromBytes(array: Uint8Array): string {
     return URL.createObjectURL(
         new Blob(
-            [array.buffer],
+            [array],
             { type: "image/png" }
         )
     )

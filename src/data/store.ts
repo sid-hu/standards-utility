@@ -1,18 +1,18 @@
 import { IDBPDatabase, openDB } from "idb"
-import type { Piece } from "../proto/local/data_pb";
 import { Platform, target } from "../common/platform"
+import { Piece } from "../proto/local/data_pb";
 
-export interface Store {
+export interface DB {
     load(): Promise<Piece[]>
-    add(piece: Piece): Promise<void>
+    set(piece: Piece): Promise<void>
     remove(piece: Piece): Promise<void>
 }
 
-export class DummyStore implements Store {
+export class DummyDB implements DB {
     load(): Promise<Piece[]> {
         throw new Error("Method not implemented.");
     }
-    add(piece: Piece): Promise<void> {
+    set(piece: Piece): Promise<void> {
         throw new Error("Method not implemented.");
     }
     remove(piece: Piece): Promise<void> {
@@ -20,9 +20,9 @@ export class DummyStore implements Store {
     }
 }
 
-export class IDBStore implements Store {
+export class WebDB implements DB {
     name = "pieces"
-    db?: IDBPDatabase<Piece>
+    db?: IDBPDatabase<{ id: string, serialized: Uint8Array }>
 
     async load(): Promise<Piece[]> {
         this.db = await openDB("standards-utility", 1, {
@@ -30,15 +30,19 @@ export class IDBStore implements Store {
                 db.createObjectStore(this.name, { keyPath: "id" })
             }
         })
-        return await this.db.getAll(this.name)
+        return (await this.db.getAll(this.name))
+            .map(v => Piece.deserializeBinary(new Uint8Array(v.serialized)))
     }
 
-    async add(piece: Piece): Promise<void> {
+    async set(piece: Piece): Promise<void> {
         if (!this.db) {
             throw new Error("store has not been loaded yet! please call load() first")
         }
         const tx = this.db.transaction(this.name, "readwrite")
-        tx.store.add(piece, piece.getId())
+        tx.store.put({
+            id: piece.getId(),
+            serialized: piece.serializeBinary().buffer
+        })
         await tx.done
     }
 
@@ -52,6 +56,6 @@ export class IDBStore implements Store {
     }
 }
 
-export const store = target === Platform.WEB ?
-    new IDBStore() :
-    new DummyStore()
+export const db = target === Platform.WEB ?
+    new WebDB() :
+    new DummyDB()

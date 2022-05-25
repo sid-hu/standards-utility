@@ -19,7 +19,7 @@
   />
 
   {#if error}
-    <div transition:slide class="flex items-center">
+    <div transition:slide|local class="flex items-center">
       <Information className="w-4 h-4 fill-red-500 mr-1" />
       <p class="text-red-500 mb-1">{error}</p>
     </div>

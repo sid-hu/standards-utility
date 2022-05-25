@@ -7,10 +7,8 @@ export function useKey(key: string, callback: () => void) {
         }
     }
 
-    const cleanup = () => window.removeEventListener("keydown", handler)
     window.addEventListener("keydown", handler)
-
-    onDestroy(cleanup)
+    onDestroy(() => window.removeEventListener("keydown", handler))
 }
 
 export function useClose(callback: () => void) {

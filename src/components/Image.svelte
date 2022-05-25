@@ -2,7 +2,7 @@
   import { afterUpdate, onDestroy } from "svelte";
   import { imageStore } from "../store/image";
 
-  export let bytes: Uint8Array;
+  export let bytes: Uint8Array | string;
   export let alt: string;
 
   let root: HTMLDivElement;

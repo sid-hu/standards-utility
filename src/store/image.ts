@@ -1,3 +1,4 @@
+import { base64StringToArrayBuffer } from "@tensorflow/tfjs-core/dist/io/io_utils"
 import { createHash } from "sha1-uint8array"
 import { imageFromBytes } from "../common/general"
 
@@ -13,11 +14,13 @@ export class ImageStore {
   fetch(data: Uint8Array): string {
     const hash = createHash().update(data).digest("hex")
     if (!this.store[hash]) {
+      const url = imageFromBytes(data)
       this.store[hash] = {
-        url: imageFromBytes(data),
+        url: url,
         references: 0,
       }
     }
+
     this.store[hash].references++
     return this.store[hash].url
   }

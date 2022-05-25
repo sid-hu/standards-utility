@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { Piece } from "../proto/local/data_pb";
+  import { Piece } from "./proto/local/data_pb";
 
-  import AddButton from "../components/AddButton.svelte";
+  import PieceBrowser from "./screens/PieceBrowser.svelte";
+  import PieceEditor from "./screens/PieceEditor.svelte";
+  import PieceViewer from "./screens/PieceViewer.svelte";
+  import AddButton from "./components/AddButton.svelte";
+  import Route from "./components/Route.svelte";
 
-  import PieceBrowser from "./PieceBrowser.svelte";
-  import PieceEditor from "./PieceEditor.svelte";
-  import PieceViewer from "./PieceViewer.svelte";
-  import Route from "../components/Route.svelte";
+  import { pieces } from "./store/pieces";
 
   enum Routes {
     BROWSING,
@@ -22,17 +23,13 @@
     | { type: Routes.VIEWING; piece: Piece };
 
   let route: RouteContext = { type: Routes.BROWSING };
-
-  let pieces: Piece[] = [];
 </script>
 
 {#if route.type === Routes.BROWSING}
   <Route>
     <PieceBrowser
-      {pieces}
       on:delete={(p) => {
-        const index = pieces.indexOf(p.detail);
-        pieces = [...pieces.slice(0, index), ...pieces.slice(index + 1)];
+        pieces.remove(p.detail);
       }}
       on:edit={(p) => {
         route = {
@@ -59,7 +56,7 @@
       title="Add a piece"
       on:submit={(p) => {
         if (p.detail) {
-          pieces = [...pieces, p.detail];
+          pieces.add(p.detail);
         }
         route = { type: Routes.BROWSING };
       }}

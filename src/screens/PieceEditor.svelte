@@ -78,12 +78,12 @@
 />
 
 <div class="flex h-full">
-  {#each $pages.value as image, i}
+  {#each $pages.value as page, i}
     <div class="h-full relative">
       <img
         transition:fly|local={{ x: -20 }}
         class="p-10 h-full object-contain"
-        src={imageStore.fetch(image.getImage_asU8())}
+        src={imageStore.fetch(page.getImage_asU8())}
         alt={`page ${i + 1}`}
       />
       <div class="bottom-16 p-centered-x" transition:fly|local={{ y: 10 }}>
@@ -95,7 +95,7 @@
               ...$pages.value.slice(0, i),
               ...$pages.value.slice(i + 1),
             ]);
-            imageStore.release(image.getImage_asU8());
+            imageStore.release(page.getImage_asU8());
           }}
           let:hovered
         >
