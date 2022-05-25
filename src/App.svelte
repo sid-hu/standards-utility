@@ -6,7 +6,7 @@
   import Home from "./Home.svelte";
 
   const piecesPromise = db.load();
-  piecesPromise.then((loaded) => pieces.update(v => [...v, ...loaded]));
+  piecesPromise.then((loaded) => pieces.load(loaded));
 </script>
 
 <main>

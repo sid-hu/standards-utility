@@ -1,4 +1,3 @@
-import { base64StringToArrayBuffer } from "@tensorflow/tfjs-core/dist/io/io_utils"
 import { createHash } from "sha1-uint8array"
 import { imageFromBytes } from "../common/general"
 

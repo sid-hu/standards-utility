@@ -47,8 +47,6 @@
 
   const pieceForm = form(name, author, pages);
 
-  piece.setId(v4());
-
   const uploadHandler = async (files: File[]) => {
     name.validate();
     author.validate();
@@ -155,6 +153,9 @@
     <Button
       disabled={!$pieceForm.valid}
       on:click={() => {
+        if (!piece.getId()) {
+          piece.setId(v4());
+        }
         piece.setName($name.value);
         piece.setAuthor($author.value);
         piece.setPagesList($pages.value);

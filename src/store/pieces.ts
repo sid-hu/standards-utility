@@ -7,6 +7,7 @@ import { proxyPB } from "./state";
 import type { Piece } from "../proto/local/data_pb"
 
 function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
+    load: (p: Piece[]) => void
     add: (p: Piece) => void
     remove: (p: Piece) => void
 } {
@@ -15,6 +16,9 @@ function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
     ))
     return {
         ...pieceStore,
+        load: (pieces: Piece[]) => {
+            pieceStore.update(() => pieces.map(p => constructPieceObject(p)))
+        },
         add: (piece: Piece) => {
             pieceStore.update(pieces => {
                 db.set(piece)
@@ -32,6 +36,7 @@ function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
 
 function constructPieceObject(p: Piece) {
     const updater = new BufferedUpdater(() => {
+        console.info("updated", p.getId())
         db.set(p);
     });
     return proxyPB<Piece>(p, () => {
