@@ -2,14 +2,17 @@
   import { classList } from "../common/general";
 
   export let className: string = "";
+
   export let min: number;
   export let max: number;
   export let step: number;
+
   export let value = min;
+  export let digits = 1;
 </script>
 
 <div class={classList("flex", className)}>
-  <p class="font-semibold mr-4">{value.toFixed(1)}</p>
+  <p class="font-semibold mr-4">{value.toFixed(digits)}</p>
   <input
     class="w-full"
     type="range"

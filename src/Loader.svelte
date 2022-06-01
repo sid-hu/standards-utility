@@ -1,10 +1,15 @@
 <script lang="ts">
-  type T = $$Generic
+  type T = $$Generic;
 
   export let promise: Promise<T>;
-  let value: T;
 
-  promise.then((v) => (value = v));
+  let value: T;
+  let loaded = false;
+
+  promise.then((v) => {
+    value = v;
+    loaded = true;
+  });
 </script>
 
-<slot loaded={value !== null} {value} />
+<slot {loaded} {value} />

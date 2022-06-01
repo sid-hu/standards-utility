@@ -1,52 +1,47 @@
 <script lang="ts">
-  import * as tf from "@tensorflow/tfjs-core";
-  import type { TFLiteModel } from "@tensorflow/tfjs-tflite";
-  import type { NamedTensorMap } from "@tensorflow/tfjs-core";
+  import { browser as tfbrowser, Tensor } from "@tensorflow/tfjs";
 
-  import { Box } from "../proto/local/generic_pb";
+  import { measureModelPB } from "../store/models";
   import { createEventDispatcher } from "svelte";
+  import { imageStore } from "../store/image";
+  import { Box } from "../proto/local/generic_pb";
 
-  export let model: TFLiteModel;
-  export let image: File;
-  export let threshold = 0.2;
+  export let image: Uint8Array;
 
-  const dispatcher = createEventDispatcher<{ finish: Box[] }>();
+  const dispatcher = createEventDispatcher<{
+    finish: {
+      box: Box;
+      score: number;
+    }[];
+  }>();
 
   let element: HTMLImageElement;
 
   const infer = async () => {
-    const img = tf.browser.fromPixels(element);
+    const img = tfbrowser.fromPixels(element).toInt();
 
-    const resized = tf.image.resizeBilinear(await img.array(), [320, 320]);
-    const reshaped = tf.reshape(tf.mul(resized, 255), [1, 320, 320, 3]);
+    const expanded = img.transpose([0, 1, 2]).expandDims();
+    const result = (await $measureModelPB.executeAsync(expanded)) as Tensor[];
 
-    const out = model.predict(
-      tf.tensor(reshaped.arraySync(), [1, 320, 320, 3], "int32")
-    ) as NamedTensorMap;
+    console.log(result);
+
+    const boxes = ((await result[0].array()) as number[][][])[0];
+    const scores = ((await result[5].array()) as number[][])[0];
 
     const results = [];
 
-    const scores = (
-      (await out["StatefulPartitionedCall:1"].array()) as number[][]
-    )[0];
-    const boxes = (
-      (await out["StatefulPartitionedCall:3"].array()) as number[][][]
-    )[0];
-
     for (let i = 0; i < scores.length; i++) {
-      if (scores[i] > threshold) {
-        const box = new Box();
+      const box = new Box();
 
-        box.setY1(boxes[i][0]);
-        box.setX1(boxes[i][1]);
-        box.setY2(boxes[i][2]);
-        box.setX2(boxes[i][3]);
+      box.setY1(boxes[i][0]);
+      box.setX1(boxes[i][1]);
+      box.setY2(boxes[i][2]);
+      box.setX2(boxes[i][3]);
 
-        results.push(box);
-      }
+      results.push({ box, score: scores[i] });
     }
 
-    dispatcher("finish", results)
+    dispatcher("finish", results);
   };
 </script>
 
@@ -54,6 +49,6 @@
   bind:this={element}
   on:load={infer}
   class="fixed top-[100vh] left-[100vw]"
-  src={URL.createObjectURL(image)}
+  src={imageStore.fetch(image)}
   alt="inference"
 />

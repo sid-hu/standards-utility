@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Piece } from "./proto/local/data_pb";
+  import type { Piece } from "./proto/local/data_pb";
 
   import PieceBrowser from "./screens/PieceBrowser.svelte";
   import PieceEditor from "./screens/PieceEditor.svelte";
@@ -8,6 +8,7 @@
   import Route from "./components/Route.svelte";
 
   import { pieces } from "./store/pieces";
+  import PieceCreator from "./wrappers/PieceCreator.svelte";
 
   enum Routes {
     BROWSING,
@@ -51,9 +52,7 @@
   </Route>
 {:else if route.type === Routes.CREATING}
   <Route>
-    <PieceEditor
-      piece={new Piece()}
-      title="Add a piece"
+    <PieceCreator
       on:submit={(p) => {
         if (p.detail) {
           pieces.add(p.detail);
@@ -61,6 +60,17 @@
         route = { type: Routes.BROWSING };
       }}
     />
+    <!-- <PieceEditor
+      piece={new Piece()}
+      title="Add a piece"
+      measureControls
+      on:submit={(p) => {
+        if (p.detail) {
+          pieces.add(p.detail.piece);
+        }
+        route = { type: Routes.BROWSING };
+      }}
+    /> -->
   </Route>
 {:else if route.type === Routes.EDITING}
   <Route>

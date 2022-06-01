@@ -22,11 +22,21 @@
 
   import LinkButton from "../form/LinkButton.svelte";
   import AddButton from "../components/AddButton.svelte";
+  import type { NormalizationControls } from "../common/boxes";
 
   export let piece: Piece;
   export let title: string;
+  export let measureControls = false;
 
-  const dispatcher = createEventDispatcher<{ submit: Piece | null }>();
+  let threshold = 0.5;
+  let lineMargin = 0.02;
+
+  const dispatcher = createEventDispatcher<{
+    submit: {
+      piece: Piece;
+      controls?: NormalizationControls;
+    } | null;
+  }>();
 
   const config = { validateOnChange: true };
 
@@ -145,10 +155,27 @@
       />
     </div>
   </div>
-  <Expandable label="measure detection" className="mb-3">
-    <h4 class="text-sm font-semibold my-1">Threshold</h4>
-    <Range className="w-52 pb-2" min={0} max={1} step={0.1} />
-  </Expandable>
+  {#if measureControls}
+    <Expandable label="measure detection" className="mb-3">
+      <h4 class="text-sm font-semibold my-1">Threshold</h4>
+      <Range
+        className="w-52 pb-2"
+        bind:value={threshold}
+        min={0}
+        max={1}
+        step={0.1}
+      />
+      <h4 class="text-sm font-semibold my-1">Line Margin</h4>
+      <Range
+        className="w-52 pb-2"
+        bind:value={lineMargin}
+        min={0}
+        max={0.1}
+        step={0.01}
+        digits={2}
+      />
+    </Expandable>
+  {/if}
   <div class="flex justify-between">
     <Button
       disabled={!$pieceForm.valid}
@@ -159,7 +186,15 @@
         piece.setName($name.value);
         piece.setAuthor($author.value);
         piece.setPagesList($pages.value);
-        dispatcher("submit", piece);
+        dispatcher("submit", {
+          piece: piece,
+          controls: measureControls
+            ? {
+                threshold: threshold,
+                lineMargin: lineMargin,
+              }
+            : undefined,
+        });
       }}
     >
       Done

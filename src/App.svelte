@@ -1,22 +1,12 @@
 <script lang="ts">
-  import { pieces } from "./store/pieces";
-  import { db } from "./data/store";
-
-  import Loader from "./Loader.svelte";
   import Home from "./Home.svelte";
-
-  const piecesPromise = db.load();
-  piecesPromise.then((loaded) => pieces.load(loaded));
+  import Loading from "./wrappers/Loading.svelte";
 </script>
 
 <main>
-  <Loader promise={piecesPromise} let:loaded>
-    {#if loaded}
-      <Home />
-    {:else}
-      <p>loading data...</p>
-    {/if}
-  </Loader>
+  <Loading>
+    <Home />
+  </Loading>
 </main>
 
 <style global lang="postcss">

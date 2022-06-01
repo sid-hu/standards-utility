@@ -17,19 +17,21 @@
       <BoxComponent box={bounds}>
         {#if rows}
           {#each rows as r}
-            {#each r.getLinesList() as l, i}
-              {#if i > 0}
-                <BoxComponent
-                  className="bg-red-800 bg-opacity-50"
-                  box={new Box({
-                    x1: r.getLinesList()[i - 1],
-                    y1: r.getOffset(),
-                    x2: l,
-                    y2: r.getOffset() + r.getThickness(),
-                  })}
-                />
-              {/if}
-            {/each}
+            <div>
+              {#each r.getLinesList() as l, i}
+                {#if i > 0}
+                  <BoxComponent
+                    className="bg-red-800 bg-opacity-50"
+                    box={new Box({
+                      x1: r.getLinesList()[i - 1],
+                      y1: r.getOffset(),
+                      x2: l,
+                      y2: r.getOffset() + r.getThickness(),
+                    })}
+                  />
+                {/if}
+              {/each}
+            </div>
           {/each}
         {/if}
       </BoxComponent>

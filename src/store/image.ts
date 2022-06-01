@@ -19,7 +19,6 @@ export class ImageStore {
         references: 0,
       }
     }
-
     this.store[hash].references++
     return this.store[hash].url
   }
