@@ -26,15 +26,9 @@
   <Inference
     image={piece.getPagesList()[inferring].getImage_asU8()}
     on:finish={(e) => {
-      console.log(
-        e.detail.map((b) => {
-          return { box: b.box.toObject(), score: b.score };
-        })
-      );
       piece
         .getPagesList()
         [inferring].setMeasures(constructMeasures(e.detail, controls));
-      console.log("completed", inferring);
       inferring++;
     }}
   />

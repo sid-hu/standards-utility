@@ -1,8 +1,4 @@
 <script lang="ts">
-  import "@tensorflow/tfjs-backend-webgl";
-  import { setWasmPath } from "@tensorflow/tfjs-tflite";
-  import { setBackend } from "@tensorflow/tfjs-core";
-  // import { loadTFLiteModel } from "@tensorflow/tfjs-tflite";
   import { loadGraphModel } from "@tensorflow/tfjs";
 
   import { db } from "../data/store";
@@ -15,10 +11,6 @@
   let loaded = false;
 
   const load = async () => {
-    message = "initializing model backend...";
-    setWasmPath(`${window.location.origin}/wasm/`);
-    await setBackend("webgl");
-
     message = "loading model...";
     const modelPB = await loadGraphModel(
       `${window.location.origin}/models/web_model/model.json`
