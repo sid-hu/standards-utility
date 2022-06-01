@@ -6,7 +6,7 @@
   export let box: PBBox;
   export let className: string | null = null;
 
-  let _box = new Box(box.toObject());
+  $: _box = new Box(box.toObject());
 </script>
 
 <div

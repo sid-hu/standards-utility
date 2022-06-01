@@ -32,10 +32,6 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^3.18.0",
-    "@tensorflow/tfjs-backend-cpu": "3.11.0",
-    "@tensorflow/tfjs-backend-webgl": "3.11.0",
-    "@tensorflow/tfjs-core": "3.11.0",
-    "@tensorflow/tfjs-tflite": "0.0.1-alpha.8",
     "google-protobuf": "^3.20.1",
     "idb": "^7.0.1",
     "rollup-plugin-typescript2": "^0.31.2",

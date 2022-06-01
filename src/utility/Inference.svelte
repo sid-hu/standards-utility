@@ -23,8 +23,6 @@
     const expanded = img.transpose([0, 1, 2]).expandDims();
     const result = (await $measureModelPB.executeAsync(expanded)) as Tensor[];
 
-    console.log(result);
-
     const boxes = ((await result[0].array()) as number[][][])[0];
     const scores = ((await result[5].array()) as number[][])[0];
 
