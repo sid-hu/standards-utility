@@ -1,22 +1,23 @@
 <script lang="ts">
   import { constructMeasures } from "../common/boxes";
-  import { Page as PBPage } from "../proto/local/data_pb";
-  import { Page as PageWrapper } from "../types/data";
-  import { Box } from "../types/generic";
-  import type { Box as PBBox } from "../proto/local/generic_pb";
+  import type { Page as PBPage } from "../proto/local/data";
+  import type { Box } from "../proto/local/generic";
 
   import Page from "../components/Page.svelte";
   import PageBoxes from "../components/PageBoxes.svelte";
   import Loader from "../Loader.svelte";
   import Panel from "../components/Panel.svelte";
 
-  let page = new PBPage();
+  let page: PBPage = {
+    sections: [],
+    image: new Uint8Array(),
+  };
   let image: Uint8Array;
 
   let threshold = 0.4;
 
   const boxes: {
-    box: PBBox.AsObject;
+    box: Box;
     score: number;
   }[] = [
     {
@@ -927,12 +928,12 @@
         .filter((o) => o.score > threshold)
         .map((o) => {
           return {
-            box: new Box({
+            box: {
               x1: o.box.x1,
               x2: o.box.x2,
               y1: o.box.y1,
               y2: o.box.y2,
-            }),
+            },
             score: o.score,
           };
         }),
@@ -943,8 +944,8 @@
   const promise = (async function () {
     const r = await window.fetch(`${window.location.origin}/examples/1.png`);
     image = new Uint8Array(await r.arrayBuffer());
-    page.setImage(new Uint8Array(image));
-    page.setMeasures(makeMeasures(threshold));
+    page.image = new Uint8Array(image);
+    page.measures = makeMeasures(threshold);
   })();
 </script>
 
@@ -959,10 +960,10 @@
       value={threshold}
       on:input={(e) => {
         threshold = parseFloat(e.currentTarget.value);
-        page = new PageWrapper({
-          ...page.toObject(),
-          measures: makeMeasures(threshold).toObject(),
-        });
+        page = {
+          ...page,
+          measures: makeMeasures(threshold),
+        };
       }}
     />
   </Panel>
@@ -970,16 +971,16 @@
     {#if loaded}
       <Page {page} alt="page 1" />
       <PageBoxes
-        image={page.getImage_asU8()}
+        image={page.image}
         boxes={boxes
           .filter((b) => b.score > threshold)
           .map((b) => {
-            return new Box({
+            return {
               x1: b.box.x1,
               x2: b.box.x2,
               y1: b.box.y1,
               y2: b.box.y2,
-            });
+            };
           })}
         alt="page 1"
       />

@@ -1,10 +1,11 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import { browser as tfbrowser, Tensor } from "@tensorflow/tfjs";
 
   import { measureModelPB } from "../store/models";
-  import { createEventDispatcher } from "svelte";
   import { imageStore } from "../store/image";
-  import { Box } from "../proto/local/generic_pb";
+
+  import type { Box } from "../proto/local/generic";
 
   export let image: Uint8Array;
 
@@ -26,17 +27,18 @@
     const boxes = ((await result[0].array()) as number[][][])[0];
     const scores = ((await result[5].array()) as number[][])[0];
 
-    const results = [];
+    const results: { box: Box; score: number }[] = [];
 
     for (let i = 0; i < scores.length; i++) {
-      const box = new Box();
-
-      box.setY1(boxes[i][0]);
-      box.setX1(boxes[i][1]);
-      box.setY2(boxes[i][2]);
-      box.setX2(boxes[i][3]);
-
-      results.push({ box, score: scores[i] });
+      results.push({
+        box: {
+          y1: boxes[i][0],
+          x1: boxes[i][1],
+          y2: boxes[i][2],
+          x2: boxes[i][3],
+        },
+        score: scores[i],
+      });
     }
 
     dispatcher("finish", results);

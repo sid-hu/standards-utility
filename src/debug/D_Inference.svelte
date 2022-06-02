@@ -26,7 +26,7 @@
       on:finish={(results) => {
         console.log(
           results.detail.map((b) => {
-            return { box: b.box.toObject(), score: b.score };
+            return { box: b.box, score: b.score };
           })
         );
       }}

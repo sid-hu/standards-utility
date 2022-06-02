@@ -1,21 +1,28 @@
 <script lang="ts">
-  import { Page, Piece } from "../proto/local/data_pb";
+  import type { Page, Piece } from "../proto/local/data";
   import Image from "../components/Image.svelte"
   import Loader from "../Loader.svelte"
 
-  const pb = new Piece();
-  const page = new Page()
+  let piece: Piece = {
+    author: "",
+    id: "",
+    name: "",
+    pages: []
+  }
 
   const imagePromise = (async () => {
     const r = await window.fetch(`${window.location.origin}/examples/1.png`)
-    page.setImage(new Uint8Array(await r.arrayBuffer()))
-    pb.addPages(page)
+    const page: Page = {
+      sections: [],
+      image: new Uint8Array(await r.arrayBuffer())
+    }
+    piece.pages.push(page)
   })()
 </script>
 
 <Loader promise={imagePromise} let:loaded>
   {#if loaded}
-    <Image bytes={page.getImage_asU8()} alt="test image here" />
+    <Image bytes={piece.pages[0].image} alt="test image here" />
   {:else}
     <div class="m-auto">Loading image...</div>
   {/if}

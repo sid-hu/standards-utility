@@ -1,32 +1,31 @@
 <script lang="ts">
   import BoxComponent from "./Box.svelte";
   import Image from "./Image.svelte";
-  import type { Page } from "../proto/local/data_pb";
-  import { Box } from "../types/generic";
+  import type { Page } from "../proto/local/data";
 
   export let page: Page;
   export let alt: string;
 
-  $: bounds = page.getMeasures()?.getBounds();
-  $: rows = page.getMeasures()?.getRowsList();
+  $: bounds = page.measures?.bounds;
+  $: rows = page.measures?.rows;
 </script>
 
 <div class="w-full h-full">
-  <Image bytes={page.getImage_asU8()} {alt}>
+  <Image bytes={page.image} {alt}>
     {#if bounds}
       <BoxComponent box={bounds}>
         {#if rows}
           {#each rows as r}
             <div>
-              {#each r.getLinesList() as l, i}
+              {#each r.lines as l, i}
                 {#if i > 0}
                   <BoxComponent
-                    box={new Box({
-                      x1: r.getLinesList()[i - 1],
-                      y1: r.getOffset(),
+                    box={{
+                      x1: r.lines[i - 1],
+                      y1: r.offset,
                       x2: l,
-                      y2: r.getOffset() + r.getThickness(),
-                    })}
+                      y2: r.offset + r.thickness,
+                    }}
                   >
                     <slot />
                   </BoxComponent>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { Piece } from "../proto/local/data_pb";
-  import type { Box } from "../proto/local/generic_pb";
+  import type { Piece } from "../proto/local/data";
+  import type { Box } from "../proto/local/generic";
   import { constructMeasures, NormalizationControls } from "../common/boxes";
 
   import Message from "../components/Message.svelte";
@@ -15,11 +15,15 @@
   import Route from "../components/Route.svelte";
   import Position from "../wrappers/Position.svelte";
   import FormPanel from "../form/FormPanel.svelte";
-  import Page from "../components/Page.svelte";
   import { classList } from "../common/general";
 
   const dispatcher = createEventDispatcher<{ submit: Piece | null }>();
-  let piece = new Piece();
+  let piece: Piece = {
+    id: "",
+    author: "",
+    name: "",
+    pages: [],
+  };
 
   let measures: { box: Box; score: number }[][] = [];
   let controls: NormalizationControls[] = [];
@@ -28,11 +32,10 @@
   let filtering = -1;
 
   const updatePieceMeasures = () => {
-    piece
-      .getPagesList()
-      [filtering].setMeasures(
-        constructMeasures(measures[filtering], controls[filtering])
-      );
+    piece.pages[filtering].measures = constructMeasures(
+      measures[filtering],
+      controls[filtering]
+    );
     piece = piece;
   };
 </script>
@@ -84,7 +87,7 @@
   </Route>
 {:else if inferring >= 0}
   <Inference
-    image={piece.getPagesList()[inferring].getImage_asU8()}
+    image={piece.pages[inferring].image}
     on:finish={(e) => {
       measures[inferring] = e.detail;
       controls[inferring] = {
@@ -92,7 +95,7 @@
         threshold: 0.5,
       };
       inferring++;
-      if (inferring === piece.getPagesList().length) {
+      if (inferring === piece.pages.length) {
         inferring = -1;
         filtering = 0;
         updatePieceMeasures();

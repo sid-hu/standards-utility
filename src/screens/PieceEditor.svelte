@@ -5,8 +5,9 @@
   import { createEventDispatcher, onDestroy } from "svelte";
   import { form, field } from "svelte-forms";
   import { required } from "svelte-forms/validators";
+  import { arrayRequired } from "../common/validators";
 
-  import { Page, Piece } from "../proto/local/data_pb";
+  import type { Page, Piece } from "../proto/local/data";
   import { imageStore } from "../store/image";
 
   import Uploader from "../utility/Uploader.svelte";
@@ -28,19 +29,9 @@
 
   const config = { validateOnChange: true };
 
-  const name = field("name", piece.getName(), [required()], config);
-  const author = field("author", piece.getAuthor(), [required()], config);
-  const pages = field(
-    "pages",
-    piece.getPagesList(),
-    [
-      (value: []) => ({
-        valid: value.length > 0,
-        name: "required",
-      }),
-    ],
-    config
-  );
+  const name = field("name", piece.name, [required()], config);
+  const author = field("author", piece.author, [required()], config);
+  const pages = field("pages", piece.pages, [arrayRequired()], config);
   pages.validate();
 
   const pieceForm = form(name, author, pages);
@@ -52,10 +43,11 @@
     pages.set([
       ...$pages.value,
       ...(await Promise.all(
-        files.map(async (f) => {
-          const page = new Page();
-          page.setImage(new Uint8Array(await f.arrayBuffer()));
-          return page;
+        files.map(async (f): Promise<Page> => {
+          return {
+            image: new Uint8Array(await f.arrayBuffer()),
+            sections: [],
+          };
         })
       )),
     ]);
@@ -63,7 +55,7 @@
 
   onDestroy(() => {
     for (const p of $pages.value) {
-      imageStore.release(p.getImage_asU8());
+      imageStore.release(p.image);
     }
   });
 </script>
@@ -79,10 +71,13 @@
       <img
         transition:fly|local={{ x: -20 }}
         class="p-10 h-full object-contain"
-        src={imageStore.fetch(page.getImage_asU8())}
+        src={imageStore.fetch(page.image)}
         alt={`page ${i + 1}`}
       />
-      <div class="bottom-16 absolute p-centered-x" transition:fly|local={{ y: 10 }}>
+      <div
+        class="bottom-16 absolute p-centered-x"
+        transition:fly|local={{ y: 10 }}
+      >
         <Panel
           styleHover
           rounded="rounded-full"
@@ -91,7 +86,7 @@
               ...$pages.value.slice(0, i),
               ...$pages.value.slice(i + 1),
             ]);
-            imageStore.release(page.getImage_asU8());
+            imageStore.release(page.image);
           }}
           let:hovered
         >
@@ -148,12 +143,12 @@
       disabled={!$pieceForm.valid}
       on:cancel={() => dispatcher("submit", null)}
       on:submit={() => {
-        if (!piece.getId()) {
-          piece.setId(v4());
+        if (!piece.id) {
+          piece.id = v4();
         }
-        piece.setName($name.value);
-        piece.setAuthor($author.value);
-        piece.setPagesList($pages.value);
+        piece.name = $name.value;
+        piece.author = $author.value;
+        piece.pages = $pages.value;
         dispatcher("submit", piece);
       }}
     />

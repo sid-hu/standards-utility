@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import { useKey } from "../common/events";
   import { classList } from "../common/general";
-  import type { Piece } from "../proto/local/data_pb";
+  import type { Piece } from "../proto/local/data";
 
   import Page from "../components/Page.svelte";
   import Panel from "../components/Panel.svelte";
@@ -19,7 +19,7 @@
     dispatcher("page", page);
   };
   const right = () => {
-    if (page < piece.getPagesList().length - 1) page++;
+    if (page < piece.pages.length - 1) page++;
     dispatcher("page", page);
   };
 
@@ -27,7 +27,7 @@
   useKey("ArrowRight", right);
 </script>
 
-<Page page={piece.getPagesList()[page]} alt={`page ${page + 1}`}>
+<Page page={piece.pages[page]} alt={`page ${page + 1}`}>
   <slot />
 </Page>
 
@@ -50,7 +50,7 @@
       <p class="w-10 h-10 centered text-slate-700 font-bold">{page + 1}</p>
     </Panel>
     <Panel
-      styleHover={page < piece.getPagesList().length - 1}
+      styleHover={page < piece.pages.length - 1}
       rounded="rounded-full"
       className="mx-2"
       on:click={right}
@@ -58,7 +58,7 @@
       <ArrowUp
         className={classList(
           "p-2 w-10 h-10 rotate-90",
-          page < piece.getPagesList().length - 1 ? "" : "fill-slate-600"
+          page < piece.pages.length - 1 ? "" : "fill-slate-600"
         )}
       />
     </Panel>

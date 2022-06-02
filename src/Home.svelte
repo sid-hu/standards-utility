@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Piece } from "./proto/local/data_pb";
+  import type { Piece } from "./proto/local/data";
 
   import PieceBrowser from "./screens/PieceBrowser.svelte";
   import PieceEditor from "./screens/PieceEditor.svelte";

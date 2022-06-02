@@ -1,8 +1,13 @@
 <script lang="ts">
-  import { Piece } from "../proto/local/data_pb";
+  import type { Piece } from "../proto/local/data";
   import PieceEditor from "../screens/PieceEditor.svelte";
 
-  const piece = new Piece();
+  const piece: Piece = {
+    author: "",
+    id: "",
+    name: "",
+    pages: [],
+  };
 </script>
 
 <PieceEditor

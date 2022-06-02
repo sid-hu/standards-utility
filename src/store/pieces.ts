@@ -4,7 +4,7 @@ import { Writable, writable } from "svelte/store";
 import { BufferedUpdater } from "../common/store";
 import { proxyPB } from "./state";
 
-import type { Piece } from "../proto/local/data_pb"
+import type { Piece } from "../proto/local/data"
 
 function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
   load: (p: Piece[]) => void
@@ -28,7 +28,7 @@ function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
     remove: (piece: Piece) => {
       pieceStore.update(pieces => {
         db.remove(piece)
-        return pieces.filter(v => v.getId() !== piece.getId())
+        return pieces.filter(v => v.id !== piece.id)
       })
     }
   }
@@ -36,7 +36,7 @@ function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
 
 function constructPieceObject(p: Piece) {
   const updater = new BufferedUpdater(() => {
-    console.info("updated", p.getId())
+    console.info("updated", p.id)
     db.set(p);
   });
   return proxyPB<Piece>(p, () => {

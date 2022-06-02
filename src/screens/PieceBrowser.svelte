@@ -4,7 +4,7 @@
 
   import { imageStore } from "../store/image";
   import { classList } from "../common/general";
-  import type { Piece } from "../proto/local/data_pb";
+  import type { Piece } from "../proto/local/data";
 
   import Panel from "../components/Panel.svelte";
   import Edit from "../icons/Edit.svelte";
@@ -21,13 +21,13 @@
 
   onDestroy(() => {
     for (const p of $pieces) {
-      imageStore.release(p.getPagesList()[0].getImage_asU8());
+      imageStore.release(p.pages[0].image);
     }
   });
 </script>
 
 <div class="flex flex-wrap items-start justify-center h-full sm:justify-start">
-  {#each $pieces as p (p.getId())}
+  {#each $pieces as p (p.id)}
     <div
       transition:fly|local={{ x: -10 }}
       animate:flip={{ duration: 400 }}
@@ -46,8 +46,8 @@
             "shadow-lg hover:cursor-pointer",
             "max-h-[400px] sm:max-h-80"
           )}
-          src={imageStore.fetch(p.getPagesList()[0].getImage_asU8())}
-          alt={`${p.getName()} cover`}
+          src={imageStore.fetch(p.pages[0].image)}
+          alt={`${p.name} cover`}
         />
         {#if hovered}
           <div class="absolute p-centered">
@@ -77,9 +77,9 @@
         {/if}
       </Panel>
       <h3 class="font-semibold text-2xl sm:text-xl">
-        {p.getName()}
+        {p.name}
       </h3>
-      <h4>{p.getAuthor()}</h4>
+      <h4>{p.author}</h4>
     </div>
   {/each}
   {#if $pieces.length === 0}

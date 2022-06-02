@@ -1,6 +1,6 @@
 import { IDBPDatabase, openDB } from "idb"
 import { Platform, target } from "../common/platform"
-import { Piece } from "../proto/local/data_pb";
+import { Piece } from "../proto/local/data";
 
 export interface DB {
     load(): Promise<Piece[]>
@@ -31,7 +31,7 @@ export class WebDB implements DB {
             }
         })
         return (await this.db.getAll(this.name))
-            .map(v => Piece.deserializeBinary(new Uint8Array(v.serialized)))
+            .map(v => Piece.fromBinary(new Uint8Array(v.serialized)))
     }
 
     async set(piece: Piece): Promise<void> {
@@ -40,8 +40,8 @@ export class WebDB implements DB {
         }
         const tx = this.db.transaction(this.name, "readwrite")
         tx.store.put({
-            id: piece.getId(),
-            serialized: piece.serializeBinary().buffer
+            id: piece.id,
+            serialized: Piece.toBinary(piece).buffer
         })
         await tx.done
     }
@@ -51,7 +51,7 @@ export class WebDB implements DB {
             throw new Error("store has not been loaded yet! please call load() first")
         }
         const tx = this.db.transaction(this.name, "readwrite")
-        tx.store.delete(piece.getId())
+        tx.store.delete(piece.id)
         await tx.done
     }
 }
