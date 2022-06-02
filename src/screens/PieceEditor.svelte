@@ -11,14 +11,13 @@
 
   import Uploader from "../utility/Uploader.svelte";
   import Panel from "../components/Panel.svelte";
-
   import Remove from "../icons/Remove.svelte";
   import PlaylistAdd from "../icons/PlaylistAdd.svelte";
-
   import TextInput from "../form/TextInput.svelte";
-
   import AddButton from "../components/AddButton.svelte";
   import Submission from "../form/Submission.svelte";
+  import Position from "../wrappers/Position.svelte";
+  import FormPanel from "../form/FormPanel.svelte";
 
   export let piece: Piece;
   export let title: string;
@@ -83,7 +82,7 @@
         src={imageStore.fetch(page.getImage_asU8())}
         alt={`page ${i + 1}`}
       />
-      <div class="bottom-16 p-centered-x" transition:fly|local={{ y: 10 }}>
+      <div class="bottom-16 absolute p-centered-x" transition:fly|local={{ y: 10 }}>
         <Panel
           styleHover
           rounded="rounded-full"
@@ -122,41 +121,45 @@
   {/if}
 </div>
 
-<Panel rounded="rounded-lg" className="fixed top-8 left-8 px-5 py-3">
-  <h2 class="text-xl font-bold mb-3">{title}</h2>
-  <div class="mb-3">
-    <div class="flex items-start justify-between mb-1">
-      <h4 class="text-md font-semibold mr-5">Title</h4>
-      <TextInput
-        bind:value={$name.value}
-        error={!$name.valid ? "required" : null}
-        className="italic"
-        placeholder="title"
-      />
+<Position x="left" y="top">
+  <FormPanel>
+    <h2 class="text-xl font-bold mb-3">{title}</h2>
+    <div class="mb-3">
+      <div class="flex items-start justify-between mb-1">
+        <h4 class="text-md font-semibold mr-5">Title</h4>
+        <TextInput
+          bind:value={$name.value}
+          error={!$name.valid ? "required" : null}
+          className="italic"
+          placeholder="title"
+        />
+      </div>
+      <div class="flex items-start justify-between mb-1">
+        <h4 class="text-md font-semibold mr-5">Author</h4>
+        <TextInput
+          bind:value={$author.value}
+          error={!$author.valid ? "required" : null}
+          className="italic"
+          placeholder="composer"
+        />
+      </div>
     </div>
-    <div class="flex items-start justify-between mb-1">
-      <h4 class="text-md font-semibold mr-5">Author</h4>
-      <TextInput
-        bind:value={$author.value}
-        error={!$author.valid ? "required" : null}
-        className="italic"
-        placeholder="composer"
-      />
-    </div>
-  </div>
-  <Submission
-    disabled={!$pieceForm.valid}
-    on:cancel={() => dispatcher("submit", null)}
-    on:submit={() => {
-      if (!piece.getId()) {
-        piece.setId(v4());
-      }
-      piece.setName($name.value);
-      piece.setAuthor($author.value);
-      piece.setPagesList($pages.value);
-      dispatcher("submit", piece);
-    }}
-  />
-</Panel>
+    <Submission
+      disabled={!$pieceForm.valid}
+      on:cancel={() => dispatcher("submit", null)}
+      on:submit={() => {
+        if (!piece.getId()) {
+          piece.setId(v4());
+        }
+        piece.setName($name.value);
+        piece.setAuthor($author.value);
+        piece.setPagesList($pages.value);
+        dispatcher("submit", piece);
+      }}
+    />
+  </FormPanel>
+</Position>
 
-<AddButton labelFor="file-input" />
+<Position x="right" y="bottom" margin="40px">
+  <AddButton labelFor="file-input" />
+</Position>

@@ -8,7 +8,7 @@
 <label
   for={labelFor}
   class={classList(
-    "fixed bottom-10 right-10 w-16 h-16",
+    "block m-4 w-16 h-16",
     "border-4 border-transparent rounded-full transition-all",
     "hover:border-slate-900 hover:scale-110 hover:cursor-pointer",
     "active:translate-y-1"

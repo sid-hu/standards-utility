@@ -3,13 +3,13 @@
 
   import PieceBrowser from "./screens/PieceBrowser.svelte";
   import PieceEditor from "./screens/PieceEditor.svelte";
-  import PieceViewer from "./screens/PieceViewer.svelte";
   import AddButton from "./components/AddButton.svelte";
   import Route from "./components/Route.svelte";
 
   import { pieces } from "./store/pieces";
-  import PieceCreator from "./wrappers/PieceCreator.svelte";
-  import WithBack from "./components/WithBack.svelte";
+  import PieceCreator from "./screens/PieceCreator.svelte";
+  import Position from "./wrappers/Position.svelte";
+  import PiecePractice from "./screens/PiecePractice.svelte";
 
   enum Routes {
     BROWSING,
@@ -46,10 +46,12 @@
         };
       }}
     />
-    <AddButton
-      labelFor=""
-      on:click={() => (route = { type: Routes.CREATING })}
-    />
+    <Position x="right" y="bottom">
+      <AddButton
+        labelFor=""
+        on:click={() => (route = { type: Routes.CREATING })}
+      />
+    </Position>
   </Route>
 {:else if route.type === Routes.CREATING}
   <Route>
@@ -72,8 +74,9 @@
   </Route>
 {:else if route.type === Routes.VIEWING}
   <Route>
-    <WithBack on:close={() => (route = { type: Routes.BROWSING })}>
-      <PieceViewer piece={route.piece} />
-    </WithBack>
+    <PiecePractice
+      piece={route.piece}
+      on:close={() => (route = { type: Routes.BROWSING })}
+    />
   </Route>
 {/if}

@@ -50,7 +50,7 @@
           alt={`${p.getName()} cover`}
         />
         {#if hovered}
-          <div class="p-centered">
+          <div class="absolute p-centered">
             <div
               transition:fly|local={{ y: 5 }}
               on:click={(e) => {

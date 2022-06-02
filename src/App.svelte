@@ -49,11 +49,11 @@
   }
 
   .p-centered-x {
-    @apply absolute left-1/2 translate-x-[-50%];
+    @apply left-1/2 translate-x-[-50%];
   }
 
   .p-centered-y {
-    @apply absolute top-1/2 translate-y-[-50%];
+    @apply top-1/2 translate-y-[-50%];
   }
 
   .p-centered {
