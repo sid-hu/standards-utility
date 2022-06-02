@@ -20,6 +20,8 @@
     {max}
     {step}
     bind:value
+    on:input
+    on:mouseup={(e) => e.currentTarget.blur()}
   />
 </div>
 

@@ -15,27 +15,16 @@
   import Remove from "../icons/Remove.svelte";
   import PlaylistAdd from "../icons/PlaylistAdd.svelte";
 
-  import Button from "../form/Button.svelte";
   import TextInput from "../form/TextInput.svelte";
-  import Expandable from "../form/Expandable.svelte";
-  import Range from "../form/Range.svelte";
 
-  import LinkButton from "../form/LinkButton.svelte";
   import AddButton from "../components/AddButton.svelte";
-  import type { NormalizationControls } from "../common/boxes";
+  import Submission from "../form/Submission.svelte";
 
   export let piece: Piece;
   export let title: string;
-  export let measureControls = false;
-
-  let threshold = 0.5;
-  let lineMargin = 0.02;
 
   const dispatcher = createEventDispatcher<{
-    submit: {
-      piece: Piece;
-      controls?: NormalizationControls;
-    } | null;
+    submit: Piece | null;
   }>();
 
   const config = { validateOnChange: true };
@@ -155,52 +144,19 @@
       />
     </div>
   </div>
-  {#if measureControls}
-    <Expandable label="measure detection" className="mb-3">
-      <h4 class="text-sm font-semibold my-1">Threshold</h4>
-      <Range
-        className="w-52 pb-2"
-        bind:value={threshold}
-        min={0}
-        max={1}
-        step={0.1}
-      />
-      <h4 class="text-sm font-semibold my-1">Line Margin</h4>
-      <Range
-        className="w-52 pb-2"
-        bind:value={lineMargin}
-        min={0}
-        max={0.1}
-        step={0.01}
-        digits={2}
-      />
-    </Expandable>
-  {/if}
-  <div class="flex justify-between">
-    <Button
-      disabled={!$pieceForm.valid}
-      on:click={() => {
-        if (!piece.getId()) {
-          piece.setId(v4());
-        }
-        piece.setName($name.value);
-        piece.setAuthor($author.value);
-        piece.setPagesList($pages.value);
-        dispatcher("submit", {
-          piece: piece,
-          controls: measureControls
-            ? {
-                threshold: threshold,
-                lineMargin: lineMargin,
-              }
-            : undefined,
-        });
-      }}
-    >
-      Done
-    </Button>
-    <LinkButton text="cancel" on:click={() => dispatcher("submit", null)} />
-  </div>
+  <Submission
+    disabled={!$pieceForm.valid}
+    on:cancel={() => dispatcher("submit", null)}
+    on:submit={() => {
+      if (!piece.getId()) {
+        piece.setId(v4());
+      }
+      piece.setName($name.value);
+      piece.setAuthor($author.value);
+      piece.setPagesList($pages.value);
+      dispatcher("submit", piece);
+    }}
+  />
 </Panel>
 
 <AddButton labelFor="file-input" />

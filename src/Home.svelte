@@ -9,6 +9,7 @@
 
   import { pieces } from "./store/pieces";
   import PieceCreator from "./wrappers/PieceCreator.svelte";
+  import WithBack from "./components/WithBack.svelte";
 
   enum Routes {
     BROWSING,
@@ -60,17 +61,6 @@
         route = { type: Routes.BROWSING };
       }}
     />
-    <!-- <PieceEditor
-      piece={new Piece()}
-      title="Add a piece"
-      measureControls
-      on:submit={(p) => {
-        if (p.detail) {
-          pieces.add(p.detail.piece);
-        }
-        route = { type: Routes.BROWSING };
-      }}
-    /> -->
   </Route>
 {:else if route.type === Routes.EDITING}
   <Route>
@@ -82,9 +72,8 @@
   </Route>
 {:else if route.type === Routes.VIEWING}
   <Route>
-    <PieceViewer
-      piece={route.piece}
-      on:close={() => (route = { type: Routes.BROWSING })}
-    />
+    <WithBack on:close={() => (route = { type: Routes.BROWSING })}>
+      <PieceViewer piece={route.piece} />
+    </WithBack>
   </Route>
 {/if}

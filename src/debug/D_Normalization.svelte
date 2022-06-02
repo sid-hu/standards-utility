@@ -6,7 +6,7 @@
   import type { Box as PBBox } from "../proto/local/generic_pb";
 
   import Page from "../components/Page.svelte";
-  import PageBoxes from "./PageBoxes.svelte";
+  import PageBoxes from "../components/PageBoxes.svelte";
   import Loader from "../Loader.svelte";
   import Panel from "../components/Panel.svelte";
 

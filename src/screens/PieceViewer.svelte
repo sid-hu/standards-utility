@@ -1,41 +1,30 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+  import { useKey } from "../common/events";
   import { classList } from "../common/general";
   import type { Piece } from "../proto/local/data_pb";
 
   import Page from "../components/Page.svelte";
   import Panel from "../components/Panel.svelte";
   import ArrowUp from "../icons/ArrowUp.svelte";
-  import Back from "../icons/Back.svelte";
-  import { createEventDispatcher } from "svelte";
-  import { useClose, useKey } from "../common/events";
 
-  const dispatcher = createEventDispatcher<{ close: void }>();
+  const dispatcher = createEventDispatcher<{ page: number }>();
 
   export let piece: Piece;
+  export let page = 0;
 
-  let page = 0;
   const left = () => {
-    if (page > 0) page--
-  }
+    if (page > 0) page--;
+    dispatcher("page", page)
+  };
   const right = () => {
-    if (page < piece.getPagesList().length - 1) page++
-  }
+    if (page < piece.getPagesList().length - 1) page++;
+    dispatcher("page", page)
+  };
 
-  useClose(() => dispatcher("close"));
-
-  useKey("ArrowLeft", left)
-  useKey("ArrowRight", right)
+  useKey("ArrowLeft", left);
+  useKey("ArrowRight", right);
 </script>
-
-<div
-  on:click={() => dispatcher("close")}
-  class={classList(
-    "absolute top-8 left-8 w-16 h-16 transition-all",
-    "hover:scale-110 hover:cursor-pointer"
-  )}
->
-  <Back className="w-full h-full" />
-</div>
 
 <Page page={piece.getPagesList()[page]} alt={`page ${page + 1}`} />
 
@@ -65,9 +54,7 @@
     <ArrowUp
       className={classList(
         "p-2 w-10 h-10 rotate-90",
-        page < piece.getPagesList().length - 1
-          ? ""
-          : "fill-slate-600"
+        page < piece.getPagesList().length - 1 ? "" : "fill-slate-600"
       )}
     />
   </Panel>

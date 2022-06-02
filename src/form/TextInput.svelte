@@ -15,6 +15,7 @@
     type="text"
     {placeholder}
     bind:value
+    on:input
     class={classList("bg-transparent rounded-sm text-slate-900", className)}
   />
 

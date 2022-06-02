@@ -47,7 +47,6 @@ export function constructMeasures(
       boxRows.push([boxes[i]])
     }
   }
-  console.log(boxRows.map(r => r.map(b => b.toObject())))
 
   const bounds = new Box({ x1: 1, x2: 0, y1: 1, y2: 0 })
   //intermediate pass: create row bounds
