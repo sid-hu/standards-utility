@@ -34,7 +34,7 @@
 <Position x="middle" y="bottom">
   <div class="flex">
     <Panel
-      styleHover={page > 0}
+      styleActionable={page > 0}
       rounded="rounded-full"
       className="mx-2"
       on:click={left}
@@ -50,7 +50,7 @@
       <p class="w-10 h-10 centered text-slate-700 font-bold">{page + 1}</p>
     </Panel>
     <Panel
-      styleHover={page < piece.pages.length - 1}
+      styleActionable={page < piece.pages.length - 1}
       rounded="rounded-full"
       className="mx-2"
       on:click={right}

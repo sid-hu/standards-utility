@@ -11,7 +11,7 @@
   import Remove from "../icons/Remove.svelte";
   import { createEventDispatcher, onDestroy } from "svelte";
 
-  import { pieces } from "../store/pieces"
+  import { pieces } from "../store/pieces";
 
   const dispatcher = createEventDispatcher<{
     choose: Piece;
@@ -58,7 +58,11 @@
                 dispatcher("delete", p);
               }}
             >
-              <Panel rounded="rounded-full" className="p-1 my-1" styleHover>
+              <Panel
+                rounded="rounded-full"
+                className="p-1 my-1"
+                styleActionable
+              >
                 <Remove />
               </Panel>
             </div>
@@ -69,7 +73,11 @@
                 dispatcher("edit", p);
               }}
             >
-              <Panel rounded="rounded-full" className="p-1 my-1" styleHover>
+              <Panel
+                rounded="rounded-full"
+                className="p-1 my-1"
+                styleActionable
+              >
                 <Edit />
               </Panel>
             </div>

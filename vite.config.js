@@ -3,6 +3,7 @@ import sveltePreprocess from 'svelte-preprocess';
 
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { replaceCodePlugin } from "vite-plugin-replace"
+import { viteStaticCopy } from "vite-plugin-static-copy"
 
 const production = !process.env.ROLLUP_WATCH;
 const platform = process.env.PLATFORM;
@@ -15,6 +16,12 @@ export default defineConfig({
     outDir: "../build",
   },
   plugins: [
+    viteStaticCopy({
+      targets: [{
+        src: "../node_modules/pdfjs-dist/build/pdf.worker.js",
+        dest: "workers"
+      }]
+    }),
     replaceCodePlugin({
       replacements: [
         { from: "kPlatform", to: platform }
@@ -30,10 +37,6 @@ export default defineConfig({
           ],
         },
       }),
-      compilerOptions: {
-        // enable run-time checks when not in production
-        dev: !production
-      }
     })
   ]
 })

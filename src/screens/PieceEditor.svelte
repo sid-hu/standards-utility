@@ -1,8 +1,11 @@
 <script lang="ts">
   import { v4 } from "uuid";
+  import { getDocument } from "pdfjs-dist";
+  import { key } from "../wrappers/Message.svelte"
+
   import { fade, fly } from "svelte/transition";
 
-  import { createEventDispatcher, onDestroy } from "svelte";
+  import { createEventDispatcher, getContext, onDestroy } from "svelte";
   import { form, field } from "svelte-forms";
   import { required } from "svelte-forms/validators";
   import { arrayRequired } from "../common/validators";
@@ -27,6 +30,7 @@
     submit: Piece | null;
   }>();
 
+  const { showMessage } = getContext(key)
   const config = { validateOnChange: true };
 
   const name = field("name", piece.name, [required()], config);
@@ -42,14 +46,53 @@
 
     pages.set([
       ...$pages.value,
-      ...(await Promise.all(
-        files.map(async (f): Promise<Page> => {
-          return {
-            image: new Uint8Array(await f.arrayBuffer()),
-            sections: [],
-          };
-        })
-      )),
+      ...(
+        await Promise.all(
+          files.map(async (f): Promise<Page[]> => {
+            const bytes = new Uint8Array(await f.arrayBuffer());
+            if (f.type === "application/pdf") {
+              const pages: Page[] = [];
+
+              showMessage("loading pdf...")
+              const doc = await getDocument(bytes).promise;
+              for (let i = 1; i < doc.numPages + 1; i++) {
+                const page = await doc.getPage(i);
+                const scale = 1080 / page.getViewport({ scale: 1 }).width
+                const viewport = page.getViewport({ scale: scale })
+
+                const canvas = document.createElement("canvas");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                const context = canvas.getContext("2d")!;
+                await page.render({
+                  canvasContext: context,
+                  viewport: viewport,
+                }).promise;
+
+                const blob = await new Promise<Blob>((r) =>
+                  canvas.toBlob((b) => r(b!), "image/png")
+                );
+
+                pages.push({
+                  image: new Uint8Array(await blob.arrayBuffer()),
+                  sections: [],
+                });
+              }
+
+              showMessage(undefined)
+              return pages;
+            } else {
+              return [
+                {
+                  image: bytes,
+                  sections: [],
+                },
+              ];
+            }
+          })
+        )
+      ).flat(),
     ]);
   };
 
@@ -60,14 +103,11 @@
   });
 </script>
 
-<Uploader
-  filter={(f) => f.type.split("/")[0] === "image"}
-  handler={uploadHandler}
-/>
+<Uploader filter={["image/*", "application/pdf"]} handler={uploadHandler} />
 
 <div class="flex h-full">
   {#each $pages.value as page, i}
-    <div class="h-full relative">
+    <div class="min-w-[360px] sm:min-w-[500px] h-full relative">
       <img
         transition:fly|local={{ x: -20 }}
         class="p-10 h-full object-contain"
@@ -79,7 +119,7 @@
         transition:fly|local={{ y: 10 }}
       >
         <Panel
-          styleHover
+          styleActionable
           rounded="rounded-full"
           on:click={() => {
             pages.set([

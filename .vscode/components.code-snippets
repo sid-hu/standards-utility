@@ -9,5 +9,5 @@
 			"",
 		],
 		"description": "generate a component that exposes the className"
-	}
+	},
 }

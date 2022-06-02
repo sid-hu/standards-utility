@@ -4,7 +4,7 @@
   export let className = "";
   export let rounded = "rounded-md";
 
-  export let styleHover = false;
+  export let styleActionable = false;
   export let bare = false;
 
   let hovered = false;
@@ -12,10 +12,11 @@
 
 <div
   class={classList(
+    "transition-all border-[1px] border-transparent",
     !bare ? "bg-slate-800 bg-opacity-20 shadow-lg" : "",
-    !bare ? "border-[1px] border-slate-800 border-opacity-10" : "",
+    !bare ? "border-slate-800 border-opacity-10" : "",
     !bare ? "backdrop-blur-sm" : "",
-    styleHover ? "transition-all hover:cursor-pointer hover:bg-opacity-30" : "",
+    styleActionable ? "hover:cursor-pointer hover:bg-opacity-30" : "",
     rounded,
     className
   )}

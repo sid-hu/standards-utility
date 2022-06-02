@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { key } from "../wrappers/Message.svelte"
+  import { createEventDispatcher, getContext } from "svelte";
 
   import type { Piece } from "../proto/local/data";
   import type { Box } from "../proto/local/generic";
   import { constructMeasures, NormalizationControls } from "../common/boxes";
 
-  import Message from "../components/Message.svelte";
   import Range from "../form/Range.svelte";
   import PieceEditor from "../screens/PieceEditor.svelte";
   import PieceViewer from "../components/PieceViewer.svelte";
@@ -15,7 +15,9 @@
   import Route from "../components/Route.svelte";
   import Position from "../wrappers/Position.svelte";
   import FormPanel from "../form/FormPanel.svelte";
-  import { classList } from "../common/general";
+  import Measure from "../components/Measure.svelte";
+
+  const { showMessage } = getContext(key)
 
   const dispatcher = createEventDispatcher<{ submit: Piece | null }>();
   let piece: Piece = {
@@ -77,12 +79,7 @@
         updatePieceMeasures();
       }}
     >
-      <div
-        class={classList(
-          "bg-red-800 bg-opacity-50",
-          "border-[1px] border-red-600 h-full"
-        )}
-      />
+      <Measure />
     </PieceViewer>
   </Route>
 {:else if inferring >= 0}
@@ -99,10 +96,10 @@
         inferring = -1;
         filtering = 0;
         updatePieceMeasures();
+        showMessage(undefined)
       }
     }}
   />
-  <Message>detecting measures...</Message>
 {:else}
   <PieceEditor
     {piece}
@@ -113,6 +110,7 @@
         return;
       }
       inferring = 0;
+      showMessage("detecting measures...")
     }}
   />
 {/if}
