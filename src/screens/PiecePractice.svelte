@@ -28,9 +28,9 @@
   export let piece: Piece;
 
   let mode =
-  piece.pages[0].sections.length === 0 ? Mode.EDITING : Mode.PRACTICING;
+    piece.pages[0].sections.length === 0 ? Mode.EDITING : Mode.PRACTICING;
 
-  let page = 0
+  let page = 0;
 
   let tasks: Task[];
   let from: number | undefined;
@@ -89,7 +89,7 @@
           compare: "greater",
           value: "auto",
           threshold: () => window.innerHeight * 0.8,
-        }
+        },
       }}
     >
       <FormPanel>
@@ -135,20 +135,27 @@
             </ListInput>
           </div>
         {/if}
-        <Submission disabled={!ok} cancelable={false} on:submit={() => {
-          if (!from || !to || tasks.length === 0) return
-          piece.pages[page].sections.push({
-            from: from,
-            to: to,
-            tasks: tasks,
-          })
+        <Submission
+          disabled={!ok}
+          cancelable={false}
+          on:submit={() => {
+            if (!from || !to || tasks.length === 0) return;
+            piece.pages[page].sections = [
+              ...piece.pages[page].sections,
+              {
+                from: from,
+                to: to,
+                tasks: tasks,
+              },
+            ];
 
-          from = undefined
-          to = undefined
-          tasks = []
+            from = undefined;
+            to = undefined;
+            tasks = [];
 
-          mode = Mode.PRACTICING
-        }} />
+            mode = Mode.PRACTICING;
+          }}
+        />
       </FormPanel>
     </div>
   </Position>

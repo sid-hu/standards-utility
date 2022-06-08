@@ -6,13 +6,30 @@ import { BufferedUpdater } from "../common/store";
 import type { Piece } from "../proto/local/data"
 
 function proxyPB<T extends object>(pb: T, handler: () => void) {
-  return new Proxy(pb, {
-    set: (_, p, v) => {
-      (pb as any)[p] = v
+  const validator: ProxyHandler<any> = {
+    get: (target, k) => {
+      const value = target[k]
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        !ArrayBuffer.isView(value)
+      ) {
+        return new Proxy(value, validator)
+      }
+      return value
+    },
+    deleteProperty: (target, p) => {
+      delete target[p]
+      handler()
+      return true
+    },
+    set: (target, p, v) => {
+      target[p] = v
       handler()
       return true
     }
-  })
+  }
+  return new Proxy(pb, validator)
 }
 
 function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
