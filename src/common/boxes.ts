@@ -102,6 +102,9 @@ export function constructMeasures(
     rows.push(row)
   }
 
+  //third pass: sort rows based on offset
+  rows.sort((a, b) => a.offset - b.offset)
+
   return {
     rows: rows,
     bounds: bounds,

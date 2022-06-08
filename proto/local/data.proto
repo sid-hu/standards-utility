@@ -33,8 +33,9 @@ message Page {
 }
 
 message Section {
-    repeated int32 measures = 1;
-    repeated Task tasks = 2;
+    int32 from = 1;
+    int32 to = 2;
+    repeated Task tasks = 3;
 }
 
 message Task {

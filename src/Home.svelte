@@ -11,7 +11,7 @@
   import Position from "./wrappers/Position.svelte";
   import PiecePractice from "./screens/PiecePractice.svelte";
 
-  enum Routes {
+  const enum Routes {
     BROWSING,
     CREATING,
     EDITING,

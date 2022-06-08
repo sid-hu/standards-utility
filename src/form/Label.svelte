@@ -1,12 +1,18 @@
 <script lang="ts">
-  type LabelPreset = "h2" | "h4" | "p"
+  import { classList } from "../common/general";
+
+  type LabelPreset = "h2" | "h3" | "h4" | "p";
+
   export let preset: LabelPreset;
+  export let className = "";
 </script>
 
 {#if preset === "h2"}
-  <h2 class="text-xl font-bold mb-3"><slot /></h2>
+  <h2 class={classList("text-xl font-bold mb-3", className)}><slot /></h2>
+{:else if preset === "h3"}
+  <h3 class={classList("text-md font-semibold", className)}><slot /></h3>
 {:else if preset === "h4"}
-  <h4 class="text-sm font-semibold my-1"><slot /></h4>
+  <h4 class={classList("text-sm font-semibold my-1", className)}><slot /></h4>
 {:else if preset === "p"}
-  <p class="text-sm"><slot /></p>
+  <p class={classList("text-sm", className)}><slot /></p>
 {/if}

@@ -33,10 +33,10 @@
   let inferring = -1;
   let filtering = -1;
 
-  const updatePieceMeasures = () => {
-    piece.pages[filtering].measures = constructMeasures(
-      measures[filtering],
-      controls[filtering]
+  const updatePieceMeasures = (page: number) => {
+    piece.pages[page].measures = constructMeasures(
+      measures[page],
+      controls[page]
     );
     piece = piece;
   };
@@ -54,7 +54,7 @@
           max={1}
           step={0.1}
           bind:value={controls[filtering].threshold}
-          on:input={updatePieceMeasures}
+          on:input={() => updatePieceMeasures(filtering)}
         />
         <Label preset="h4">Line margin</Label>
         <Range
@@ -64,7 +64,7 @@
           step={0.01}
           digits={2}
           bind:value={controls[filtering].lineMargin}
-          on:input={updatePieceMeasures}
+          on:input={() => updatePieceMeasures(filtering)}
         />
         <Submission
           on:cancel={() => dispatcher("submit", null)}
@@ -76,10 +76,11 @@
       {piece}
       on:page={(p) => {
         filtering = p.detail;
-        updatePieceMeasures();
+        updatePieceMeasures(filtering);
       }}
+      let:measure
     >
-      <Measure />
+      <Measure {measure} />
     </PieceViewer>
   </Route>
 {:else if inferring >= 0}
@@ -93,10 +94,12 @@
       };
       inferring++;
       if (inferring === piece.pages.length) {
+        for (let i = 0; i < piece.pages.length; i++) {
+          updatePieceMeasures(i);
+        }
+        showMessage(undefined)
         inferring = -1;
         filtering = 0;
-        updatePieceMeasures();
-        showMessage(undefined)
       }
     }}
   />

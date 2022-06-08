@@ -25,3 +25,7 @@ export function max(numbers: number[]): number {
   }
   return minimum
 }
+
+export function between(t: number, b1: number, b2: number): boolean {
+  return (t < b2 && t > b1) || (t > b2 && t < b1)
+}

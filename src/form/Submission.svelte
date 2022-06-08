@@ -7,9 +7,12 @@
   const dispatcher = createEventDispatcher<{ submit: void; cancel: void }>();
 
   export let disabled = false;
+  export let cancelable = true;
 </script>
 
 <div class="flex justify-between">
   <Button {disabled} on:click={() => dispatcher("submit")}>Done</Button>
-  <LinkButton text="cancel" on:click={() => dispatcher("cancel")} />
+  {#if cancelable}
+    <LinkButton text="cancel" on:click={() => dispatcher("cancel")} />
+  {/if}
 </div>

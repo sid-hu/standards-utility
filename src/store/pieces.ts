@@ -2,9 +2,18 @@ import { db } from "../data/store"
 
 import { Writable, writable } from "svelte/store";
 import { BufferedUpdater } from "../common/store";
-import { proxyPB } from "./state";
 
 import type { Piece } from "../proto/local/data"
+
+function proxyPB<T extends object>(pb: T, handler: () => void) {
+  return new Proxy(pb, {
+    set: (_, p, v) => {
+      (pb as any)[p] = v
+      handler()
+      return true
+    }
+  })
+}
 
 function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
   load: (p: Piece[]) => void

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { classList } from "../common/general";
-  import { useClose } from "../common/events";
+  import { useClose } from "../common/hooks";
 
   import Back from "../icons/Back.svelte";
   import Position from "./Position.svelte";

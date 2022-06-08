@@ -1,7 +1,7 @@
 <script lang="ts">
   import { v4 } from "uuid";
   import { getDocument } from "pdfjs-dist";
-  import { key } from "../wrappers/Message.svelte"
+  import { key } from "../wrappers/Message.svelte";
 
   import { fade, fly } from "svelte/transition";
 
@@ -22,6 +22,7 @@
   import Submission from "../form/Submission.svelte";
   import Position from "../wrappers/Position.svelte";
   import FormPanel from "../form/FormPanel.svelte";
+  import Labeled from "../form/Labeled.svelte";
 
   export let piece: Piece;
   export let title: string;
@@ -30,7 +31,7 @@
     submit: Piece | null;
   }>();
 
-  const { showMessage } = getContext(key)
+  const { showMessage } = getContext(key);
   const config = { validateOnChange: true };
 
   const name = field("name", piece.name, [required()], config);
@@ -53,12 +54,12 @@
             if (f.type === "application/pdf") {
               const pages: Page[] = [];
 
-              showMessage("loading pdf...")
+              showMessage("loading pdf...");
               const doc = await getDocument(bytes).promise;
               for (let i = 1; i < doc.numPages + 1; i++) {
                 const page = await doc.getPage(i);
-                const scale = 1080 / page.getViewport({ scale: 1 }).width
-                const viewport = page.getViewport({ scale: scale })
+                const scale = 1080 / page.getViewport({ scale: 1 }).width;
+                const viewport = page.getViewport({ scale: scale });
 
                 const canvas = document.createElement("canvas");
                 canvas.width = viewport.width;
@@ -80,7 +81,7 @@
                 });
               }
 
-              showMessage(undefined)
+              showMessage(undefined);
               return pages;
             } else {
               return [
@@ -159,25 +160,23 @@
 <Position x="left" y="top">
   <FormPanel>
     <h2 class="text-xl font-bold mb-3">{title}</h2>
-    <div class="mb-3">
-      <div class="flex items-start justify-between mb-1">
-        <h4 class="text-md font-semibold mr-5">Title</h4>
+    <div class="mb-4">
+      <Labeled label="Title">
         <TextInput
-          bind:value={$name.value}
-          error={!$name.valid ? "required" : null}
           className="italic"
           placeholder="title"
+          error={!$name.valid ? "required" : null}
+          bind:value={$name.value}
         />
-      </div>
-      <div class="flex items-start justify-between mb-1">
-        <h4 class="text-md font-semibold mr-5">Author</h4>
+      </Labeled>
+      <Labeled label="Author">
         <TextInput
-          bind:value={$author.value}
-          error={!$author.valid ? "required" : null}
           className="italic"
           placeholder="composer"
+          error={!$author.valid ? "required" : null}
+          bind:value={$author.value}
         />
-      </div>
+      </Labeled>
     </div>
     <Submission
       disabled={!$pieceForm.valid}

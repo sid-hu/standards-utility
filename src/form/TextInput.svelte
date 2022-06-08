@@ -1,13 +1,18 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   import { slide } from "svelte/transition";
 
   import { classList } from "../common/general";
   import Information from "../icons/Information.svelte";
 
+  const dispatcher = createEventDispatcher<{ input: string }>();
+
   export let value = "";
   export let className = "";
   export let placeholder: string | null = null;
   export let error: string | null = null;
+  export let limitNumbers = false;
 </script>
 
 <div>
@@ -15,7 +20,19 @@
     type="text"
     {placeholder}
     bind:value
-    on:input
+    on:input={() => {
+      if (limitNumbers) {
+        const parsed = parseInt(value);
+        if (isNaN(parsed) && value.length > 0) {
+          value = value.replaceAll(/[^0-9]/gm, "")
+          return;
+        }
+        if (!isNaN(parsed)) {
+          value = parsed.toString()
+        }
+      }
+      dispatcher("input", value);
+    }}
     class={classList("bg-transparent rounded-sm text-slate-900", className)}
   />
 

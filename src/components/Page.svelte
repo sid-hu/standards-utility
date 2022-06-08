@@ -8,6 +8,12 @@
 
   $: bounds = page.measures?.bounds;
   $: rows = page.measures?.rows;
+
+  $: _measure = 0
+  const renderMeasure = () => {
+    _measure++
+    return _measure
+  }
 </script>
 
 <div class="w-full h-full">
@@ -27,7 +33,7 @@
                       y2: r.offset + r.thickness,
                     }}
                   >
-                    <slot />
+                    <slot measure={renderMeasure()} />
                   </BoxComponent>
                 {/if}
               {/each}

@@ -1,4 +1,4 @@
-export enum Platform {
+export const enum Platform {
   WEB = "web",
   DESKTOP = "desktop",
   MOBILE = "mobile",

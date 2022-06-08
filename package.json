@@ -29,13 +29,13 @@
   "dependencies": {
     "@protobuf-ts/runtime": "^2.6.0",
     "@tensorflow/tfjs": "^3.18.0",
-    "google-protobuf": "^3.20.1",
     "idb": "^7.0.1",
     "pdfjs-dist": "^2.14.305",
     "seedrandom": "^2.4.3",
     "sha1-uint8array": "^0.10.3",
     "sirv-cli": "^2.0.2",
     "svelte-forms": "^2.3.1",
+    "svelte-select": "^4.4.7",
     "uuid": "^8.3.2"
   }
 }
