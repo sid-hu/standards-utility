@@ -1,3 +1,7 @@
+export function withoutElement<T>(list: T[], index: number) {
+  return [...list.slice(0, index), ...list.slice(index + 1)]
+}
+
 export function replaceLast(s: string, match: string): string {
   if (s.endsWith(match)) {
     return s.slice(0, s.length - match.length)

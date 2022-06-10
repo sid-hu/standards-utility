@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
-  import { classList } from "../common/general";
+  import { classList, withoutElement } from "../common/general";
 
   import Add from "../icons/Add.svelte";
   import Remove from "../icons/Remove.svelte";
@@ -30,7 +30,7 @@
     <slot {e} {i} />
     <div
       on:click={() => {
-        elements = [...elements.slice(0, i), ...elements.slice(i + 1)];
+        elements = withoutElement(elements, i);
         dispatcher("update", elements);
       }}
     >

@@ -29,7 +29,7 @@
                     box={{
                       x1: r.lines[i - 1],
                       y1: r.offset,
-                      x2: l,
+                      x2: l + 0.0001,
                       y2: r.offset + r.thickness,
                     }}
                   >

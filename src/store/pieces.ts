@@ -6,6 +6,11 @@ import { BufferedUpdater } from "../common/store";
 import type { Piece } from "../proto/local/data"
 
 function proxyPB<T extends object>(pb: T, handler: () => void) {
+  const proxyRevocable = (o: object) => {
+    // const { proxy, revoke } = Proxy.revocable(o, validator);
+    // (o as any).__revoke = revoke
+    return new Proxy(o, validator)
+  }
   const validator: ProxyHandler<any> = {
     get: (target, k) => {
       const value = target[k]
@@ -14,7 +19,7 @@ function proxyPB<T extends object>(pb: T, handler: () => void) {
         value !== null &&
         !ArrayBuffer.isView(value)
       ) {
-        return new Proxy(value, validator)
+        return proxyRevocable(value)
       }
       return value
     },
@@ -29,7 +34,7 @@ function proxyPB<T extends object>(pb: T, handler: () => void) {
       return true
     }
   }
-  return new Proxy(pb, validator)
+  return proxyRevocable(pb)
 }
 
 function createPieceStore(initial: Piece[]): Writable<Piece[]> & {

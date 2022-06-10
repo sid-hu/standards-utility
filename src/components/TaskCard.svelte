@@ -19,7 +19,11 @@
     tools: [],
     state: {
       hands: {
-        oneofKind: undefined,
+        oneofKind: "handsSeparate",
+        handsSeparate: {
+          left: false,
+          right: false,
+        },
       },
     },
   };
@@ -55,10 +59,12 @@
   <Expandable label="task details" grow>
     <Labeled label="Hands">
       <Radio
-        selected="separate"
+        selected={task.state?.hands.oneofKind === "handsSeparate"
+          ? "separate"
+          : "together"}
         options={{
           separate: () => {
-            if (!task.state) return;
+            if (!task.state) throw new Error("bad state");
             task.state.hands = {
               oneofKind: "handsSeparate",
               handsSeparate: {
@@ -69,7 +75,7 @@
             dispatcher("update", task);
           },
           together: () => {
-            if (!task.state) return;
+            if (!task.state) throw new Error("bad state");
             task.state.hands = {
               oneofKind: "handsTogether",
               handsTogether: {
@@ -84,11 +90,13 @@
     <Labeled label="Eyes closed">
       <Checkbox
         checked={!!task.state?.eyesClosed}
-        on:change={() => {
-          if (!task.state) return;
-          task.state.eyesClosed = {
-            completed: false,
-          };
+        on:change={(c) => {
+          if (!task.state) throw new Error("bad state");
+          task.state.eyesClosed = c.detail
+            ? {
+                completed: false,
+              }
+            : undefined;
           dispatcher("update", task);
         }}
       />
@@ -96,11 +104,13 @@
     <Labeled label="Memorized">
       <Checkbox
         checked={!!task.state?.memorized}
-        on:change={() => {
-          if (!task.state) return;
-          task.state.memorized = {
-            completed: false,
-          };
+        on:change={(c) => {
+          if (!task.state) throw new Error("bad state");
+          task.state.memorized = c.detail
+            ? {
+                completed: false,
+              }
+            : undefined;
           dispatcher("update", task);
         }}
       />

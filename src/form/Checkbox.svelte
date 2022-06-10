@@ -3,7 +3,7 @@
 
   export let checked: boolean;
 
-  const dispatcher = createEventDispatcher<{ change: void }>();
+  const dispatcher = createEventDispatcher<{ change: boolean }>();
 </script>
 
 <input
@@ -11,7 +11,7 @@
   {checked}
   on:change={(e) => {
     e.preventDefault();
-    dispatcher("change");
+    dispatcher("change", !checked);
   }}
 />
 

@@ -6,7 +6,9 @@
 
   export let icon: typeof SvelteComponent;
 
+  export let containerName = "";
   export let className = "";
+
   export let bare = false;
   export let styleActionable = false;
 </script>
@@ -15,8 +17,8 @@
   {bare}
   {styleActionable}
   rounded="rounded-full"
-  className={classList("w-fit h-fit centered mx-1", className)}
+  className={classList("w-fit h-fit centered mx-1", containerName)}
   on:click
 >
-  <svelte:component this={icon} className="m-2" />
+  <svelte:component this={icon} className={classList("m-2", className)} />
 </Panel>

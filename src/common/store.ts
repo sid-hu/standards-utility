@@ -34,7 +34,7 @@ export class BufferedUpdater {
     }
     this._timeout = setTimeout(
       () => this._flush(),
-      this._config.writeTimeout ?? 1000
+      this._config.writeTimeout ?? 600
     )
   }
 }
