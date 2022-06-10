@@ -43,6 +43,7 @@ export const toolNames: {
 }
 
 export const presets: { [key: string]: Task[] } = {
+  empty: [],
   standard: [
     {
       tools: [Tool.COUNT_OUT_LOUD],

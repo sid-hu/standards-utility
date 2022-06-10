@@ -9,7 +9,11 @@
   export let taskState: TaskState;
   export let label: StateID;
 
-  const mapping = (label: StateID, value?: boolean): boolean => {
+  const mapping = (
+    taskState: TaskState,
+    label: StateID,
+    value?: boolean
+  ): boolean => {
     switch (label) {
       case "HT":
         if (taskState.hands.oneofKind !== "handsTogether") {
@@ -25,8 +29,8 @@
         }
         if (value !== undefined) {
           taskState.hands.handsSeparate.left = value;
-          return taskState.hands.handsSeparate.left;
         }
+        return taskState.hands.handsSeparate.left;
       case "RH":
         if (taskState.hands.oneofKind !== "handsSeparate") {
           throw new Error("label does not exist on taskState");
@@ -54,10 +58,20 @@
     }
   };
 
-  let checked = mapping(label);
+  let lastTaskState = taskState
+  let checked = mapping(taskState, label)
+
+  $: {
+    if (lastTaskState !== taskState) {
+      checked = mapping(taskState, label);
+    }
+  }
 </script>
 
 <div class="flex items-center">
   <Label className="mb-1" preset="h3">{label}</Label>
-  <Checkbox {checked} on:change={(c) => (checked = mapping(label, c.detail))} />
+  <Checkbox
+    {checked}
+    on:change={(c) => (checked = mapping(taskState, label, c.detail))}
+  />
 </div>

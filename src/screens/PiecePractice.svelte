@@ -59,17 +59,21 @@
   let selectedSection: number | undefined;
 
   //section creation state
-  let tasks: Task[];
+  let tasks: Task[] = presets.standard;
   let from: number | undefined;
   let to: number | undefined;
+
+  const resetSection = () => {
+    tasks = presets.standard
+    from = undefined
+    to = undefined
+  }
 
   let editing: Section | undefined;
 
   $: {
     if (mode !== Mode.EDITING && editing) {
-      tasks = [];
-      from = undefined;
-      to = undefined;
+      resetSection()
       editing = undefined;
     }
   }
@@ -285,9 +289,7 @@
           cancelable={hasSections}
           on:cancel={() => {
             if (hasSections) {
-              from = undefined;
-              to = undefined;
-              tasks = [];
+              resetSection()
             }
             mode = Mode.PRACTICING;
           }}
@@ -304,11 +306,7 @@
                 { from, to, tasks },
               ];
             }
-
-            from = undefined;
-            to = undefined;
-            tasks = [];
-
+            resetSection()
             mode = Mode.PRACTICING;
           }}
         />
