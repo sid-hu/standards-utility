@@ -8,6 +8,7 @@
 
   export let measure: number | undefined;
   export let displayEmpty = false;
+  export let hidden = false
 </script>
 
 <div
@@ -17,6 +18,7 @@
     styleActionable ? "hover:bg-slate-700 hover:bg-opacity-50" : "",
     styleActionable ? "hover:cursor-pointer hover:border-2" : "",
     styleActionable ? "transition-colors" : "",
+    hidden ? "hidden" : "",
     className
   )}
   on:click

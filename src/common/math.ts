@@ -29,3 +29,11 @@ export function max(numbers: number[]): number {
 export function between(t: number, b1: number, b2: number): boolean {
   return (t < b2 && t > b1) || (t > b2 && t < b1)
 }
+
+export function inRange(t: number, b1: number, b2: number): boolean {
+  return (t <= b2 && t >= b1) || (t >= b2 && t <= b1)
+}
+
+export function intersects(a1: number, a2: number, b1: number, b2: number): boolean {
+  return inRange(a1, b1, b2) || inRange(a2, b1, b2)
+}

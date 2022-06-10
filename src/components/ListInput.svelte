@@ -1,11 +1,14 @@
 <script lang="ts">
+  import _ from "lodash";
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
+  import { createEventDispatcher } from "svelte";
   import { classList, withoutElement } from "../common/general";
 
   import Add from "../icons/Add.svelte";
   import Remove from "../icons/Remove.svelte";
-  import { createEventDispatcher } from "svelte";
+  import Menu from "../icons/Menu.svelte";
+  import Label from "../form/Label.svelte";
 
   type T = $$Generic;
 
@@ -13,6 +16,9 @@
 
   export let elements: T[] = [];
   export let newElement: () => T;
+  export let presets: { [key: string]: T[] } | undefined = undefined;
+
+  let showPresets = false;
 
   const clickable = classList(
     "w-6 h-6 transition-all",
@@ -21,25 +27,57 @@
   );
 </script>
 
-{#each elements as e, i (e)}
-  <div
-    class="flex items-center"
-    in:fly={{ y: 10 }}
-    animate:flip={{ duration: 300 }}
-  >
-    <slot {e} {i} />
-    <div
-      on:click={() => {
-        elements = withoutElement(elements, i);
-        dispatcher("update", elements);
-      }}
-    >
-      <Remove className={classList(clickable, "ml-4")} />
-    </div>
+{#if showPresets && presets}
+  <div class="py-2 px-4" transition:fly|local={{ y: 10 }}>
+    {#each Object.keys(presets) as k}
+      <div
+        on:click={() => {
+          if (!presets) throw new Error("bad state");
+          elements = _.cloneDeep(presets[k]);
+          dispatcher("update", elements)
+          showPresets = false
+        }}
+      >
+        <Label
+          className={classList(
+            "mb-2 hover:cursor-pointer hover:translate-y-[1px]",
+            "active:translate-y-[2px] transition-all"
+          )}
+          preset="h3"
+        >
+          {k}
+        </Label>
+      </div>
+    {/each}
   </div>
-{/each}
+{:else}
+  {#each elements as e, i (e)}
+    <div
+      class="flex items-center"
+      in:fly={{ y: 10 }}
+      animate:flip={{ duration: 300 }}
+    >
+      <slot {e} {i} />
+      <div
+        on:click={() => {
+          elements = withoutElement(elements, i);
+          dispatcher("update", elements);
+        }}
+      >
+        <Remove className={classList(clickable, "ml-4")} />
+      </div>
+    </div>
+  {/each}
+{/if}
 
-<div class="flex justify-end">
+<div
+  class={classList("my-2 flex", presets ? "justify-between" : "justify-end")}
+>
+  {#if presets}
+    <div on:click={() => (showPresets = !showPresets)}>
+      <Menu className={clickable} />
+    </div>
+  {/if}
   <div
     on:click={() => {
       elements = [...elements, newElement()];

@@ -2,12 +2,12 @@
   import _ from "lodash";
 
   import { fly, slide } from "svelte/transition";
-  import { between } from "../common/math";
+  import { between, inRange, intersects } from "../common/math";
   import { propertyOnSize } from "../common/actions";
   import { createEventDispatcher } from "svelte";
   import { useClose } from "../common/hooks";
 
-  import { toolNames } from "../types/generic";
+  import { presets, toolNames } from "../types/generic";
   import type { Section, Piece, Task } from "../proto/local/data";
   import { withoutElement } from "../common/general";
 
@@ -108,7 +108,14 @@
     <PieceViewer {piece} let:measure bind:page>
       {#if mode === Mode.EDITING}
         {@const inbetween = !!from && !!to && between(measure, from, to)}
+        {@const hide =
+          piece.pages[page].sections.filter(
+            (s) =>
+              inRange(measure, s.from, s.to) &&
+              !(editing && inRange(measure, editing.from, editing.to))
+          ).length > 0}
         <Measure
+          hidden={hide}
           displayEmpty={inbetween}
           measure={measure === from || measure === to
             ? measure
@@ -123,6 +130,21 @@
                 const less = to;
                 to = from;
                 from = less;
+              }
+              if (to) {
+                //check for gaps taken up by sections
+                for (const s of piece.pages[page].sections) {
+                  if (
+                    intersects(s.from, s.to, from, to) &&
+                    !(
+                      editing &&
+                      intersects(s.from, s.to, editing.from, editing.to)
+                    )
+                  ) {
+                    to = undefined;
+                    break;
+                  }
+                }
               }
               return;
             }
@@ -186,8 +208,8 @@
               {#if task.state?.hands.oneofKind === "handsTogether"}
                 <TaskState taskState={task.state} label="HT" />
               {:else if task.state?.hands.oneofKind === "handsSeparate"}
-                <TaskState taskState={task.state} label="RH" />
                 <TaskState taskState={task.state} label="LH" />
+                <TaskState taskState={task.state} label="RH" />
               {/if}
               {#if task.state?.eyesClosed}
                 <TaskState taskState={task.state} label="E" />
@@ -224,7 +246,7 @@
       }}
     >
       <FormPanel>
-        <Label preset="h2">{editing ? "Editing" : "Create"} a section</Label>
+        <Label preset="h2">{editing ? "Edit" : "Create"} a section</Label>
         <div class="mb-3">
           <Labeled label="From">
             <TextInput
@@ -247,6 +269,7 @@
           <div class="mb-4" transition:slide|local>
             <Label preset="h3">Tasks</Label>
             <ListInput
+              {presets}
               elements={tasks}
               {newElement}
               on:update={(t) => (tasks = t.detail)}

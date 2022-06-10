@@ -1,3 +1,4 @@
+import type { Task } from "../proto/local/data"
 import type * as pb from "../proto/local/generic"
 import { Tool } from "../proto/local/types"
 
@@ -39,4 +40,67 @@ export const toolNames: {
   [Tool.SLOW]: "slow",
   [Tool.TAPPING]: "tapping",
   [Tool.TRANSPOSITION]: "transpose",
+}
+
+export const presets: { [key: string]: Task[] } = {
+  standard: [
+    {
+      tools: [Tool.COUNT_OUT_LOUD],
+      state: {
+        hands: {
+          oneofKind: "handsSeparate",
+          handsSeparate: {
+            left: false,
+            right: false,
+
+          }
+        }
+      }
+    },
+    {
+      tools: [Tool.COUNT_OUT_LOUD, Tool.CONDUCT],
+      state: {
+        hands: {
+          oneofKind: "handsSeparate",
+          handsSeparate: {
+            left: false,
+            right: false,
+          }
+        }
+      }
+    },
+    {
+      tools: [Tool.COUNT_OUT_LOUD],
+      state: {
+        hands: {
+          oneofKind: "handsTogether",
+          handsTogether: { completed: false }
+        }
+      }
+    },
+  ],
+  speed: [
+    {
+      tools: [Tool.CONDUCT, Tool.COUNT_OUT_LOUD],
+      state: {
+        hands: {
+          oneofKind: "handsSeparate",
+          handsSeparate: {
+            left: false,
+            right: false,
+          }
+        },
+        eyesClosed: { completed: false }
+      }
+    },
+    {
+      tools: [Tool.METRONOME],
+      state: {
+        hands: {
+          oneofKind: "handsTogether",
+          handsTogether: { completed: false }
+        }
+      }
+    },
+  ],
 }
