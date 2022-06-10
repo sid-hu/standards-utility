@@ -28,7 +28,7 @@
 </script>
 
 {#if showPresets && presets}
-  <div class="py-2 px-4" transition:fly|local={{ y: 10 }}>
+  <div class="py-2 px-4" in:fly={{ y: 10 }}>
     {#each Object.keys(presets) as k}
       <div
         on:click={() => {
