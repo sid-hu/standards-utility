@@ -29,6 +29,7 @@
   import TaskState from "../components/TaskState.svelte";
   import LinkButton from "../form/LinkButton.svelte";
   import Link from "../icons/Link.svelte";
+import { log } from "@tensorflow/tfjs";
 
   const enum Mode {
     PRACTICING,
@@ -109,7 +110,12 @@
   }}
 >
   <div class="h-full pb-20">
-    <PieceViewer {piece} let:measure bind:page>
+    <PieceViewer {piece} let:measure on:page={(p) => {
+      if (selectedSection !== undefined) {
+        selectedSection = undefined
+      }
+      page = p.detail
+    }}>
       {#if mode === Mode.EDITING}
         {@const inbetween = !!from && !!to && between(measure, from, to)}
         {@const hide =

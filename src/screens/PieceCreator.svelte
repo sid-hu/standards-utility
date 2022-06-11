@@ -52,7 +52,8 @@
           className="w-52 pb-2"
           min={0}
           max={1}
-          step={0.1}
+          digits={2}
+          step={0.01}
           bind:value={controls[filtering].threshold}
           on:input={() => updatePieceMeasures(filtering)}
         />
