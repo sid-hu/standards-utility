@@ -26,7 +26,7 @@
 - organizations
   - [ ] the organization can have an index of pieces, which can be fetched from it's server
   - [ ] represents an external "organization" like a school or a teacher
-  - the organization can "assign" sections in a specific layer, modifications to those sections will be tracked and sent to the organization's server
+  - [ ] the organization can "assign" sections in a specific layer, modifications to those sections will be tracked and sent to the organization's server
   - [ ] the organization can "assign" pieces, these will be downloaded and added at the confirmation of the user
 - annotation system
   - [ ] use extra bounding boxes to define "symbols", these can be chords, rests, staff text etc...
