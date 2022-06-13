@@ -24,7 +24,7 @@ export default defineConfig({
     }),
     replaceCodePlugin({
       replacements: [
-        { from: "kPlatform", to: platform }
+        { from: "kPlatform", to: platform ?? "web" }
       ]
     }),
     svelte({

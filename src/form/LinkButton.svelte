@@ -1,7 +1,5 @@
 <script lang="ts">
   import { classList } from "../common/general";
-
-  export let text: string
   export let className = ""
 </script>
 
@@ -14,5 +12,5 @@
     className,
   )}
 >
-  {text}
+  <slot></slot>
 </button>

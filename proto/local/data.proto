@@ -46,12 +46,14 @@ message Task {
 //task state variants
 
 message SingleState {
-    bool completed = 1;
+    repeated bool completed = 1;
+    int32 number = 2;
 }
 
 message HandsSeparate {
-    bool right = 1;
-    bool left = 2;
+    repeated bool right = 1;
+    repeated bool left = 2;
+    int32 number = 3;
 }
 
 message TaskState {

@@ -4,6 +4,7 @@
   import Message from "./wrappers/Message.svelte";
 
   import D_TaskCard from "./debug/D_TaskCard.svelte";
+  import D_TaskState from "./debug/D_TaskState.svelte";
 </script>
 
 <main>
@@ -11,6 +12,7 @@
     <Loading>
       <Home />
       <!-- <D_TaskCard /> -->
+      <!-- <D_TaskState /> -->
     </Loading>
   </Message>
 </main>

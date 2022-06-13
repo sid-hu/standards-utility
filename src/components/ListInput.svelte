@@ -1,5 +1,5 @@
 <script lang="ts">
-  import _ from "lodash";
+  import { cloneDeep } from "lodash";
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { createEventDispatcher } from "svelte";
@@ -33,7 +33,7 @@
       <div
         on:click={() => {
           if (!presets) throw new Error("bad state");
-          elements = _.cloneDeep(presets[k]);
+          elements = cloneDeep(presets[k]);
           dispatcher("update", elements)
           showPresets = false
         }}

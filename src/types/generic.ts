@@ -1,9 +1,10 @@
 import type { Task } from "../proto/local/data"
-import type * as pb from "../proto/local/generic"
+import type * as generic from "../proto/local/generic"
+import type * as data from "../proto/local/data"
 import { Tool } from "../proto/local/types"
 
 export class Wrap {
-  static Box(o: pb.Box) {
+  static Box(o: generic.Box) {
     return {
       ...o,
       width: function () {
@@ -17,6 +18,49 @@ export class Wrap {
           this.x1 + this.width() / 2,
           this.y1 + this.height() / 2,
         ]
+      }
+    }
+  }
+  static Section(o: data.Section) {
+    return {
+      ...o,
+      completion: function() {
+        let completed = 0
+        let max = 0
+        for (const t of this.tasks) {
+          if (t.state) {
+            const stats = Wrap.TaskState(t.state).completion()
+            completed += stats.completed
+            max += stats.max
+          }
+        }
+        return { completed, max }
+      }
+    }
+  }
+  static TaskState(o: data.TaskState) {
+    return {
+      ...o,
+      completion: function () {
+        let completed = 0
+        let max = 0
+
+        if (this.hands.oneofKind === "handsSeparate") {
+          max += this.hands.handsSeparate.number * 2
+          completed += this.hands.handsSeparate.left.length +
+            this.hands.handsSeparate.right.length
+        } else if (this.hands.oneofKind === "handsTogether") {
+          max += this.hands.handsTogether.number
+          completed += this.hands.handsTogether.completed.length
+        }
+
+        max += this.eyesClosed?.number ?? 0
+        completed += this.eyesClosed?.completed.length ?? 0
+
+        max += this.memorized?.number ?? 0
+        completed += this.memorized?.completed.length ?? 0
+
+        return { completed, max }
       }
     }
   }
@@ -42,6 +86,12 @@ export const toolNames: {
   [Tool.TRANSPOSITION]: "transpose",
 }
 
+export const defaults: {
+  timesInARow: number
+} = {
+  timesInARow: 3
+}
+
 export const presets: { [key: string]: Task[] } = {
   empty: [],
   standard: [
@@ -51,9 +101,9 @@ export const presets: { [key: string]: Task[] } = {
         hands: {
           oneofKind: "handsSeparate",
           handsSeparate: {
-            left: false,
-            right: false,
-
+            left: [],
+            right: [],
+            number: defaults.timesInARow,
           }
         }
       }
@@ -64,8 +114,9 @@ export const presets: { [key: string]: Task[] } = {
         hands: {
           oneofKind: "handsSeparate",
           handsSeparate: {
-            left: false,
-            right: false,
+            left: [],
+            right: [],
+            number: defaults.timesInARow,
           }
         }
       }
@@ -75,7 +126,7 @@ export const presets: { [key: string]: Task[] } = {
       state: {
         hands: {
           oneofKind: "handsTogether",
-          handsTogether: { completed: false }
+          handsTogether: { completed: [], number: defaults.timesInARow }
         }
       }
     },
@@ -87,11 +138,12 @@ export const presets: { [key: string]: Task[] } = {
         hands: {
           oneofKind: "handsSeparate",
           handsSeparate: {
-            left: false,
-            right: false,
+            left: [],
+            right: [],
+            number: defaults.timesInARow,
           }
         },
-        eyesClosed: { completed: false }
+        eyesClosed: { completed: [], number: defaults.timesInARow }
       }
     },
     {
@@ -99,7 +151,7 @@ export const presets: { [key: string]: Task[] } = {
       state: {
         hands: {
           oneofKind: "handsTogether",
-          handsTogether: { completed: false }
+          handsTogether: { completed: [], number: defaults.timesInARow }
         }
       }
     },

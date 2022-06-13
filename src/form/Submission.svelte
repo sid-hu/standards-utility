@@ -13,6 +13,6 @@
 <div class="flex justify-between">
   <Button {disabled} on:click={() => dispatcher("submit")}>Done</Button>
   {#if cancelable}
-    <LinkButton text="cancel" on:click={() => dispatcher("cancel")} />
+    <LinkButton on:click={() => dispatcher("cancel")}>cancel</LinkButton>
   {/if}
 </div>

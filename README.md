@@ -17,9 +17,14 @@
 
 ### features to be implemented
 
+- accessibility + mobile / touch support
+  - [ ] responsive layouts
+  - [ ] drag & drop
+  - [ ] sane tab / focus
+  - [ ] address the chromium double backdrop filter bug
 - practice improvements
-  - [ ] add "x in a row" feature
-  - [ ] add calculated completion value
+  - [x] add "x in a row" feature
+  - [x] add calculated completion value
 - section layers
   - [ ] select active layer, this will be the one with the most pronounced GUI
   - [ ] other layers will exhibit a transparent "ghost" against the current layer, they will be tinted the color of the layer they belong to.

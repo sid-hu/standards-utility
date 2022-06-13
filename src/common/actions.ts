@@ -40,3 +40,41 @@ export function propertyOnSize(
     }
   }
 }
+
+type ClickOutsideOptions = {
+  callback: () => void
+}
+
+export function clickOutside(node: HTMLElement, options: ClickOutsideOptions) {
+  const key = "clickoutside"
+  node.setAttribute(key, "true")
+
+  const handler = (e: MouseEvent) => {
+    if (!e.target) return
+    let current = e.target as HTMLElement
+    while (true) {
+      if (current.parentElement === null) {
+        break
+      }
+      current = current.parentElement
+      if (current.getAttribute(key) === "true") {
+        return
+      }
+    }
+    options.callback()
+  }
+
+  setTimeout(() => {
+    window.addEventListener("click", handler)
+  }, 200)
+
+  return {
+    update(o: ClickOutsideOptions) {
+      options = o
+    },
+    destroy() {
+      node.removeAttribute(key)
+      window.removeEventListener("click", handler)
+    }
+  }
+}

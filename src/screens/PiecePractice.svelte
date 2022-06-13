@@ -1,5 +1,5 @@
 <script lang="ts">
-  import _ from "lodash";
+  import { cloneDeep } from "lodash";
 
   import { fly, slide } from "svelte/transition";
   import { between, inRange, intersects } from "../common/math";
@@ -29,7 +29,6 @@
   import TaskState from "../components/TaskState.svelte";
   import LinkButton from "../form/LinkButton.svelte";
   import Link from "../icons/Link.svelte";
-import { log } from "@tensorflow/tfjs";
 
   const enum Mode {
     PRACTICING,
@@ -65,16 +64,16 @@ import { log } from "@tensorflow/tfjs";
   let to: number | undefined;
 
   const resetSection = () => {
-    tasks = presets.standard
-    from = undefined
-    to = undefined
-  }
+    tasks = presets.standard;
+    from = undefined;
+    to = undefined;
+  };
 
   let editing: Section | undefined;
 
   $: {
     if (mode !== Mode.EDITING && editing) {
-      resetSection()
+      resetSection();
       editing = undefined;
     }
   }
@@ -110,12 +109,16 @@ import { log } from "@tensorflow/tfjs";
   }}
 >
   <div class="h-full pb-20">
-    <PieceViewer {piece} let:measure on:page={(p) => {
-      if (selectedSection !== undefined) {
-        selectedSection = undefined
-      }
-      page = p.detail
-    }}>
+    <PieceViewer
+      {piece}
+      let:measure
+      on:page={(p) => {
+        if (selectedSection !== undefined) {
+          selectedSection = undefined;
+        }
+        page = p.detail;
+      }}
+    >
       {#if mode === Mode.EDITING}
         {@const inbetween = !!from && !!to && between(measure, from, to)}
         {@const hide =
@@ -175,7 +178,7 @@ import { log } from "@tensorflow/tfjs";
           on:edit={(s) => {
             editing = s.detail;
 
-            tasks = _.cloneDeep(editing.tasks);
+            tasks = cloneDeep(editing.tasks);
             from = editing.from;
             to = editing.to;
 
@@ -203,7 +206,9 @@ import { log } from "@tensorflow/tfjs";
         {#each section.tasks as task}
           <div class="mb-3">
             {#if task.tools.length === 1}
-              <Label preset="h3">{toolNames[task.tools[0]]}</Label>
+              <Label className="mb-1" preset="h3"
+                >{toolNames[task.tools[0]]}</Label
+              >
             {:else if task.tools.length > 1}
               <div class="flex justify-between items-center mb-1">
                 <div>
@@ -214,27 +219,28 @@ import { log } from "@tensorflow/tfjs";
                 <Link className="w-5 h-5 mt-1 ml-2" />
               </div>
             {/if}
-            <div class="flex flex-wrap max-w-[150px]">
+            <div class="flex flex-wrap max-w-[180px]">
               {#if task.state?.hands.oneofKind === "handsTogether"}
-                <TaskState taskState={task.state} label="HT" />
+                <TaskState className="mr-3" taskState={task.state} label="HT" />
               {:else if task.state?.hands.oneofKind === "handsSeparate"}
-                <TaskState taskState={task.state} label="LH" />
-                <TaskState taskState={task.state} label="RH" />
+                <TaskState className="mr-3" taskState={task.state} label="LH" />
+                <TaskState className="mr-3" taskState={task.state} label="RH" />
               {/if}
               {#if task.state?.eyesClosed}
-                <TaskState taskState={task.state} label="E" />
+                <TaskState className="mr-3" taskState={task.state} label="E" />
               {/if}
               {#if task.state?.memorized}
-                <TaskState taskState={task.state} label="M" />
+                <TaskState className="mr-3" taskState={task.state} label="M" />
               {/if}
             </div>
           </div>
         {/each}
         <LinkButton
           className="mx-0"
-          text="exit"
           on:click={() => (selectedSection = undefined)}
-        />
+        >
+          exit
+        </LinkButton>
       </FormPanel>
     </div>
   </Position>
@@ -295,7 +301,7 @@ import { log } from "@tensorflow/tfjs";
           cancelable={hasSections}
           on:cancel={() => {
             if (hasSections) {
-              resetSection()
+              resetSection();
             }
             mode = Mode.PRACTICING;
           }}
@@ -312,7 +318,7 @@ import { log } from "@tensorflow/tfjs";
                 { from, to, tasks },
               ];
             }
-            resetSection()
+            resetSection();
             mode = Mode.PRACTICING;
           }}
         />

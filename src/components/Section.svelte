@@ -2,6 +2,7 @@
   import { createEventDispatcher } from "svelte";
 
   import type { Section } from "../proto/local/data";
+  import { Wrap } from "../types/generic";
 
   import { fly } from "svelte/transition";
   import { classList } from "../common/general";
@@ -20,15 +21,15 @@
     delete: number;
   }>();
 
-  let hovered: number | undefined
+  let hovered: number | undefined;
 
-  $: sectionMap = function() {
+  $: sectionMap = (function () {
     const result: {
       [key: number]: {
-        type: "left" | "right" | "inbetween",
-        section: number,
-      }
-    } = {}
+        type: "left" | "right" | "inbetween";
+        section: number;
+      };
+    } = {};
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
       result[s.from] = {
@@ -46,8 +47,8 @@
         };
       }
     }
-    return result
-  }()
+    return result;
+  })();
 </script>
 
 {#if sectionMap[measure]}
@@ -59,24 +60,20 @@
     transition:fly|local={{ y: 10 }}
     class={classList(
       "flex h-full",
-      sectionMap[measure].type === "left"
-        ? "justify-start"
-        : "",
-      sectionMap[measure].type === "right"
-        ? "justify-end"
-        : ""
+      sectionMap[measure].type === "left" ? "justify-start" : "",
+      sectionMap[measure].type === "right" ? "justify-end" : ""
     )}
   >
     <div
       on:click={() => {
         if (isSelected) return;
-        hovered = undefined
+        hovered = undefined;
         dispatcher("select", sectionMap[measure].section);
       }}
-      on:focus={() => hovered = measure}
-      on:mouseover={() => hovered = measure}
-      on:blur={() => hovered = undefined}
-      on:mouseleave={() => hovered = undefined}
+      on:focus={() => (hovered = measure)}
+      on:mouseover={() => (hovered = measure)}
+      on:blur={() => (hovered = undefined)}
+      on:mouseleave={() => (hovered = undefined)}
       class={classList(
         "flex items-center justify-center h-full",
         "border-slate-900 transition-all duration-500",
@@ -104,9 +101,15 @@
       )}
     >
       {#if isHovered}
-        <h4 class="font-bold text-slate-900" transition:fly|local={{ y: -10 }}>
-          {section.from} - {section.to}
-        </h4>
+        {@const stats = Wrap.Section(section).completion()}
+        <div transition:fly|local={{ y: -10 }}>
+          <h2 class="font-bold">
+            {section.from} - {section.to}
+          </h2>
+          <h3 class="block text-center italic text-xs font-semibold">
+            {Math.round((stats.completed / stats.max) * 100)}%
+          </h3>
+        </div>
         <div
           class={classList(
             "absolute top-[100%] h-fit w-full",

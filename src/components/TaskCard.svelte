@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { defaults } from "../types/generic"
   import { createEventDispatcher } from "svelte";
   import { classList } from "../common/general";
 
@@ -21,8 +22,9 @@
       hands: {
         oneofKind: "handsSeparate",
         handsSeparate: {
-          left: false,
-          right: false,
+          left: [],
+          right: [],
+          number: defaults.timesInARow,
         },
       },
     },
@@ -68,8 +70,9 @@
             task.state.hands = {
               oneofKind: "handsSeparate",
               handsSeparate: {
-                left: false,
-                right: false,
+                left: [],
+                right: [],
+                number: defaults.timesInARow,
               },
             };
             dispatcher("update", task);
@@ -79,7 +82,8 @@
             task.state.hands = {
               oneofKind: "handsTogether",
               handsTogether: {
-                completed: false,
+                completed: [],
+                number: defaults.timesInARow,
               },
             };
             dispatcher("update", task);
@@ -94,7 +98,8 @@
           if (!task.state) throw new Error("bad state");
           task.state.eyesClosed = c.detail
             ? {
-                completed: false,
+                completed: [],
+                number: defaults.timesInARow,
               }
             : undefined;
           dispatcher("update", task);
@@ -108,7 +113,8 @@
           if (!task.state) throw new Error("bad state");
           task.state.memorized = c.detail
             ? {
-                completed: false,
+                completed: [],
+                number: defaults.timesInARow,
               }
             : undefined;
           dispatcher("update", task);
