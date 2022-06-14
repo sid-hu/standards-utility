@@ -266,7 +266,7 @@
                   <Link className="w-5 h-5 mt-1 ml-2" />
                 </div>
               {/if}
-              <div class="flex flex-wrap max-w-[180px]">
+              <div class="flex flex-wrap max-w-[200px]">
                 {#if task.state?.hands.oneofKind === "handsTogether"}
                   <TaskState
                     className="mr-3"

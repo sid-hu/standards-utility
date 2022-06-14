@@ -52,3 +52,22 @@ export function debounce(callback: () => void, time = 200): () => void {
     }
   }
 }
+
+export function colorRamp<T>(
+  value: number,
+  stops: {
+    position: number
+    value: T
+  }[]
+): T {
+  stops = stops.sort((a, b) => a.position - b.position)
+  for (let i = 0; i < stops.length; i++) {
+    if (
+      value >= (stops[i - 1]?.position ?? 0) &&
+      value <= stops[i].position
+    ) {
+      return stops[i].value
+    }
+  }
+  return stops[stops.length - 1].value
+}

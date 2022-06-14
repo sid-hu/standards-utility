@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { classList, debounce } from "../common/general";
+  import { classList, colorRamp, debounce } from "../common/general";
   import { clickOutside } from "../common/actions";
   import { fly } from "svelte/transition";
   import { isTouch } from "../common/platform";
@@ -96,7 +96,7 @@
         value !== undefined ? (l) => [...l, value] : () => []
       );
       if (isTouch()) {
-        dragging = false
+        dragging = false;
       }
     };
   };
@@ -143,7 +143,37 @@
       className="mx-0 mb-[2px]"
       on:click={() => (showStats = !showStats)}
     >
-      <Fraction numerator={stats.completed.length} denominator={stats.number} />
+      {#if stats.completed.length < stats.number}
+        <Fraction
+          numerator={stats.completed.length}
+          denominator={stats.number}
+        />
+      {:else}
+        {@const correct =
+          stats.completed.filter((v) => v).length / stats.number}
+        <Label
+          className={classList(
+            "bg-opacity-30",
+            colorRamp(correct, [
+              {
+                position: 0.5,
+                value: "bg-red-500",
+              },
+              {
+                position: 0.75,
+                value: "bg-yellow-500",
+              },
+              {
+                position: 1,
+                value: "bg-green-500",
+              },
+            ]),
+          )}
+          preset="h3"
+        >
+          {Math.round(correct * 100)}%
+        </Label>
+      {/if}
     </LinkButton>
     {#if showStats}
       <div
@@ -172,23 +202,11 @@
 
   {#if dragging}
     {#if stats.completed.length < stats.number}
-      <TaskStateRegion
-        mode="up"
-        on:drop={drophandler(true)}
-      />
-      <TaskStateRegion
-        mode="down"
-        on:drop={drophandler(false)}
-      />
+      <TaskStateRegion mode="up" on:drop={drophandler(true)} />
+      <TaskStateRegion mode="down" on:drop={drophandler(false)} />
     {:else}
-      <TaskStateRegion
-        mode="reset-up"
-        on:drop={drophandler()}
-      />
-      <TaskStateRegion
-        mode="reset-down"
-        on:drop={drophandler()}
-      />
+      <TaskStateRegion mode="reset-up" on:drop={drophandler()} />
+      <TaskStateRegion mode="reset-down" on:drop={drophandler()} />
     {/if}
   {/if}
 </div>
