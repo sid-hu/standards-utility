@@ -149,8 +149,11 @@
   }
 
   :global(.listContainer) {
-    background: transparent !important;
-    backdrop-filter: blur(5px);
+    /* background: transparent !important; */
+    /* backdrop-filter: blur(5px); */
+
+    /* double backdrop-filter breaks on chromium */
+    background: white !important;
   }
 
   :global(.listItem > div) {

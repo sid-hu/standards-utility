@@ -89,7 +89,7 @@ export const toolNames: {
 export const defaults: {
   timesInARow: number
 } = {
-  timesInARow: 3
+  timesInARow: 4
 }
 
 export const presets: { [key: string]: Task[] } = {

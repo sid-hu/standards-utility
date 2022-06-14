@@ -1,23 +1,25 @@
 <script lang="ts">
+  import { createEventDispatcher, onDestroy } from "svelte";
   import { flip } from "svelte/animate";
   import { fly } from "svelte/transition";
-
-  import { imageStore } from "../store/image";
+  import { isTouch } from "../common/platform";
   import { classList } from "../common/general";
+
+  import { pieces } from "../store/pieces";
+  import { imageStore } from "../store/image";
   import type { Piece } from "../proto/local/data";
 
   import Panel from "../components/Panel.svelte";
   import Edit from "../icons/Edit.svelte";
   import Remove from "../icons/Remove.svelte";
-  import { createEventDispatcher, onDestroy } from "svelte";
-
-  import { pieces } from "../store/pieces";
 
   const dispatcher = createEventDispatcher<{
     choose: Piece;
     edit: Piece;
     delete: Piece;
   }>();
+
+  let clicked = 0;
 
   onDestroy(() => {
     for (const p of $pieces) {
@@ -37,7 +39,14 @@
         bare
         className="relative w-fit h-fit"
         let:hovered
-        on:click={() => dispatcher("choose", p)}
+        on:click={() => {
+          clicked++;
+          console.log("clicked", clicked, isTouch())
+          if (isTouch() && clicked < 2) {
+            return
+          }
+          dispatcher("choose", p);
+        }}
       >
         <img
           class={classList(

@@ -102,8 +102,8 @@
 
 <!-- main content -->
 <WithBack
-  on:close={() => {
-    if (selectedSection === undefined) {
+  on:close={(e) => {
+    if (selectedSection === undefined || e.detail.clicked) {
       dispatcher("close");
     }
   }}

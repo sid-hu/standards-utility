@@ -19,9 +19,10 @@
 
 - accessibility + mobile / touch support
   - [ ] responsive layouts
-  - [ ] drag & drop
+  - [x] drag & drop
+  - [ ] eliminate hover states
   - [ ] sane tab / focus
-  - [ ] address the chromium double backdrop filter bug
+  - [x] address the chromium double backdrop filter bug
 - practice improvements
   - [x] add "x in a row" feature
   - [x] add calculated completion value

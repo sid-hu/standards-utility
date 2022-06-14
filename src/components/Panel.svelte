@@ -1,11 +1,16 @@
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
+
   import { classList } from "../common/general";
+import { isTouch } from "../common/platform";
 
   export let className = "";
   export let rounded = "rounded-md";
 
   export let styleActionable = false;
   export let bare = false;
+
+  const dispatcher = createEventDispatcher<{ click: void }>()
 
   let hovered = false;
 </script>
@@ -20,7 +25,12 @@
     rounded,
     className
   )}
-  on:click
+  on:click={() => {
+    if (isTouch()) {
+      hovered = !hovered
+    }
+    dispatcher("click")
+  }}
   on:mouseenter={() => (hovered = true)}
   on:mouseleave={() => (hovered = false)}
 >
