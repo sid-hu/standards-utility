@@ -6,6 +6,14 @@ export const enum Platform {
 
 export const target = "kPlatform" as Platform
 
+let touch: boolean | undefined
 export function isTouch() {
-  return window.matchMedia("(pointer: course)").matches
+  if (!touch) {
+    const mediaList = window.matchMedia("(pointer: coarse)")
+    touch = mediaList.matches
+    mediaList.onchange = (value) => {
+      touch = value.matches
+    }
+  }
+  return touch
 }

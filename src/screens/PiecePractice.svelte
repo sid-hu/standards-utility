@@ -56,7 +56,42 @@
   let page = 0;
 
   //practice state
+  let sections = piece.pages[page].sections;
+  $: {
+    if (sections !== piece.pages[page].sections) {
+      piece.pages[page].sections = sections;
+    }
+  }
+
+  let hoveredMeasure: number | undefined;
   let selectedSection: number | undefined;
+
+  $: sectionMap = (function () {
+    const result: {
+      [key: number]: {
+        type: "left" | "right" | "inbetween";
+        section: number;
+      };
+    } = {};
+    for (let i = 0; i < sections.length; i++) {
+      const s = sections[i];
+      result[s.from] = {
+        type: "left",
+        section: i,
+      };
+      result[s.to] = {
+        type: "right",
+        section: i,
+      };
+      for (let m = s.from + 1; m < s.to; m++) {
+        result[m] = {
+          type: "inbetween",
+          section: i,
+        };
+      }
+    }
+    return result;
+  })();
 
   //section creation state
   let tasks: Task[] = presets.standard;
@@ -117,12 +152,13 @@
           selectedSection = undefined;
         }
         page = p.detail;
+        sections = piece.pages[page].sections;
       }}
     >
       {#if mode === Mode.EDITING}
         {@const inbetween = !!from && !!to && between(measure, from, to)}
         {@const hide =
-          piece.pages[page].sections.filter(
+          sections.filter(
             (s) =>
               inRange(measure, s.from, s.to) &&
               !(editing && inRange(measure, editing.from, editing.to))
@@ -146,7 +182,7 @@
               }
               if (to) {
                 //check for gaps taken up by sections
-                for (const s of piece.pages[page].sections) {
+                for (const s of sections) {
                   if (
                     intersects(s.from, s.to, from, to) &&
                     !(
@@ -170,27 +206,37 @@
           }}
         />
       {:else if mode === Mode.PRACTICING}
-        <SectionRenderer
-          {measure}
-          sections={piece.pages[page].sections}
-          selected={selectedSection}
-          on:select={(s) => (selectedSection = s.detail)}
-          on:edit={(s) => {
-            editing = s.detail;
+        {#if sectionMap[measure]}
+          {@const sectionNumber = sectionMap[measure].section}
+          <SectionRenderer
+            {sectionNumber}
+            section={sections[sectionNumber]}
+            type={sectionMap[measure].type}
+            hovered={hoveredMeasure === measure}
+            selected={selectedSection === sectionNumber}
+            on:hover={(e) => {
+              if (selectedSection === sectionNumber) return;
+              hoveredMeasure = e.detail ? measure : undefined;
+            }}
+            on:select={(s) => {
+              hoveredMeasure = undefined;
+              selectedSection = s.detail;
+            }}
+            on:edit={(s) => {
+              hoveredMeasure = undefined;
+              editing = s.detail;
 
-            tasks = cloneDeep(editing.tasks);
-            from = editing.from;
-            to = editing.to;
+              tasks = cloneDeep(editing.tasks);
+              from = editing.from;
+              to = editing.to;
 
-            mode = Mode.EDITING;
-          }}
-          on:delete={(s) => {
-            piece.pages[page].sections = withoutElement(
-              piece.pages[page].sections,
-              s.detail
-            );
-          }}
-        />
+              mode = Mode.EDITING;
+            }}
+            on:delete={(s) => {
+              sections = withoutElement(sections, s.detail);
+            }}
+          />
+        {/if}
       {/if}
     </PieceViewer>
   </div>
@@ -198,52 +244,74 @@
 
 <!-- section practice form -->
 {#if selectedSection !== undefined && mode === Mode.PRACTICING}
-  {@const section = piece.pages[page].sections[selectedSection]}
-  <Position x="right" y="top">
-    <div in:fly|local={{ y: -20 }} out:fly|local={{ y: 10 }}>
-      <FormPanel>
-        <Label preset="h2">Measures {section.from} - {section.to}</Label>
-        {#each section.tasks as task}
-          <div class="mb-3">
-            {#if task.tools.length === 1}
-              <Label className="mb-1" preset="h3"
-                >{toolNames[task.tools[0]]}</Label
-              >
-            {:else if task.tools.length > 1}
-              <div class="flex justify-between items-center mb-1">
-                <div>
-                  {#each task.tools as t}
-                    <Label preset="h3">{toolNames[t]}</Label>
-                  {/each}
+  {@const section = sections[selectedSection]}
+  {#if section}
+    <Position x="right" y="top">
+      <div in:fly|local={{ y: -20 }} out:fly|local={{ y: 10 }}>
+        <FormPanel>
+          <Label preset="h2">Measures {section.from} - {section.to}</Label>
+          {#each section.tasks as task}
+            <div class="mb-3">
+              {#if task.tools.length === 1}
+                <Label className="mb-1" preset="h3"
+                  >{toolNames[task.tools[0]]}</Label
+                >
+              {:else if task.tools.length > 1}
+                <div class="flex justify-between items-center mb-1">
+                  <div>
+                    {#each task.tools as t}
+                      <Label preset="h3">{toolNames[t]}</Label>
+                    {/each}
+                  </div>
+                  <Link className="w-5 h-5 mt-1 ml-2" />
                 </div>
-                <Link className="w-5 h-5 mt-1 ml-2" />
+              {/if}
+              <div class="flex flex-wrap max-w-[180px]">
+                {#if task.state?.hands.oneofKind === "handsTogether"}
+                  <TaskState
+                    className="mr-3"
+                    taskState={task.state}
+                    label="HT"
+                  />
+                {:else if task.state?.hands.oneofKind === "handsSeparate"}
+                  <TaskState
+                    className="mr-3"
+                    taskState={task.state}
+                    label="LH"
+                  />
+                  <TaskState
+                    className="mr-3"
+                    taskState={task.state}
+                    label="RH"
+                  />
+                {/if}
+                {#if task.state?.eyesClosed}
+                  <TaskState
+                    className="mr-3"
+                    taskState={task.state}
+                    label="E"
+                  />
+                {/if}
+                {#if task.state?.memorized}
+                  <TaskState
+                    className="mr-3"
+                    taskState={task.state}
+                    label="M"
+                  />
+                {/if}
               </div>
-            {/if}
-            <div class="flex flex-wrap max-w-[180px]">
-              {#if task.state?.hands.oneofKind === "handsTogether"}
-                <TaskState className="mr-3" taskState={task.state} label="HT" />
-              {:else if task.state?.hands.oneofKind === "handsSeparate"}
-                <TaskState className="mr-3" taskState={task.state} label="LH" />
-                <TaskState className="mr-3" taskState={task.state} label="RH" />
-              {/if}
-              {#if task.state?.eyesClosed}
-                <TaskState className="mr-3" taskState={task.state} label="E" />
-              {/if}
-              {#if task.state?.memorized}
-                <TaskState className="mr-3" taskState={task.state} label="M" />
-              {/if}
             </div>
-          </div>
-        {/each}
-        <LinkButton
-          className="mx-0"
-          on:click={() => (selectedSection = undefined)}
-        >
-          exit
-        </LinkButton>
-      </FormPanel>
-    </div>
-  </Position>
+          {/each}
+          <LinkButton
+            className="mx-0"
+            on:click={() => (selectedSection = undefined)}
+          >
+            exit
+          </LinkButton>
+        </FormPanel>
+      </div>
+    </Position>
+  {/if}
 {/if}
 
 <!-- section creation form -->
@@ -313,10 +381,7 @@
               editing.tasks = tasks;
               editing = undefined;
             } else {
-              piece.pages[page].sections = [
-                ...piece.pages[page].sections,
-                { from, to, tasks },
-              ];
+              sections = [...sections, { from, to, tasks }];
             }
             resetSection();
             mode = Mode.PRACTICING;

@@ -44,6 +44,16 @@
 
 {#if filtering >= 0}
   <Route>
+    <PieceViewer
+      {piece}
+      on:page={(p) => {
+        filtering = p.detail;
+        updatePieceMeasures(filtering);
+      }}
+      let:measure
+    >
+      <Measure {measure} />
+    </PieceViewer>
     <Position x="left" y="top">
       <FormPanel>
         <Label preset="h2">Configure measures</Label>
@@ -73,16 +83,6 @@
         />
       </FormPanel>
     </Position>
-    <PieceViewer
-      {piece}
-      on:page={(p) => {
-        filtering = p.detail;
-        updatePieceMeasures(filtering);
-      }}
-      let:measure
-    >
-      <Measure {measure} />
-    </PieceViewer>
   </Route>
 {:else if inferring >= 0}
   <Inference

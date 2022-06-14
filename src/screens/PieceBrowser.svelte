@@ -40,12 +40,12 @@
         className="relative w-fit h-fit"
         let:hovered
         on:click={() => {
-          clicked++;
-          console.log("clicked", clicked, isTouch())
-          if (isTouch() && clicked < 2) {
-            return
+          if (isTouch() && clicked < 1) {
+            clicked++;
+            return;
           }
           dispatcher("choose", p);
+          clicked = 0;
         }}
       >
         <img

@@ -20,7 +20,7 @@
 - accessibility + mobile / touch support
   - [ ] responsive layouts
   - [x] drag & drop
-  - [ ] eliminate hover states
+  - [x] eliminate hover states
   - [ ] sane tab / focus
   - [x] address the chromium double backdrop filter bug
 - practice improvements

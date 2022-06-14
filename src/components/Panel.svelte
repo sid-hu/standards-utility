@@ -1,8 +1,8 @@
 <script lang="ts">
-import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   import { classList } from "../common/general";
-import { isTouch } from "../common/platform";
+  import { isTouch } from "../common/platform";
 
   export let className = "";
   export let rounded = "rounded-md";
@@ -10,7 +10,7 @@ import { isTouch } from "../common/platform";
   export let styleActionable = false;
   export let bare = false;
 
-  const dispatcher = createEventDispatcher<{ click: void }>()
+  const dispatcher = createEventDispatcher<{ click: void }>();
 
   let hovered = false;
 </script>
@@ -27,12 +27,18 @@ import { isTouch } from "../common/platform";
   )}
   on:click={() => {
     if (isTouch()) {
-      hovered = !hovered
+      hovered = !hovered;
     }
-    dispatcher("click")
+    dispatcher("click");
   }}
-  on:mouseenter={() => (hovered = true)}
-  on:mouseleave={() => (hovered = false)}
+  on:mouseenter={() => {
+    if (isTouch()) return;
+    hovered = true;
+  }}
+  on:mouseleave={() => {
+    if (isTouch()) return;
+    hovered = false;
+  }}
 >
   <slot {hovered} />
 </div>
