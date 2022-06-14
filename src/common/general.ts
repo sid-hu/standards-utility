@@ -42,3 +42,13 @@ export function styleList(style: { [key: string]: string | null }): string {
   }
   return result.join(" ")
 }
+
+export function debounce(callback: () => void, time = 200): () => void {
+  let lastTriggered = 0
+  return () => {
+    if ((Date.now() - lastTriggered) > time) {
+      callback()
+      lastTriggered = Date.now()
+    }
+  }
+}

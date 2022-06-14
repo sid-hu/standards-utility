@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { classList } from "../common/general";
+  import { classList, debounce } from "../common/general";
   import { clickOutside } from "../common/actions";
   import { fly } from "svelte/transition";
+  import { isTouch } from "../common/platform";
 
   import type { TaskState } from "../proto/local/data";
 
@@ -82,6 +83,24 @@
     throw new Error("given label is not part of the possible labels");
   };
 
+  const onclick = debounce(() => {
+    if (isTouch()) {
+      dragging = !dragging;
+    }
+  });
+  const drophandler = (value?: boolean) => {
+    return () => {
+      stats = mapping(
+        taskState,
+        label,
+        value !== undefined ? (l) => [...l, value] : () => []
+      );
+      if (isTouch()) {
+        dragging = false
+      }
+    };
+  };
+
   let stats = mapping(taskState, label);
 
   let dragging = false;
@@ -97,15 +116,26 @@
     )}
   >
     <div
-      class={classList(
-        "centered w-full h-full transition-all",
-        dragging ? "opacity-0" : ""
-      )}
+      class={classList("centered w-full h-full transition-all")}
       draggable="true"
-      on:dragstart={() => (dragging = true)}
-      on:dragend={() => (dragging = false)}
+      on:click={onclick}
+      on:dragstart={() => {
+        if (!isTouch()) {
+          dragging = true;
+        }
+      }}
+      on:dragend={() => {
+        if (!isTouch()) {
+          dragging = false;
+        }
+      }}
     >
-      <div class="w-2 h-2 rounded-full bg-slate-900" />
+      <div
+        class={classList(
+          "w-2 h-2 rounded-full bg-slate-900",
+          dragging ? "opacity-0" : ""
+        )}
+      />
     </div>
   </div>
   <div class="relative">
@@ -144,21 +174,20 @@
     {#if stats.completed.length < stats.number}
       <TaskStateRegion
         mode="up"
-        on:drop={() => (stats = mapping(taskState, label, (l) => [...l, true]))}
+        on:drop={drophandler(true)}
       />
       <TaskStateRegion
         mode="down"
-        on:drop={() =>
-          (stats = mapping(taskState, label, (l) => [...l, false]))}
+        on:drop={drophandler(false)}
       />
     {:else}
       <TaskStateRegion
         mode="reset-up"
-        on:drop={() => (stats = mapping(taskState, label, () => []))}
+        on:drop={drophandler()}
       />
       <TaskStateRegion
         mode="reset-down"
-        on:drop={() => (stats = mapping(taskState, label, () => []))}
+        on:drop={drophandler()}
       />
     {/if}
   {/if}

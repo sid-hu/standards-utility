@@ -1,13 +1,19 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
-  import { classList } from "../common/general";
+  import { classList, debounce, styleList } from "../common/general";
+  import { isTouch } from "../common/platform";
 
   import Reset from "../icons/Reset.svelte";
   import ThumbsDown from "../icons/ThumbsDown.svelte";
   import ThumbsUp from "../icons/ThumbsUp.svelte";
 
   const dispatcher = createEventDispatcher<{ drop: void }>();
+  const onclick = debounce(() => {
+    if (isTouch()) {
+      dispatcher("drop")
+    }
+  })
 
   export let mode: "up" | "down" | "reset-up" | "reset-down";
 
@@ -18,9 +24,12 @@
 
 <div
   class={classList(
-    `absolute ${direction === "up" ? "-" : ""}translate-y-[80%] w-full h-16`,
-    `flex justify-center ${direction === "up" ? "items-end" : "items-start"}`,
+    `absolute w-full h-16`,
+    `flex justify-center ${direction === "up" ? "items-end" : "items-start"}`
   )}
+  style={styleList({
+    transform: `translateY(${direction === "up" ? "-" : ""}70%)`,
+  })}
   on:dragover={(e) => {
     e.preventDefault();
     if (e.dataTransfer) {
@@ -29,12 +38,13 @@
   }}
   on:dragenter={() => (dragged = true)}
   on:dragleave={() => (dragged = false)}
+  on:click={onclick}
   on:drop={() => dispatcher("drop")}
 >
-  {#if dragged}
+  {#if dragged || isTouch()}
     <div
       class="pointer-events-none"
-      transition:fly|local={{ y: direction === "up" ? -10 : 10, duration: 300 }}
+      transition:fly={{ y: direction === "up" ? -10 : 10, duration: 300 }}
     >
       {#if mode === "up"}
         <ThumbsUp />
