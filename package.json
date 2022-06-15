@@ -6,7 +6,7 @@
     "build": "vite build --emptyOutDir",
     "dev": "vite",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig tsconfig.json"
   },
   "devDependencies": {
     "@protobuf-ts/plugin": "^2.6.0",

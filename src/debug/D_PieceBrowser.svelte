@@ -1,15 +1,15 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { pieces } from "../store/pieces";
-  import { Wrap } from "../types/generic";
-  import type { Piece } from "../proto/local/data";
+  import { pieces } from "~/store/pieces";
+  import { Wrap } from "~/types/generic";
+  import type { Piece } from "~/proto/local/data";
 
-  import Loader from "../Loader.svelte";
-  import PieceBrowser from "../screens/PieceBrowser.svelte";
+  import Loader from ".Loader.svelte";
+  import PieceBrowser from "~/screens/PieceBrowser.svelte";
 
-  import PieceEditor from "../screens/PieceEditor.svelte";
-  import PieceViewer from "../screens/PiecePractice.svelte";
+  import PieceEditor from "~/screens/PieceEditor.svelte";
+  import PieceViewer from "~/screens/PiecePractice.svelte";
 
   const p1: Piece = {
     name: "Piece 1",

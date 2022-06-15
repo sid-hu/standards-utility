@@ -1,34 +1,28 @@
 <script lang="ts">
   import { cloneDeep } from "lodash";
-
-  import { fly, slide } from "svelte/transition";
-  import { between, inRange, intersects } from "../common/math";
-  import { propertyOnSize } from "../common/actions";
+  import { fly } from "svelte/transition";
+  import { between, inRange, intersects } from "~/common/math";
+  import { propertyOnSize } from "~/common/actions";
   import { createEventDispatcher } from "svelte";
-  import { useClose } from "../common/hooks";
+  import { useClose } from "~/common/hooks";
+  import { classList, withoutElement } from "~/common/general";
 
-  import { presets, toolNames } from "../types/generic";
-  import type { Section, Piece, Task } from "../proto/local/data";
-  import { withoutElement } from "../common/general";
+  import { presets } from "~/types/generic";
+  import type { Section, Piece, Task } from "~/proto/local/data";
 
-  import PieceViewer from "../components/PieceViewer.svelte";
-  import Edit from "../icons/Edit.svelte";
-  import Position from "../wrappers/Position.svelte";
-  import WithBack from "../wrappers/WithBack.svelte";
-  import Play from "../icons/Play.svelte";
-  import PanelIcon from "../components/PanelIcon.svelte";
-  import Measure from "../components/Measure.svelte";
-  import Label from "../form/Label.svelte";
-  import FormPanel from "../form/FormPanel.svelte";
-  import Submission from "../form/Submission.svelte";
-  import Labeled from "../form/Labeled.svelte";
-  import TextInput from "../form/TextInput.svelte";
-  import TaskCard from "../components/TaskCard.svelte";
-  import ListInput from "../components/ListInput.svelte";
-  import SectionRenderer from "../components/Section.svelte";
-  import TaskState from "../components/TaskState.svelte";
-  import LinkButton from "../form/LinkButton.svelte";
-  import Link from "../icons/Link.svelte";
+  import PieceViewer from "~/components/rendering/PieceViewer.svelte";
+  import Edit from "~/icons/Edit.svelte";
+  import Position from "~/wrappers/Position.svelte";
+  import WithBack from "~/wrappers/WithBack.svelte";
+  import Play from "~/icons/Play.svelte";
+  import PanelIcon from "~/components/common/PanelIcon.svelte";
+  import Measure from "~/components/rendering/Measure.svelte";
+  import SectionRenderer from "~/components/practice/Section.svelte";
+  import Adaptive from "~/components/common/Adaptive.svelte";
+  import PracticeForm from "~/components/practice/PracticeForm.svelte";
+  import SectionForm from "~/components/editing/SectionForm.svelte";
+  import ConditionalWrap from "~/wrappers/ConditionalWrap.svelte";
+  import Expandable from "~/form/Expandable.svelte";
 
   const enum Mode {
     PRACTICING,
@@ -64,7 +58,7 @@
   }
 
   let hoveredMeasure: number | undefined;
-  let selectedSection: number | undefined;
+  let selectedSection: Section | undefined;
 
   $: sectionMap = (function () {
     const result: {
@@ -116,8 +110,8 @@
   $: ok =
     tasks?.length > 0 &&
     tasks.filter((t) => t.tools.length === 0).length === 0 &&
-    from &&
-    to;
+    !!from &&
+    !!to;
 
   const newElement = () => {
     return {
@@ -213,14 +207,14 @@
             section={sections[sectionNumber]}
             type={sectionMap[measure].type}
             hovered={hoveredMeasure === measure}
-            selected={selectedSection === sectionNumber}
+            selected={selectedSection === sections[sectionNumber]}
             on:hover={(e) => {
-              if (selectedSection === sectionNumber) return;
+              if (selectedSection === sections[sectionNumber]) return;
               hoveredMeasure = e.detail ? measure : undefined;
             }}
             on:select={(s) => {
               hoveredMeasure = undefined;
-              selectedSection = s.detail;
+              selectedSection = sections[s.detail];
             }}
             on:edit={(s) => {
               hoveredMeasure = undefined;
@@ -244,168 +238,153 @@
 
 <!-- section practice form -->
 {#if selectedSection !== undefined && mode === Mode.PRACTICING}
-  {@const section = sections[selectedSection]}
-  {#if section}
-    <Position x="right" y="top">
-      <div in:fly|local={{ y: -20 }} out:fly|local={{ y: 10 }}>
-        <FormPanel>
-          <Label preset="h2">Measures {section.from} - {section.to}</Label>
-          {#each section.tasks as task}
-            <div class="mb-3">
-              {#if task.tools.length === 1}
-                <Label className="mb-1" preset="h3"
-                  >{toolNames[task.tools[0]]}</Label
-                >
-              {:else if task.tools.length > 1}
-                <div class="flex justify-between items-center mb-1">
-                  <div>
-                    {#each task.tools as t}
-                      <Label preset="h3">{toolNames[t]}</Label>
-                    {/each}
-                  </div>
-                  <Link className="w-5 h-5 mt-1 ml-2" />
-                </div>
-              {/if}
-              <div class="flex flex-wrap max-w-[200px]">
-                {#if task.state?.hands.oneofKind === "handsTogether"}
-                  <TaskState
-                    className="mr-3"
-                    taskState={task.state}
-                    label="HT"
-                  />
-                {:else if task.state?.hands.oneofKind === "handsSeparate"}
-                  <TaskState
-                    className="mr-3"
-                    taskState={task.state}
-                    label="LH"
-                  />
-                  <TaskState
-                    className="mr-3"
-                    taskState={task.state}
-                    label="RH"
-                  />
-                {/if}
-                {#if task.state?.eyesClosed}
-                  <TaskState
-                    className="mr-3"
-                    taskState={task.state}
-                    label="E"
-                  />
-                {/if}
-                {#if task.state?.memorized}
-                  <TaskState
-                    className="mr-3"
-                    taskState={task.state}
-                    label="M"
-                  />
-                {/if}
-              </div>
-            </div>
-          {/each}
-          <LinkButton
-            className="mx-0"
-            on:click={() => (selectedSection = undefined)}
-          >
-            exit
-          </LinkButton>
-        </FormPanel>
+  <Adaptive
+    stops={[
+      {
+        position: 1050,
+        value: "small",
+      },
+      {
+        position: 1400,
+        value: "large",
+      },
+    ]}
+    let:triggered
+  >
+    <Position
+      fit={triggered !== "small"}
+      className={classList(
+        triggered === "small" ? "px-10 flex justify-center w-full" : ""
+      )}
+      margin={triggered === "small" ? "120px" : undefined}
+      x={triggered !== "small" ? "right" : "middle"}
+      y={triggered !== "small" ? "top" : "bottom"}
+    >
+      <div
+        class={triggered !== "small" ? "max-w-[240px]" : ""}
+        in:fly|local={{ y: -20 }}
+        out:fly|local={{ y: 10 }}
+      >
+        <ConditionalWrap
+          component={Expandable}
+          props={{ label: "practice notes", spring: false }}
+          wrap={triggered === "small"}
+        >
+          <PracticeForm
+            section={selectedSection}
+            on:exit={() => (selectedSection = undefined)}
+          />
+        </ConditionalWrap>
       </div>
     </Position>
-  {/if}
+  </Adaptive>
 {/if}
 
 <!-- section creation form -->
 {#if mode === Mode.EDITING}
-  <Position x="left" y="bottom">
-    <div
-      class="max-h-[85vh]"
-      transition:fly|local={{ y: 20 }}
-      use:propertyOnSize={{
-        overflowY: {
-          axis: "y",
-          compare: "greater",
-          value: "auto",
-          threshold: () => window.innerHeight * 0.8,
-        },
-      }}
+  <Adaptive
+    stops={[
+      {
+        position: 1050,
+        value: "small",
+      },
+      {
+        position: 1400,
+        value: "large",
+      },
+    ]}
+    let:triggered
+  >
+    <Position
+      margin={triggered === "small" ? "120px" : undefined}
+      x={triggered !== "small" ? "left" : "middle"}
+      y="bottom"
     >
-      <FormPanel>
-        <Label preset="h2">{editing ? "Edit" : "Create"} a section</Label>
-        <div class="mb-3">
-          <Labeled label="From">
-            <TextInput
-              className="italic"
-              placeholder="from"
-              limitNumbers
-              value={from?.toString()}
-            />
-          </Labeled>
-          <Labeled label="To">
-            <TextInput
-              className="italic"
-              placeholder="to"
-              limitNumbers
-              value={to?.toString()}
-            />
-          </Labeled>
-        </div>
-        {#if from && to}
-          <div class="mb-4" transition:slide|local>
-            <Label preset="h3">Tasks</Label>
-            <ListInput
-              {presets}
-              elements={tasks}
-              {newElement}
-              on:update={(t) => (tasks = t.detail)}
-              let:e
-              let:i
-            >
-              <TaskCard on:update={(t) => (tasks[i] = t.detail)} task={e} />
-            </ListInput>
-          </div>
-        {/if}
-        <Submission
-          disabled={!ok}
-          cancelable={hasSections}
-          on:cancel={() => {
-            if (hasSections) {
+      <ConditionalWrap
+        component={Expandable}
+        props={{ label: "section info", spring: false }}
+        wrap={triggered === "small"}
+      >
+        <div
+          class={triggered !== "small"
+            ? "max-h-[85vh]"
+            : "overflow-y-scroll max-h-[65vh]"}
+          transition:fly|local={{ y: 20 }}
+          use:propertyOnSize={{
+            overflowY: {
+              axis: "y",
+              compare: "greater",
+              value: "auto",
+              threshold: () => window.innerHeight * 0.8,
+            },
+          }}
+        >
+          <SectionForm
+            {ok}
+            {tasks}
+            {from}
+            {to}
+            title={`${editing ? "Edit" : "Create"} a section`}
+            cancelable={hasSections}
+            on:cancel={() => {
+              if (hasSections) {
+                resetSection();
+              }
+              mode = Mode.PRACTICING;
+            }}
+            on:submit={() => {
+              if (!from || !to || tasks.length === 0) return;
+              if (editing) {
+                editing.from = from;
+                editing.to = to;
+                editing.tasks = tasks;
+                editing = undefined;
+              } else {
+                sections = [...sections, { from, to, tasks }];
+              }
               resetSection();
-            }
-            mode = Mode.PRACTICING;
-          }}
-          on:submit={() => {
-            if (!from || !to || tasks.length === 0) return;
-            if (editing) {
-              editing.from = from;
-              editing.to = to;
-              editing.tasks = tasks;
-              editing = undefined;
-            } else {
-              sections = [...sections, { from, to, tasks }];
-            }
-            resetSection();
-            mode = Mode.PRACTICING;
-          }}
-        />
-      </FormPanel>
-    </div>
-  </Position>
+              mode = Mode.PRACTICING;
+            }}
+          />
+        </div>
+      </ConditionalWrap>
+    </Position>
+  </Adaptive>
 {/if}
 
 <!-- mode switcher -->
-<Position x="right" y="bottom">
-  <div class="flex">
-    <PanelIcon
-      styleActionable={mode !== Mode.PRACTICING}
-      bare={mode !== Mode.PRACTICING}
-      icon={Play}
-      on:click={() => (mode = Mode.PRACTICING)}
-    />
-    <PanelIcon
-      styleActionable={mode !== Mode.EDITING}
-      bare={mode !== Mode.EDITING}
-      icon={Edit}
-      on:click={() => (mode = Mode.EDITING)}
-    />
-  </div>
-</Position>
+<Adaptive
+  stops={[
+    {
+      position: 450,
+      value: "small",
+    },
+    {
+      position: 1000,
+      value: "large",
+    },
+  ]}
+  let:triggered
+>
+  <Position
+    x="right"
+    y={triggered === "small" ? "top" : "bottom"}
+    margin={triggered === "small" ? "45px" : undefined}
+    marginAxis="y"
+  >
+    <div class="flex">
+      <PanelIcon
+        styleActionable={mode !== Mode.PRACTICING}
+        bare={mode !== Mode.PRACTICING}
+        icon={Play}
+        on:click={() => (mode = Mode.PRACTICING)}
+      />
+      <PanelIcon
+        styleActionable={mode !== Mode.EDITING}
+        bare={mode !== Mode.EDITING}
+        icon={Edit}
+        on:click={() => (mode = Mode.EDITING)}
+      />
+    </div>
+  </Position>
+</Adaptive>

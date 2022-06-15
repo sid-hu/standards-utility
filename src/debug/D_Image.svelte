@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Page, Piece } from "../proto/local/data";
-  import Image from "../components/Image.svelte"
-  import Loader from "../Loader.svelte"
+  import type { Page, Piece } from "~/proto/local/data";
+  import Image from "~/components/Image.svelte"
+  import Loader from ".Loader.svelte"
 
   let piece: Piece = {
     author: "",

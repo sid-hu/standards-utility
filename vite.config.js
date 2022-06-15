@@ -1,3 +1,4 @@
+import { resolve } from "path"
 import { defineConfig } from 'vite';
 import sveltePreprocess from 'svelte-preprocess';
 
@@ -14,6 +15,11 @@ export default defineConfig({
   server: { port: 8080 },
   build: {
     outDir: "../build",
+  },
+  resolve: {
+    alias: {
+      "~": resolve(__dirname, "src")
+    },
   },
   plugins: [
     viteStaticCopy({

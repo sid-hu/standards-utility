@@ -1,10 +1,20 @@
 <script lang="ts">
-  import { classList } from "../common/general";
-  import ArrowUp from "../icons/ArrowUp.svelte";
+import { onMount } from "svelte";
+
+  import { resize } from "~/common/actions";
+
+  import { classList } from "~/common/general";
+  import ArrowUp from "~/icons/ArrowUp.svelte";
 
   export let label = "";
   export let className = "";
   export let grow = false;
+  export let spring = true;
+
+  let height = 0
+  onMount(() => {
+    height = child.clientHeight
+  })
 
   let expanded = false;
   let child: HTMLElement;
@@ -25,19 +35,30 @@
       <p class="font-semibold mr-1">{label}</p>
     {/if}
     <div
-      class={classList(expanded ? "rotate-180" : "", "transition-all spring")}
+      class={classList(
+        expanded ? "rotate-180" : "",
+        spring ? "spring" : "",
+        "transition-all"
+      )}
     >
       <ArrowUp className="w-6 h-6" />
     </div>
   </div>
   <div
     class={classList(
-      "overflow-hidden transition-all duration-300 spring",
+      "overflow-y-hidden transition-all duration-300",
+      spring ? "spring" : "",
       grow ? "w-full" : ""
     )}
-    style={`height: ${expanded ? `${child.clientHeight}px` : "0px"}`}
+    style={`height: ${expanded ? `${height}px` : "0px"}`}
   >
-    <div class={classList(grow ? "w-full" : "", "h-fit")} bind:this={child}>
+    <div
+      class={classList(grow ? "w-full" : "", "h-fit")}
+      bind:this={child}
+      use:resize={(_, __, h) => {
+        height = h
+      }}
+    >
       <slot />
     </div>
   </div>

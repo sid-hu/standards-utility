@@ -1,9 +1,29 @@
-type PropertyOnSizeOptions = {
+export type ResizeOptions = (node: HTMLElement, w: number, h: number) => void
+
+export function resize(node: HTMLElement, options: ResizeOptions) {
+  const observer = new ResizeObserver(() => {
+    options(node, node.clientWidth, node.clientHeight)
+  })
+
+  observer.observe(node)
+  options(node, node.clientWidth, node.clientHeight)
+
+  return {
+    update(o: () => void) {
+      options = o
+    },
+    destroy() {
+      observer.disconnect()
+    }
+  }
+}
+
+export type PropertyOnSizeOptions = {
   [key in keyof CSSStyleDeclaration]+?: {
     axis: "x" | "y"
-    compare: "greater" | "lesser",
-    value: string,
-    threshold: number | (() => number),
+    compare: "greater" | "lesser"
+    value: string
+    threshold: number | (() => number)
   }
 }
 
@@ -41,7 +61,7 @@ export function propertyOnSize(
   }
 }
 
-type ClickOutsideOptions = {
+export type ClickOutsideOptions = {
   callback: () => void
 }
 

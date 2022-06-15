@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Loader from "../Loader.svelte";
-  import Inference from "../utility/Inference.svelte";
+  import Loader from "~/Loader.svelte";
+  import Inference from "~/utility/Inference.svelte";
   // import * as tflite from "@tensorflow/tfjs-tflite";
   // import * as tf from "@tensorflow/tfjs-core";
   // import * as _ from "@tensorflow/tfjs-backend-webgl";

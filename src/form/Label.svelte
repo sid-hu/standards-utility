@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { classList } from "../common/general";
+  import { classList } from "~/common/general";
 
   type LabelPreset = "h2" | "h3" | "h4" | "p";
 

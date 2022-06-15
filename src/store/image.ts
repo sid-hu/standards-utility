@@ -1,5 +1,5 @@
 import { createHash } from "sha1-uint8array"
-import { imageFromBytes } from "../common/general"
+import { imageFromBytes } from "~/common/general"
 
 export class ImageStore {
   store: {

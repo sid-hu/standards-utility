@@ -1,7 +1,7 @@
 <script lang="ts">
-  import BoxComponent from "./Box.svelte";
-  import Image from "./Image.svelte";
-  import type { Page } from "../proto/local/data";
+  import BoxComponent from "Box.svelte";
+  import Image from "Image.svelte";
+  import type { Page } from "~/proto/local/data";
 
   export let page: Page;
   export let alt: string;

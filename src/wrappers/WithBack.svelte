@@ -1,10 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { classList } from "../common/general";
-  import { useClose } from "../common/hooks";
+  import { classList } from "~/common/general";
+  import { useClose } from "~/common/hooks";
 
-  import Back from "../icons/Back.svelte";
-  import Position from "./Position.svelte";
+  import Back from "~/icons/Back.svelte";
+  import Position from "~/wrappers/Position.svelte";
 
   const dispatcher = createEventDispatcher<{ close: { clicked: boolean } }>();
   useClose(() => dispatcher("close", { clicked: false }));

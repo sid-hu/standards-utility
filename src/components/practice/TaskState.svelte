@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { classList, colorRamp, debounce } from "../common/general";
-  import { clickOutside } from "../common/actions";
+  import { classList, colorRamp, debounce } from "~/common/general";
+  import { clickOutside } from "~/common/actions";
   import { fly } from "svelte/transition";
-  import { isTouch } from "../common/platform";
+  import { isTouch } from "~/common/platform";
 
-  import type { TaskState } from "../proto/local/data";
+  import type { TaskState } from "~/proto/local/data";
 
-  import Label from "../form/Label.svelte";
-  import LinkButton from "../form/LinkButton.svelte";
-  import TaskStateRegion from "./TaskStateRegion.svelte";
-  import Panel from "./Panel.svelte";
-  import Fraction from "./Fraction.svelte";
+  import Label from "~/form/Label.svelte";
+  import LinkButton from "~/form/LinkButton.svelte";
+  import TaskStateRegion from "~/components/practice/TaskStateRegion.svelte";
+  import Panel from "~/components/common/Panel.svelte";
+  import Fraction from "~/components/common/Fraction.svelte";
 
   type StateID = "HT" | "RH" | "LH" | "E" | "M";
 
@@ -167,7 +167,7 @@
                 position: 1,
                 value: "bg-green-500",
               },
-            ]),
+            ])
           )}
           preset="h3"
         >

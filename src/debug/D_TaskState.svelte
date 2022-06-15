@@ -1,6 +1,6 @@
 <script lang="ts">
-  import TaskStateComponent from "../components/TaskState.svelte";
-  import type { TaskState } from "../proto/local/data";
+  import TaskStateComponent from "~/components/TaskState.svelte";
+  import type { TaskState } from "~/proto/local/data";
 
   const taskState: TaskState = {
     hands: {

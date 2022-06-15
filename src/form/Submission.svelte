@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import Button from "./Button.svelte";
-  import LinkButton from "./LinkButton.svelte";
+  import Button from "~/form/Button.svelte";
+  import LinkButton from "~/form/LinkButton.svelte";
 
   const dispatcher = createEventDispatcher<{ submit: void; cancel: void }>();
 

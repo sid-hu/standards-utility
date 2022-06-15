@@ -3,12 +3,12 @@
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { createEventDispatcher } from "svelte";
-  import { classList, withoutElement } from "../common/general";
+  import { classList, withoutElement } from "~/common/general";
 
-  import Add from "../icons/Add.svelte";
-  import Remove from "../icons/Remove.svelte";
-  import Menu from "../icons/Menu.svelte";
-  import Label from "../form/Label.svelte";
+  import Add from "~/icons/Add.svelte";
+  import Remove from "~/icons/Remove.svelte";
+  import Menu from "~/icons/Menu.svelte";
+  import Label from "~/form/Label.svelte";
 
   type T = $$Generic;
 

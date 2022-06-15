@@ -1,15 +1,15 @@
 <script lang="ts">
-  import type { Piece } from "./proto/local/data";
+  import type { Piece } from "~/proto/local/data";
 
-  import PieceBrowser from "./screens/PieceBrowser.svelte";
-  import PieceEditor from "./screens/PieceEditor.svelte";
-  import AddButton from "./components/AddButton.svelte";
-  import Route from "./components/Route.svelte";
+  import PieceBrowser from "~/screens/PieceBrowser.svelte";
+  import PieceEditor from "~/screens/PieceEditor.svelte";
+  import AddButton from "~/components/common/AddButton.svelte";
+  import Route from "~/components/common/Route.svelte";
 
-  import { pieces } from "./store/pieces";
-  import PieceCreator from "./screens/PieceCreator.svelte";
-  import Position from "./wrappers/Position.svelte";
-  import PiecePractice from "./screens/PiecePractice.svelte";
+  import { pieces } from "~/store/pieces";
+  import PieceCreator from "~/screens/PieceCreator.svelte";
+  import Position from "~/wrappers/Position.svelte";
+  import PiecePractice from "~/screens/PiecePractice.svelte";
 
   const enum Routes {
     BROWSING,

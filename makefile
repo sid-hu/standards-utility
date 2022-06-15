@@ -1,6 +1,6 @@
 NPX := pnpm exec
 
-PROTO_IN := $(addprefix proto/local/,data.proto generic.proto types.proto)
+PROTO_IN := $(addprefix ./proto/local/,data.proto)
 PROTO_OUT := src
 
 protobuf:

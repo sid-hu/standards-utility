@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Loader from "../Loader.svelte";
-  import PageComponent from "../components/Page.svelte";
+  import Loader from ".Loader.svelte";
+  import PageComponent from "~/components/Page.svelte";
 
-  import type { Piece } from "../proto/local/data";
-  import { Wrap } from "../types/generic";
+  import type { Piece } from "~/proto/local/data";
+  import { Wrap } from "~/types/generic";
 
   const piece: Piece = {
     author: "",

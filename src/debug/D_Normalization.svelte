@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { constructMeasures } from "../common/boxes";
-  import type { Page as PBPage } from "../proto/local/data";
-  import type { Box } from "../proto/local/generic";
+  import { constructMeasures } from "~/common/boxes";
+  import type { Page as PBPage } from "~/proto/local/data";
+  import type { Box } from "~/proto/local/data";
 
-  import Page from "../components/Page.svelte";
-  import PageBoxes from "../components/PageBoxes.svelte";
-  import Loader from "../Loader.svelte";
-  import Panel from "../components/Panel.svelte";
+  import Page from "~/components/Page.svelte";
+  import PageBoxes from "~/components/PageBoxes.svelte";
+  import Loader from ".Loader.svelte";
+  import Panel from "~/components/Panel.svelte";
 
   let page: PBPage = {
     sections: [],

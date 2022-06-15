@@ -1,9 +1,9 @@
-import { Wrap } from "../types/generic";
+import { Wrap } from "~/types/generic";
 
-import type { Box } from "../proto/local/generic";
-import type { Measures, Row } from "../proto/local/data";
+import type { Box } from "~/proto/local/data";
+import type { Measures, Row } from "~/proto/local/data";
 
-import { avg, max, min } from "./math";
+import { avg, max, min } from "~/common/math";
 
 export function containedX(b1: Box, b2: Box) {
   const [_, my] = Wrap.Box(b2).midpoint()

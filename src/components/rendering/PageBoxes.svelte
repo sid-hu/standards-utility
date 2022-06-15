@@ -1,7 +1,7 @@
 <script lang="ts">
-  import BoxComponent from "./Box.svelte";
-  import Image from "./Image.svelte";
-  import type { Box } from "../proto/local/generic";
+  import BoxComponent from "Box.svelte";
+  import Image from "Image.svelte";
+  import type { Box } from "~/proto/local/data";
 
   export let image: Uint8Array;
   export let boxes: Box[];

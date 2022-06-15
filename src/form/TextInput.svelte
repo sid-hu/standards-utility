@@ -3,8 +3,8 @@
 
   import { slide } from "svelte/transition";
 
-  import { classList } from "../common/general";
-  import Information from "../icons/Information.svelte";
+  import { classList } from "~/common/general";
+  import Information from "~/icons/Information.svelte";
 
   const dispatcher = createEventDispatcher<{ input: string }>();
 
@@ -47,5 +47,6 @@
 <style>
   input {
     outline: none;
+    width: 180px;
   }
 </style>

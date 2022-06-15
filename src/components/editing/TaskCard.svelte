@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { defaults } from "../types/generic"
+  import { defaults } from "~/types/generic"
   import { createEventDispatcher } from "svelte";
-  import { classList } from "../common/general";
+  import { classList } from "~/common/general";
 
-  import type { Task } from "../proto/local/data";
-  import { toolNames } from "../types/generic";
-  import type { Tool } from "../proto/local/types";
+  import type { Task } from "~/proto/local/data";
+  import { toolNames } from "~/types/generic";
+  import type { Tool } from "~/proto/local/data";
 
   import Select from "svelte-select";
-  import Expandable from "../form/Expandable.svelte";
-  import Labeled from "../form/Labeled.svelte";
-  import Radio from "../form/Radio.svelte";
-  import Checkbox from "../form/Checkbox.svelte";
+  import Expandable from "~/form/Expandable.svelte";
+  import Labeled from "~/form/Labeled.svelte";
+  import Radio from "~/form/Radio.svelte";
+  import Checkbox from "~/form/Checkbox.svelte";
 
   const dispatcher = createEventDispatcher<{ update: Task }>();
 

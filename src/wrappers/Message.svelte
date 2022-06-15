@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import { setContext } from "svelte";
-  import { classList } from "../common/general";
+  import { classList } from "~/common/general";
 
   let message: string | undefined;
 

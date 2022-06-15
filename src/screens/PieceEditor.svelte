@@ -1,28 +1,28 @@
 <script lang="ts">
   import { v4 } from "uuid";
   import { getDocument } from "pdfjs-dist";
-  import { key } from "../wrappers/Message.svelte";
+  import { key } from "~/wrappers/Message.svelte";
 
   import { fade, fly } from "svelte/transition";
 
   import { createEventDispatcher, getContext, onDestroy } from "svelte";
   import { form, field } from "svelte-forms";
   import { required } from "svelte-forms/validators";
-  import { arrayRequired } from "../common/validators";
+  import { arrayRequired } from "~/common/validators";
 
-  import type { Page, Piece } from "../proto/local/data";
-  import { imageStore } from "../store/image";
+  import type { Page, Piece } from "~/proto/local/data";
+  import { imageStore } from "~/store/image";
 
-  import Uploader from "../utility/Uploader.svelte";
-  import Panel from "../components/Panel.svelte";
-  import Remove from "../icons/Remove.svelte";
-  import PlaylistAdd from "../icons/PlaylistAdd.svelte";
-  import TextInput from "../form/TextInput.svelte";
-  import AddButton from "../components/AddButton.svelte";
-  import Submission from "../form/Submission.svelte";
-  import Position from "../wrappers/Position.svelte";
-  import FormPanel from "../form/FormPanel.svelte";
-  import Labeled from "../form/Labeled.svelte";
+  import Uploader from "~/utility/Uploader.svelte";
+  import Panel from "~/components/common/Panel.svelte";
+  import Remove from "~/icons/Remove.svelte";
+  import PlaylistAdd from "~/icons/PlaylistAdd.svelte";
+  import TextInput from "~/form/TextInput.svelte";
+  import AddButton from "~/components/common/AddButton.svelte";
+  import Submission from "~/form/Submission.svelte";
+  import Position from "~/wrappers/Position.svelte";
+  import FormPanel from "~/form/FormPanel.svelte";
+  import Labeled from "~/form/Labeled.svelte";
 
   export let piece: Piece;
   export let title: string;

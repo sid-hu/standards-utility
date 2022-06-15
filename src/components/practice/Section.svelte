@@ -1,15 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
-  import { classList } from "../common/general";
-  import { isTouch } from "../common/platform";
+  import { classList } from "~/common/general";
+  import { isTouch } from "~/common/platform";
 
-  import type { Section } from "../proto/local/data";
-  import { Wrap } from "../types/generic";
+  import type { Section } from "~/proto/local/data";
+  import { Wrap } from "~/types/generic";
 
-  import Edit from "../icons/Edit.svelte";
-  import Remove from "../icons/Remove.svelte";
-  import PanelIcon from "./PanelIcon.svelte";
+  import Edit from "~/icons/Edit.svelte";
+  import Remove from "~/icons/Remove.svelte";
+  import PanelIcon from "~/components/common/PanelIcon.svelte";
 
   export let section: Section;
   export let sectionNumber: number;

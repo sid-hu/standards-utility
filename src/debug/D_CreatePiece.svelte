@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Piece } from "../proto/local/data";
-  import PieceEditor from "../screens/PieceEditor.svelte";
+  import type { Piece } from "~/proto/local/data";
+  import PieceEditor from "~/screens/PieceEditor.svelte";
 
   const piece: Piece = {
     author: "",

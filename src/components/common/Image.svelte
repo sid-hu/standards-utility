@@ -1,6 +1,6 @@
 <script lang="ts">
   import { afterUpdate, onDestroy } from "svelte";
-  import { imageStore } from "../store/image";
+  import { imageStore } from "~/store/image";
 
   export let bytes: Uint8Array;
   export let alt: string;

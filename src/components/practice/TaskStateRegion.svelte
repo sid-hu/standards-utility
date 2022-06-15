@@ -1,12 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
-  import { classList, debounce, styleList } from "../common/general";
-  import { isTouch } from "../common/platform";
+  import { classList, debounce, styleList } from "~/common/general";
+  import { isTouch } from "~/common/platform";
 
-  import Reset from "../icons/Reset.svelte";
-  import ThumbsDown from "../icons/ThumbsDown.svelte";
-  import ThumbsUp from "../icons/ThumbsUp.svelte";
+  import Reset from "~/icons/Reset.svelte";
+  import ThumbsDown from "~/icons/ThumbsDown.svelte";
+  import ThumbsUp from "~/icons/ThumbsUp.svelte";
 
   const dispatcher = createEventDispatcher<{ drop: void }>();
   const onclick = debounce(() => {

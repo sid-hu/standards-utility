@@ -2,10 +2,10 @@
   import { loadGraphModel } from "@tensorflow/tfjs";
   import { GlobalWorkerOptions } from "pdfjs-dist";
 
-  import { db } from "../data/store";
-  import { pieces } from "../store/pieces";
-  import { measureModelPB } from "../store/models";
-  import { key } from "../wrappers/Message.svelte";
+  import { db } from "~/store/db";
+  import { pieces } from "~/store/pieces";
+  import { measureModelPB } from "~/store/models";
+  import { key } from "~/wrappers/Message.svelte";
   import { getContext } from "svelte";
 
   const { showMessage } = getContext(key);

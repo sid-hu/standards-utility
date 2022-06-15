@@ -1,6 +1,6 @@
 import { IDBPDatabase, openDB } from "idb"
-import { Platform, target } from "../common/platform"
-import { Piece } from "../proto/local/data";
+import { Platform, target } from "~/common/platform"
+import { Piece } from "~/proto/local/data";
 
 export interface DB {
     load(): Promise<Piece[]>

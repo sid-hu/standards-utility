@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { classList } from "../common/general";
+  import { classList } from "~/common/general";
 
   export let className = "";
   export let styleActionable = false;

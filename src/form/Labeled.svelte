@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Label from "./Label.svelte";
+  import Label from "~/form/Label.svelte";
   export let label: string;
 </script>
 

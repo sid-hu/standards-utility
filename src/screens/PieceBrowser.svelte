@@ -2,16 +2,16 @@
   import { createEventDispatcher, onDestroy } from "svelte";
   import { flip } from "svelte/animate";
   import { fly } from "svelte/transition";
-  import { isTouch } from "../common/platform";
-  import { classList } from "../common/general";
+  import { isTouch } from "~/common/platform";
+  import { classList } from "~/common/general";
 
-  import { pieces } from "../store/pieces";
-  import { imageStore } from "../store/image";
-  import type { Piece } from "../proto/local/data";
+  import { pieces } from "~/store/pieces";
+  import { imageStore } from "~/store/image";
+  import type { Piece } from "~/proto/local/data";
 
-  import Panel from "../components/Panel.svelte";
-  import Edit from "../icons/Edit.svelte";
-  import Remove from "../icons/Remove.svelte";
+  import Panel from "~/components/common/Panel.svelte";
+  import Edit from "~/icons/Edit.svelte";
+  import Remove from "~/icons/Remove.svelte";
 
   const dispatcher = createEventDispatcher<{
     choose: Piece;

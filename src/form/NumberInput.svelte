@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TextInput from "./TextInput.svelte";
+  import TextInput from "TextInput.svelte";
 
   export let value = "";
   export let className = "";

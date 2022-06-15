@@ -2,6 +2,10 @@
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,
+    "baseUrl": "src",
+    "paths": {
+      "~/*": ["*"]
+    }
   },
   "extends": "@tsconfig/svelte/tsconfig.json",
   "include": [
@@ -11,6 +15,6 @@
     "node_modules/*",
     "__sapper__/*",
     "public/*",
-    "src/proto/*"
+    "src/~/proto/*"
   ]
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { SvelteComponent } from "svelte";
-  import { classList } from "../common/general";
+  import { classList } from "~/common/general";
 
-  import Panel from "./Panel.svelte";
+  import Panel from "~/components/common/Panel.svelte";
 
   export let icon: typeof SvelteComponent;
 

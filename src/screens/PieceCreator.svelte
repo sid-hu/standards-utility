@@ -1,21 +1,21 @@
 <script lang="ts">
-  import { key } from "../wrappers/Message.svelte"
+  import { key } from "~/wrappers/Message.svelte"
   import { createEventDispatcher, getContext } from "svelte";
 
-  import type { Piece } from "../proto/local/data";
-  import type { Box } from "../proto/local/generic";
-  import { constructMeasures, NormalizationControls } from "../common/boxes";
+  import type { Piece } from "~/proto/local/data";
+  import type { Box } from "~/proto/local/data";
+  import { constructMeasures, NormalizationControls } from "~/common/boxes";
 
-  import Range from "../form/Range.svelte";
-  import PieceEditor from "../screens/PieceEditor.svelte";
-  import PieceViewer from "../components/PieceViewer.svelte";
-  import Inference from "../utility/Inference.svelte";
-  import Label from "../form/Label.svelte";
-  import Submission from "../form/Submission.svelte";
-  import Route from "../components/Route.svelte";
-  import Position from "../wrappers/Position.svelte";
-  import FormPanel from "../form/FormPanel.svelte";
-  import Measure from "../components/Measure.svelte";
+  import Range from "~/form/Range.svelte";
+  import PieceEditor from "~/screens/PieceEditor.svelte";
+  import PieceViewer from "~/components/rendering/PieceViewer.svelte";
+  import Inference from "~/utility/Inference.svelte";
+  import Label from "~/form/Label.svelte";
+  import Submission from "~/form/Submission.svelte";
+  import Route from "~/components/common/Route.svelte";
+  import Position from "~/wrappers/Position.svelte";
+  import FormPanel from "~/form/FormPanel.svelte";
+  import Measure from "~/components/rendering/Measure.svelte";
 
   const { showMessage } = getContext(key)
 

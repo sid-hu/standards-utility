@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Box } from "../proto/local/generic"
-  import { Wrap } from "../types/generic";
-  import { classList } from "../common/general";
+  import type { Box } from "~/proto/local/data"
+  import { Wrap } from "~/types/generic";
+  import { classList } from "~/common/general";
 
   export let box: Box;
   export let className: string | null = null;

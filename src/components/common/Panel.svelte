@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  import { classList } from "../common/general";
-  import { isTouch } from "../common/platform";
+  import { classList } from "~/common/general";
+  import { isTouch } from "~/common/platform";
 
   export let className = "";
   export let rounded = "rounded-md";

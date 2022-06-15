@@ -1,16 +1,19 @@
-import { db } from "../data/store"
+import { db } from "~/store/db"
 
 import { Writable, writable } from "svelte/store";
-import { BufferedUpdater } from "../common/store";
+import { BufferedUpdater } from "~/common/store";
 
-import type { Piece } from "../proto/local/data"
+import type { Piece } from "~/proto/local/data"
+
+function proxyOnce<T extends object>(o: T, handler: ProxyHandler<any>) {
+  if ((o as any)["__isProxied"]) {
+    return o
+  }
+  (o as any)["__isProxied"] = true
+  return new Proxy(o, handler)
+}
 
 function proxyPB<T extends object>(pb: T, handler: () => void) {
-  const proxyRevocable = (o: object) => {
-    // const { proxy, revoke } = Proxy.revocable(o, validator);
-    // (o as any).__revoke = revoke
-    return new Proxy(o, validator)
-  }
   const validator: ProxyHandler<any> = {
     get: (target, k) => {
       const value = target[k]
@@ -19,7 +22,7 @@ function proxyPB<T extends object>(pb: T, handler: () => void) {
         value !== null &&
         !ArrayBuffer.isView(value)
       ) {
-        return proxyRevocable(value)
+        return proxyOnce(value, validator)
       }
       return value
     },
@@ -34,7 +37,7 @@ function proxyPB<T extends object>(pb: T, handler: () => void) {
       return true
     }
   }
-  return proxyRevocable(pb)
+  return proxyOnce(pb, validator)
 }
 
 function createPieceStore(initial: Piece[]): Writable<Piece[]> & {

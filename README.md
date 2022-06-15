@@ -18,7 +18,7 @@
 ### features to be implemented
 
 - accessibility + mobile / touch support
-  - [ ] responsive layouts
+  - [x] responsive layouts
   - [x] drag & drop
   - [x] eliminate hover states
   - [ ] sane tab / focus

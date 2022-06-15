@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { classList } from "../common/general";
-  import Add from "../icons/Add.svelte";
+  import { classList } from "~/common/general";
+  import Add from "~/icons/Add.svelte";
 
   export let labelFor: string
 </script>

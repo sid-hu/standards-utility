@@ -53,13 +53,12 @@ export function debounce(callback: () => void, time = 200): () => void {
   }
 }
 
-export function colorRamp<T>(
-  value: number,
-  stops: {
-    position: number
-    value: T
-  }[]
-): T {
+export type Stop<T> = {
+  position: number
+  value: T
+}
+
+export function colorRamp<T>(value: number, stops: Stop<T>[]): T {
   stops = stops.sort((a, b) => a.position - b.position)
   for (let i = 0; i < stops.length; i++) {
     if (

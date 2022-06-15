@@ -1,10 +1,7 @@
-import type { Task } from "../proto/local/data"
-import type * as generic from "../proto/local/generic"
-import type * as data from "../proto/local/data"
-import { Tool } from "../proto/local/types"
+import { TaskState, Section, Box, Task, Tool } from "~/proto/local/data"
 
 export class Wrap {
-  static Box(o: generic.Box) {
+  static Box(o: Box) {
     return {
       ...o,
       width: function () {
@@ -21,7 +18,7 @@ export class Wrap {
       }
     }
   }
-  static Section(o: data.Section) {
+  static Section(o: Section) {
     return {
       ...o,
       completion: function() {
@@ -38,7 +35,7 @@ export class Wrap {
       }
     }
   }
-  static TaskState(o: data.TaskState) {
+  static TaskState(o: TaskState) {
     return {
       ...o,
       completion: function () {

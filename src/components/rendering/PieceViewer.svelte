@@ -1,14 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { useKey } from "../common/hooks";
-  import { classList } from "../common/general";
-  import type { Piece } from "../proto/local/data";
+  import { useKey } from "~/common/hooks";
+  import { classList } from "~/common/general";
+  import type { Piece } from "~/proto/local/data";
 
-  import BoxComponent from "./Box.svelte";
-  import Panel from "../components/Panel.svelte";
-  import ArrowUp from "../icons/ArrowUp.svelte";
-  import Position from "../wrappers/Position.svelte";
-  import Image from "./Image.svelte";
+  import BoxComponent from "~/components/rendering/Box.svelte";
+  import Panel from "~/components/common/Panel.svelte";
+  import Image from "~/components/common/Image.svelte";
+  import ArrowUp from "~/icons/ArrowUp.svelte";
+  import Position from "~/wrappers/Position.svelte";
 
   const dispatcher = createEventDispatcher<{ page: number }>();
 
