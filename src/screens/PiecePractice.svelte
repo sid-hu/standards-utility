@@ -51,14 +51,14 @@
 
   //practice state
   let sections = piece.pages[page].sections;
-  $: {
-    if (sections !== piece.pages[page].sections) {
-      piece.pages[page].sections = sections;
-    }
+  const updateSections = (s: Section[]) => {
+    sections = s
+    piece.pages[page].sections = s;
+    console.log(piece.pages[page])
   }
 
   let hoveredMeasure: number | undefined;
-  let selectedSection: Section | undefined;
+  let selectedSection: number | undefined;
 
   $: sectionMap = (function () {
     const result: {
@@ -112,21 +112,6 @@
     tasks.filter((t) => t.tools.length === 0).length === 0 &&
     !!from &&
     !!to;
-
-  const newElement = () => {
-    return {
-      tools: [],
-      state: {
-        hands: {
-          oneofKind: "handsSeparate",
-          handsSeparate: {
-            left: false,
-            right: false,
-          },
-        },
-      },
-    } as any;
-  };
 </script>
 
 <!-- main content -->
@@ -207,14 +192,14 @@
             section={sections[sectionNumber]}
             type={sectionMap[measure].type}
             hovered={hoveredMeasure === measure}
-            selected={selectedSection === sections[sectionNumber]}
+            selected={selectedSection === sectionNumber}
             on:hover={(e) => {
-              if (selectedSection === sections[sectionNumber]) return;
+              if (selectedSection === sectionNumber) return;
               hoveredMeasure = e.detail ? measure : undefined;
             }}
             on:select={(s) => {
               hoveredMeasure = undefined;
-              selectedSection = sections[s.detail];
+              selectedSection = s.detail;
             }}
             on:edit={(s) => {
               hoveredMeasure = undefined;
@@ -227,7 +212,7 @@
               mode = Mode.EDITING;
             }}
             on:delete={(s) => {
-              sections = withoutElement(sections, s.detail);
+              updateSections(withoutElement(sections, s.detail))
             }}
           />
         {/if}
@@ -256,7 +241,7 @@
       className={classList(
         triggered === "small" ? "px-10 flex justify-center w-full" : ""
       )}
-      margin={triggered === "small" ? "120px" : undefined}
+      margin={triggered === "small" ? "90px" : undefined}
       x={triggered !== "small" ? "right" : "middle"}
       y={triggered !== "small" ? "top" : "bottom"}
     >
@@ -271,7 +256,7 @@
           wrap={triggered === "small"}
         >
           <PracticeForm
-            section={selectedSection}
+            section={sections[selectedSection]}
             on:exit={() => (selectedSection = undefined)}
           />
         </ConditionalWrap>
@@ -296,7 +281,7 @@
     let:triggered
   >
     <Position
-      margin={triggered === "small" ? "120px" : undefined}
+      margin={triggered === "small" ? "90px" : undefined}
       x={triggered !== "small" ? "left" : "middle"}
       y="bottom"
     >
@@ -340,7 +325,7 @@
                 editing.tasks = tasks;
                 editing = undefined;
               } else {
-                sections = [...sections, { from, to, tasks }];
+                updateSections([...sections, { from, to, tasks }])
               }
               resetSection();
               mode = Mode.PRACTICING;

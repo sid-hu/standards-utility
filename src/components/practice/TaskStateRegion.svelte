@@ -2,7 +2,6 @@
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
   import { classList, debounce, styleList } from "~/common/general";
-  import { isTouch } from "~/common/platform";
 
   import Reset from "~/icons/Reset.svelte";
   import ThumbsDown from "~/icons/ThumbsDown.svelte";
@@ -10,49 +9,51 @@
 
   const dispatcher = createEventDispatcher<{ drop: void }>();
   const onclick = debounce(() => {
-    if (isTouch()) {
-      dispatcher("drop")
-    }
-  })
+    dispatcher("drop");
+  });
 
-  export let mode: "up" | "down" | "reset-up" | "reset-down";
+  export let mode: "up" | "down" | "reset";
 
-  let dragged = false;
+  let hovered = false;
 
-  $: direction = mode === "up" || mode === "reset-up" ? "up" : "down";
+  $: translateBy = hovered ? "140%" : "120%";
+  $: direction = mode === "down" || mode === "reset" ? "down" : "up";
 </script>
 
 <div
   class={classList(
-    `absolute w-full h-16`,
-    `flex justify-center ${direction === "up" ? "items-end" : "items-start"}`
+    "absolute top-0 left-0 w-full h-full -translate-x-1/2",
+    "flex justify-center transition-all"
   )}
   style={styleList({
-    transform: `translateY(${direction === "up" ? "-" : ""}70%)`,
+    transform:
+      direction === "up"
+        ? `translateY(-${translateBy})`
+        : `translateY(${translateBy})`,
   })}
-  on:dragover={(e) => {
-    e.preventDefault();
-    if (e.dataTransfer) {
-      e.dataTransfer.dropEffect = "move";
-    }
-  }}
-  on:dragenter={() => (dragged = true)}
-  on:dragleave={() => (dragged = false)}
-  on:click={onclick}
-  on:drop={() => dispatcher("drop")}
 >
-  {#if dragged || isTouch()}
+  <div
+    class={classList(
+      "absolute h-16 transition-all hover:cursor-pointer",
+      `flex justify-center ${direction === "up" ? "items-end" : "items-start"}`,
+      direction === "up" ? "bottom-0" : ""
+    )}
+    style={styleList({ width: "calc(100% + 20px)" })}
+    on:mouseenter={() => (hovered = true)}
+    on:mouseleave={() => (hovered = false)}
+    on:click={onclick}
+  >
     <div
-      class="pointer-events-none"
+      class="pointer-events-none transition-all"
       transition:fly={{ y: direction === "up" ? -10 : 10, duration: 300 }}
     >
       {#if mode === "up"}
         <ThumbsUp />
       {:else if mode === "down"}
         <ThumbsDown />
-      {:else if mode === "reset-up" || mode === "reset-down"}
+      {:else if mode === "reset"}
         <Reset />
       {/if}
     </div>
-  {/if}
+  </div>
 </div>

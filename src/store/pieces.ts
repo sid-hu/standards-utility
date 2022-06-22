@@ -5,16 +5,11 @@ import { BufferedUpdater } from "~/common/store";
 
 import type { Piece } from "~/proto/local/data"
 
-function proxyOnce<T extends object>(o: T, handler: ProxyHandler<any>) {
-  if ((o as any)["__isProxied"]) {
-    return o
-  }
-  (o as any)["__isProxied"] = true
-  return new Proxy(o, handler)
-}
-
 function proxyPB<T extends object>(pb: T, handler: () => void) {
   const validator: ProxyHandler<any> = {
+    getPrototypeOf(key) {
+      return Proxy.prototype
+    },
     get: (target, k) => {
       const value = target[k]
       if (
@@ -22,7 +17,10 @@ function proxyPB<T extends object>(pb: T, handler: () => void) {
         value !== null &&
         !ArrayBuffer.isView(value)
       ) {
-        return proxyOnce(value, validator)
+        if (Object.getPrototypeOf(value) === Proxy.prototype) {
+          return value
+        }
+        return new Proxy(value, validator)
       }
       return value
     },
@@ -37,7 +35,7 @@ function proxyPB<T extends object>(pb: T, handler: () => void) {
       return true
     }
   }
-  return proxyOnce(pb, validator)
+  return new Proxy(pb, validator)
 }
 
 function createPieceStore(initial: Piece[]): Writable<Piece[]> & {

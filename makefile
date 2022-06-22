@@ -9,3 +9,7 @@ protobuf:
 start: export PLATFORM = web
 start:
 	pnpm run dev
+
+desktop: export PLATFORM = web
+desktop:
+	$(NPX) tauri build

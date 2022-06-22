@@ -2,7 +2,6 @@
   import { classList, colorRamp, debounce } from "~/common/general";
   import { clickOutside } from "~/common/actions";
   import { fly } from "svelte/transition";
-  import { isTouch } from "~/common/platform";
 
   import type { TaskState } from "~/proto/local/data";
 
@@ -84,10 +83,9 @@
   };
 
   const onclick = debounce(() => {
-    if (isTouch()) {
-      dragging = !dragging;
-    }
+    active = !active;
   });
+
   const drophandler = (value?: boolean) => {
     return () => {
       stats = mapping(
@@ -95,48 +93,43 @@
         label,
         value !== undefined ? (l) => [...l, value] : () => []
       );
-      if (isTouch()) {
-        dragging = false;
-      }
+      active = false;
     };
   };
 
   let stats = mapping(taskState, label);
 
-  let dragging = false;
+  let active = false;
   let showStats = false;
 </script>
 
-<div class={classList("flex relative items-center", className)}>
+<div class={classList("flex items-center", className)}>
   <Label className="mb-[2px]" preset="h3">{label}</Label>
   <div
     class={classList(
-      "rounded-md w-5 h-5 border-2 border-slate-900",
+      "relative rounded-md w-5 h-5 border-2 border-slate-900",
       "transition-all mx-1 hover:cursor-pointer"
     )}
   >
     <div
       class={classList("centered w-full h-full transition-all")}
-      draggable="true"
       on:click={onclick}
-      on:dragstart={() => {
-        if (!isTouch()) {
-          dragging = true;
-        }
-      }}
-      on:dragend={() => {
-        if (!isTouch()) {
-          dragging = false;
-        }
-      }}
     >
       <div
         class={classList(
           "w-2 h-2 rounded-full bg-slate-900",
-          dragging ? "opacity-0" : ""
+          active ? "opacity-0" : ""
         )}
       />
     </div>
+    {#if active}
+      {#if stats.completed.length < stats.number}
+        <TaskStateRegion mode="up" on:drop={drophandler(true)} />
+        <TaskStateRegion mode="down" on:drop={drophandler(false)} />
+      {:else}
+        <TaskStateRegion mode="reset" on:drop={drophandler()} />
+      {/if}
+    {/if}
   </div>
   <div class="relative">
     <LinkButton
@@ -199,14 +192,4 @@
       </div>
     {/if}
   </div>
-
-  {#if dragging}
-    {#if stats.completed.length < stats.number}
-      <TaskStateRegion mode="up" on:drop={drophandler(true)} />
-      <TaskStateRegion mode="down" on:drop={drophandler(false)} />
-    {:else}
-      <TaskStateRegion mode="reset-up" on:drop={drophandler()} />
-      <TaskStateRegion mode="reset-down" on:drop={drophandler()} />
-    {/if}
-  {/if}
 </div>
