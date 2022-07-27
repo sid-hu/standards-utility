@@ -23,6 +23,7 @@
   import Position from "~/wrappers/Position.svelte";
   import FormPanel from "~/form/FormPanel.svelte";
   import Labeled from "~/form/Labeled.svelte";
+  import Actionable from "~/components/common/Actionable.svelte";
 
   export let piece: Piece;
   export let title: string;
@@ -119,9 +120,7 @@
         class="bottom-16 absolute p-centered-x"
         transition:fly|local={{ y: 10 }}
       >
-        <Panel
-          styleActionable
-          rounded="rounded-full"
+        <Actionable
           on:click={() => {
             pages.set([
               ...$pages.value.slice(0, i),
@@ -131,19 +130,21 @@
           }}
           let:hovered
         >
-          {#if hovered}
-            <div in:fade|local={{ duration: 300 }}>
-              <Remove className="w-10 h-10 p-2" />
-            </div>
-          {:else}
-            <p
-              in:fade|local={{ duration: 300 }}
-              class="w-10 h-10 centered text-slate-600 font-bold"
-            >
-              {i + 1}
-            </p>
-          {/if}
-        </Panel>
+          <Panel styleActionable rounded="rounded-full">
+            {#if hovered}
+              <div in:fade|local={{ duration: 300 }}>
+                <Remove className="w-10 h-10 p-2" />
+              </div>
+            {:else}
+              <p
+                in:fade|local={{ duration: 300 }}
+                class="w-10 h-10 centered text-slate-600 font-bold"
+              >
+                {i + 1}
+              </p>
+            {/if}
+          </Panel>
+        </Actionable>
       </div>
     </div>
   {/each}

@@ -9,6 +9,7 @@
   import Image from "~/components/common/Image.svelte";
   import ArrowUp from "~/icons/ArrowUp.svelte";
   import Position from "~/wrappers/Position.svelte";
+  import Actionable from "../common/Actionable.svelte";
 
   const dispatcher = createEventDispatcher<{ page: number }>();
 
@@ -80,34 +81,32 @@
 
 <Position x="middle" y="bottom">
   <div class="flex">
-    <Panel
-      styleActionable={page > 0}
-      rounded="rounded-full"
-      className="mx-2"
-      on:click={left}
-    >
-      <ArrowUp
-        className={classList(
-          "p-2 w-10 h-10 -rotate-90 transition-all",
-          page > 0 ? "" : "fill-slate-600"
-        )}
-      />
-    </Panel>
+    <Actionable on:click={left}>
+      <Panel styleActionable={page > 0} rounded="rounded-full" className="mx-2">
+        <ArrowUp
+          className={classList(
+            "p-2 w-10 h-10 -rotate-90 transition-all",
+            page > 0 ? "" : "fill-slate-600"
+          )}
+        />
+      </Panel>
+    </Actionable>
     <Panel rounded="rounded-full" className="mx-2">
       <p class="w-10 h-10 centered text-slate-700 font-bold">{page + 1}</p>
     </Panel>
-    <Panel
-      styleActionable={page < piece.pages.length - 1}
-      rounded="rounded-full"
-      className="mx-2"
-      on:click={right}
-    >
-      <ArrowUp
-        className={classList(
-          "p-2 w-10 h-10 rotate-90 transition-all",
-          page < piece.pages.length - 1 ? "" : "fill-slate-600"
-        )}
-      />
-    </Panel>
+    <Actionable on:click={right}>
+      <Panel
+        styleActionable={page < piece.pages.length - 1}
+        rounded="rounded-full"
+        className="mx-2"
+      >
+        <ArrowUp
+          className={classList(
+            "p-2 w-10 h-10 rotate-90 transition-all",
+            page < piece.pages.length - 1 ? "" : "fill-slate-600"
+          )}
+        />
+      </Panel>
+    </Actionable>
   </div>
 </Position>

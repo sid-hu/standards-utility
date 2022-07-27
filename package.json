@@ -5,11 +5,10 @@
   "scripts": {
     "build": "vite build --emptyOutDir",
     "dev": "vite --host",
-    "preview": "vite preview",
+    "preview": "vite preview --host",
     "check": "svelte-check --tsconfig tsconfig.json"
   },
   "devDependencies": {
-    "@capacitor/cli": "^3.6.0",
     "@protobuf-ts/plugin": "^2.6.0",
     "@sveltejs/vite-plugin-svelte": "1.0.0-next.47",
     "@tauri-apps/cli": "1.0.0-rc.13",
@@ -25,13 +24,12 @@
     "tslib": "^2.0.0",
     "typescript": "^4.0.0",
     "vite": "^2.9.9",
+    "vite-plugin-mkcert": "^1.9.0",
+    "vite-plugin-pwa": "^0.12.3",
     "vite-plugin-replace": "^0.1.1",
     "vite-plugin-static-copy": "^0.5.0"
   },
   "dependencies": {
-    "@capacitor/android": "^3.6.0",
-    "@capacitor/core": "^3.6.0",
-    "@capacitor/ios": "^3.6.0",
     "@protobuf-ts/runtime": "^2.6.0",
     "@tensorflow/tfjs": "^3.18.0",
     "idb": "^7.0.1",

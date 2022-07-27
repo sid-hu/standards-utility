@@ -12,6 +12,7 @@
   import Panel from "~/components/common/Panel.svelte";
   import Edit from "~/icons/Edit.svelte";
   import Remove from "~/icons/Remove.svelte";
+  import Actionable from "~/components/common/Actionable.svelte";
 
   const dispatcher = createEventDispatcher<{
     choose: Piece;
@@ -35,10 +36,7 @@
       animate:flip={{ duration: 400 }}
       class="m-10 centered flex-col transition-all"
     >
-      <Panel
-        bare
-        className="relative w-fit h-fit"
-        let:hovered
+      <Actionable
         on:click={() => {
           if (isTouch() && clicked < 1) {
             clicked++;
@@ -47,52 +45,55 @@
           dispatcher("choose", p);
           clicked = 0;
         }}
+        let:hovered
       >
-        <img
-          class={classList(
-            "object-contain mb-4 transition-all ease-in-out",
-            hovered ? "blur-sm" : "",
-            "shadow-lg hover:cursor-pointer",
-            "max-h-[400px] sm:max-h-80"
-          )}
-          src={imageStore.fetch(p.pages[0].image)}
-          alt={`${p.name} cover`}
-        />
-        {#if hovered}
-          <div class="absolute p-centered">
-            <div
-              transition:fly|local={{ y: 5 }}
-              on:click={(e) => {
-                e.stopPropagation();
-                dispatcher("delete", p);
-              }}
-            >
-              <Panel
-                rounded="rounded-full"
-                className="p-1 my-1"
-                styleActionable
+        <Panel bare className="relative w-fit h-fit">
+          <img
+            class={classList(
+              "object-contain mb-4 transition-all ease-in-out",
+              hovered ? "blur-sm" : "",
+              "shadow-lg rounded-2xl hover:cursor-pointer",
+              "max-h-[400px] sm:max-h-80"
+            )}
+            src={imageStore.fetch(p.pages[0].image)}
+            alt={`${p.name} cover`}
+          />
+          {#if hovered}
+            <div class="absolute p-centered">
+              <div
+                transition:fly|local={{ y: 5 }}
+                on:click={(e) => {
+                  e.stopPropagation();
+                  dispatcher("delete", p);
+                }}
               >
-                <Remove />
-              </Panel>
-            </div>
-            <div
-              transition:fly|local={{ y: -5 }}
-              on:click={(e) => {
-                e.stopPropagation();
-                dispatcher("edit", p);
-              }}
-            >
-              <Panel
-                rounded="rounded-full"
-                className="p-1 my-1"
-                styleActionable
+                <Panel
+                  rounded="rounded-full"
+                  className="p-1 my-1"
+                  styleActionable
+                >
+                  <Remove />
+                </Panel>
+              </div>
+              <div
+                transition:fly|local={{ y: -5 }}
+                on:click={(e) => {
+                  e.stopPropagation();
+                  dispatcher("edit", p);
+                }}
               >
-                <Edit />
-              </Panel>
+                <Panel
+                  rounded="rounded-full"
+                  className="p-1 my-1"
+                  styleActionable
+                >
+                  <Edit />
+                </Panel>
+              </div>
             </div>
-          </div>
-        {/if}
-      </Panel>
+          {/if}
+        </Panel>
+      </Actionable>
       <h3 class="font-semibold text-2xl sm:text-xl">
         {p.name}
       </h3>

@@ -23,6 +23,7 @@
   import SectionCreation from "./SectionCreation.svelte";
   import MeasureRender from "./MeasureRender.svelte";
   import SectionPractice from "./SectionPractice.svelte";
+  import Actionable from "~/components/common/Actionable.svelte";
 
   const dispatcher = createEventDispatcher<{ close: void }>();
 
@@ -127,18 +128,20 @@
     marginAxis="y"
   >
     <div class="flex">
-      <PanelIcon
-        styleActionable={$state.mode !== "practicing"}
-        bare={$state.mode !== "practicing"}
-        icon={Play}
-        on:click={() => ($state.mode = "practicing")}
-      />
-      <PanelIcon
-        styleActionable={$state.mode !== "editing"}
-        bare={$state.mode !== "editing"}
-        icon={Edit}
-        on:click={() => ($state.mode = "editing")}
-      />
+      <Actionable on:click={() => ($state.mode = "practicing")}>
+        <PanelIcon
+          styleActionable={$state.mode !== "practicing"}
+          bare={$state.mode !== "practicing"}
+          icon={Play}
+        />
+      </Actionable>
+      <Actionable on:click={() => ($state.mode = "editing")}>
+        <PanelIcon
+          styleActionable={$state.mode !== "editing"}
+          bare={$state.mode !== "editing"}
+          icon={Edit}
+        />
+      </Actionable>
     </div>
   </Position>
 </Adaptive>

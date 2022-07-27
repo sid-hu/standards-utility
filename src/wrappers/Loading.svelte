@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { loadGraphModel } from "@tensorflow/tfjs";
+  // import { loadGraphModel } from "@tensorflow/tfjs";
   import { GlobalWorkerOptions } from "pdfjs-dist";
 
   import { db } from "~/store/db";
@@ -13,6 +13,8 @@
 
   const load = async () => {
     GlobalWorkerOptions.workerSrc = "/workers/pdf.worker.js";
+
+    const { loadGraphModel } = await import("@tensorflow/tfjs")
 
     showMessage("loading model...");
     const modelPB = await loadGraphModel(

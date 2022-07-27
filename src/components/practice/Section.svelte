@@ -10,6 +10,7 @@
   import Edit from "~/icons/Edit.svelte";
   import Remove from "~/icons/Remove.svelte";
   import PanelIcon from "~/components/common/PanelIcon.svelte";
+  import Actionable from "../common/Actionable.svelte";
 
   export let section: Section;
   export let sectionNumber: number;
@@ -18,7 +19,7 @@
   export let selected: boolean;
   export let hovered: boolean;
 
-  let chosen = false
+  let chosen = false;
 
   const dispatcher = createEventDispatcher<{
     hover: boolean;
@@ -30,10 +31,10 @@
   const onfocus = (value: boolean) => {
     return () => {
       if (!isTouch()) {
-        dispatcher("hover", value)
+        dispatcher("hover", value);
       }
-    }
-  }
+    };
+  };
 </script>
 
 <div
@@ -46,7 +47,7 @@
 >
   <div
     on:click={() => {
-      if (chosen) return
+      if (chosen) return;
       if (isTouch() && !hovered) {
         dispatcher("hover", true);
         return;
@@ -88,28 +89,26 @@
         )}
       >
         <div class="my-2" transition:fly|local={{ y: 10, duration: 300 }}>
-          <PanelIcon
-            className="w-4 h-4 m-1"
-            icon={Edit}
-            styleActionable
+          <Actionable
             on:click={(e) => {
               e.stopPropagation();
               dispatcher("edit", section);
-              chosen = true
+              chosen = true;
             }}
-          />
+          >
+            <PanelIcon className="w-4 h-4 m-1" icon={Edit} styleActionable />
+          </Actionable>
         </div>
         <div class="my-2" transition:fly|local={{ y: 15, duration: 600 }}>
-          <PanelIcon
-            className="w-4 h-4 m-1"
-            icon={Remove}
-            styleActionable
+          <Actionable
             on:click={(e) => {
               e.stopPropagation();
               dispatcher("delete", sectionNumber);
-              chosen = true
+              chosen = true;
             }}
-          />
+          >
+            <PanelIcon className="w-4 h-4 m-1" icon={Remove} styleActionable />
+          </Actionable>
         </div>
       </div>
     {/if}

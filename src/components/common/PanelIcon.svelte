@@ -18,7 +18,6 @@
   {styleActionable}
   rounded="rounded-full"
   className={classList("w-fit h-fit centered mx-1", containerName)}
-  on:click
 >
   <svelte:component this={icon} className={classList("m-2", className)} />
 </Panel>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { browser as tfbrowser, Tensor } from "@tensorflow/tfjs";
+  import type { Tensor } from "@tensorflow/tfjs";
 
   import { measureModelPB } from "~/store/models";
   import { imageStore } from "~/store/image";
@@ -19,7 +19,9 @@
   let element: HTMLImageElement;
 
   const infer = async () => {
-    const img = tfbrowser.fromPixels(element).toInt();
+    const { browser } = await import("@tensorflow/tfjs")
+
+    const img = browser.fromPixels(element).toInt();
 
     const expanded = img.transpose([0, 1, 2]).expandDims();
     const result = (await $measureModelPB.executeAsync(expanded)) as Tensor[];

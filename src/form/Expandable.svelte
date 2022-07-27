@@ -1,6 +1,5 @@
 <script lang="ts">
-import { onMount } from "svelte";
-
+  import { onMount } from "svelte";
   import { resize } from "~/common/actions";
 
   import { classList } from "~/common/general";
@@ -11,10 +10,10 @@ import { onMount } from "svelte";
   export let grow = false;
   export let spring = true;
 
-  let height = 0
+  let height = 0;
   onMount(() => {
-    height = child.clientHeight
-  })
+    height = child.clientHeight;
+  });
 
   let expanded = false;
   let child: HTMLElement;
@@ -56,7 +55,7 @@ import { onMount } from "svelte";
       class={classList(grow ? "w-full" : "", "h-fit")}
       bind:this={child}
       use:resize={(_, __, h) => {
-        height = h
+        height = h;
       }}
     >
       <slot />
