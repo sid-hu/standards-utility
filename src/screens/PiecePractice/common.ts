@@ -38,9 +38,10 @@ export const makeSectionState = () => {
   const { set, subscribe, update } = writable<SectionState>({
     tasks: presets.standard,
   })
+  const empty = (): SectionState => { return { tasks: presets.standard } }
   return {
-    set, subscribe, update,
-    reset: () => set({ tasks: presets.standard }),
+    set, subscribe, update, empty,
+    reset: () => set(empty()),
   }
 }
 export type SectionStateStore = ReturnType<typeof makeSectionState>

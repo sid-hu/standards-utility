@@ -106,9 +106,8 @@
                     tasks: cloneDeep(s.tasks),
                   });
                 }
-                sectionState.reset();
                 $state.mode = "practicing";
-                return s;
+                return sectionState.empty();
               });
             }}
           />
