@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { classList } from "~/common/general";
 
   import type { Section } from "~/proto/local/data";
   import { toolNames } from "~/types/generic";

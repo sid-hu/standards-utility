@@ -6,20 +6,18 @@ import { BufferedUpdater } from "~/common/store";
 import type { Piece } from "~/proto/local/data"
 
 function proxyPB<T extends object>(pb: T, handler: () => void) {
+  //@ts-ignore
+  pb.__proxied = true
   const validator: ProxyHandler<any> = {
-    getPrototypeOf(key) {
-      return Proxy.prototype
-    },
     get: (target, k) => {
       const value = target[k]
       if (
         typeof value === 'object' &&
         value !== null &&
-        !ArrayBuffer.isView(value)
+        !ArrayBuffer.isView(value) &&
+        //@ts-ignore
+        !value.__proxied
       ) {
-        if (Object.getPrototypeOf(value) === Proxy.prototype) {
-          return value
-        }
         return new Proxy(value, validator)
       }
       return value

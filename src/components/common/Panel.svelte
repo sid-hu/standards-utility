@@ -20,7 +20,7 @@
     "transition-all border-[1px] border-transparent",
     !bare ? "bg-slate-800 bg-opacity-20 shadow-lg" : "",
     !bare ? "border-slate-800 border-opacity-10" : "",
-    !bare ? "backdrop-blur-sm" : "",
+    !bare ? "backdrop-blur-md" : "",
     styleActionable ? "hover:cursor-pointer hover:bg-opacity-30" : "",
     rounded,
     className

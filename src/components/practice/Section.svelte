@@ -18,6 +18,8 @@
   export let selected: boolean;
   export let hovered: boolean;
 
+  let chosen = false
+
   const dispatcher = createEventDispatcher<{
     hover: boolean;
     select: number;
@@ -44,6 +46,7 @@
 >
   <div
     on:click={() => {
+      if (chosen) return
       if (isTouch() && !hovered) {
         dispatcher("hover", true);
         return;
@@ -92,6 +95,7 @@
             on:click={(e) => {
               e.stopPropagation();
               dispatcher("edit", section);
+              chosen = true
             }}
           />
         </div>
@@ -103,6 +107,7 @@
             on:click={(e) => {
               e.stopPropagation();
               dispatcher("delete", sectionNumber);
+              chosen = true
             }}
           />
         </div>

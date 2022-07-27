@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { classList, colorRamp, debounce } from "~/common/general";
+  import { classList, ramp, debounce } from "~/common/general";
   import { clickOutside } from "~/common/actions";
   import { fly } from "svelte/transition";
 
@@ -147,7 +147,7 @@
         <Label
           className={classList(
             "bg-opacity-30",
-            colorRamp(correct, [
+            ramp(correct, [
               {
                 position: 0.5,
                 value: "bg-red-500",

@@ -9,7 +9,7 @@
   import { pieces } from "~/store/pieces";
   import PieceCreator from "~/screens/PieceCreator.svelte";
   import Position from "~/wrappers/Position.svelte";
-  import PiecePractice from "~/screens/PiecePractice.svelte";
+  import PiecePractice from "~/screens/PiecePractice/PiecePractice.svelte";
 
   const enum Routes {
     BROWSING,

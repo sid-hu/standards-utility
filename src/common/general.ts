@@ -58,7 +58,7 @@ export type Stop<T> = {
   value: T
 }
 
-export function colorRamp<T>(value: number, stops: Stop<T>[]): T {
+export function ramp<T>(value: number, stops: Stop<T>[]): T {
   stops = stops.sort((a, b) => a.position - b.position)
   for (let i = 0; i < stops.length; i++) {
     if (
