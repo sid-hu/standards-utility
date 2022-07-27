@@ -11,6 +11,7 @@
     currentPageID,
   } from "./common";
   import { propertyOnSize } from "~/common/actions";
+  import { cloneDeep } from "lodash";
 
   import Adaptive from "~/components/common/Adaptive.svelte";
   import SectionForm from "~/components/editing/SectionForm.svelte";
@@ -27,6 +28,12 @@
     $sectionState.tasks.filter((t) => t.tools.length === 0).length === 0 &&
     $sectionState.from !== undefined &&
     $sectionState.to !== undefined;
+
+  $: {
+    if (!$state.hasSections) {
+      sectionState.reset()
+    }
+  }
 </script>
 
 {#if $state.mode === "editing"}
@@ -91,12 +98,12 @@
                 if (s.editing) {
                   s.editing.from = s.from;
                   s.editing.to = s.to;
-                  s.editing.tasks = s.tasks;
+                  s.editing.tasks = cloneDeep(s.tasks);
                 } else {
                   $currentPage.sections.push({
                     from: s.from,
                     to: s.to,
-                    tasks: s.tasks,
+                    tasks: cloneDeep(s.tasks),
                   });
                 }
                 sectionState.reset();

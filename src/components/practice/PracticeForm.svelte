@@ -13,7 +13,6 @@
   const dispatcher = createEventDispatcher<{ exit: void }>();
 
   export let section: Section;
-  $: { console.log("rerendered", section) }
 </script>
 
 <FormPanel>
@@ -55,7 +54,6 @@
     </div>
   {/each}
   <LinkButton className="mx-0" on:click={() => {
-    console.log('exited')
     dispatcher("exit")
   }}>
     exit
