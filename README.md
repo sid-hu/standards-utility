@@ -28,6 +28,9 @@ you can grab a copy of the PWA [here](https://deft-sherbet-ad968f.netlify.app/),
 - practice improvements
   - [x] add "x in a row" feature
   - [x] add calculated completion value
+- usability improvements
+  - [ ] add shortcuts to the practice checklist (a button that will populate the various tasks in order)
+  - [ ] add manual measure definition (tools for editing the bounds / measures / rows on a page)
 - section layers
   - [ ] select active layer, this will be the one with the most pronounced GUI
   - [ ] other layers will exhibit a transparent "ghost" against the current layer, they will be tinted the color of the layer they belong to.
