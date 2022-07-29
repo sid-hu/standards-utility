@@ -2,7 +2,13 @@
   import { createEventDispatcher, setContext } from "svelte";
   import { useClose } from "~/common/hooks";
 
-  import { makeSectionState, makeState, SectionMap, contextID, Context } from "./common";
+  import {
+    makeSectionState,
+    makeState,
+    SectionMap,
+    contextID,
+    Context,
+  } from "./common";
   import { derived, writable } from "svelte/store";
   import type { Piece } from "~/proto/local/data";
 
@@ -24,7 +30,7 @@
 
   //state
   const pieceStore = writable(piece);
-  $: $pieceStore = piece
+  $: $pieceStore = piece;
 
   const hasSections = derived(
     pieceStore,
@@ -33,42 +39,48 @@
 
   const state = makeState(piece.pages[0].sections.length === 0);
 
+  const page = derived(state, $state => $state.page)
   const currentPage = writable(piece.pages[0]);
-  $: $currentPage = piece.pages[$state.page];
+  page.subscribe(($page) => {
+    currentPage.set($pieceStore.pages[$page]);
+  });
 
-  const sectionMap = writable<SectionMap>({})
-  $: $sectionMap = (function (): SectionMap {
-    const result: {
+  const sectionMap = writable<SectionMap>({});
+  currentPage.subscribe((p) => {
+    const map: {
       [key: number]: {
         type: "left" | "right" | "inbetween";
         section: number;
       };
     } = {};
-    for (let i = 0; i < $currentPage.sections.length; i++) {
-      const s = $currentPage.sections[i];
-      result[s.from] = {
+    for (let i = 0; i < p.sections.length; i++) {
+      const s = p.sections[i];
+      map[s.from] = {
         type: "left",
         section: i,
       };
-      result[s.to] = {
+      map[s.to] = {
         type: "right",
         section: i,
       };
       for (let m = s.from + 1; m < s.to; m++) {
-        result[m] = {
+        map[m] = {
           type: "inbetween",
           section: i,
         };
       }
     }
-    return result;
-  })();
+    sectionMap.set(map)
+  });
 
   setContext<Context>(contextID, {
-    currentPage, state, hasSections, sectionMap,
+    currentPage,
+    state,
+    hasSections,
+    sectionMap,
     sectionState: makeSectionState(),
     editing: writable(undefined),
-  })
+  });
 
   //back handling
   useClose((e) => {

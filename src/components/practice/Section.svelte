@@ -24,7 +24,7 @@
   const dispatcher = createEventDispatcher<{
     hover: boolean;
     select: number;
-    edit: Section;
+    edit: number;
     delete: number;
   }>();
 
@@ -92,7 +92,7 @@
           <Actionable
             on:click={(e) => {
               e.stopPropagation();
-              dispatcher("edit", section);
+              dispatcher("edit", sectionNumber);
               chosen = true;
             }}
           >

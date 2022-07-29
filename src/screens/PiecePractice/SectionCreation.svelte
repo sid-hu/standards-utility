@@ -32,7 +32,7 @@
 
   editing.subscribe((editing) => {
     if (editing) {
-      sectionState.use(editing);
+      sectionState.use($currentPage.sections[editing]);
     }
   });
 </script>
@@ -90,30 +90,29 @@
               $editing = undefined;
             }}
             on:submit={() => {
-              sectionState.update((s) => {
-                if (
-                  s.from === undefined ||
-                  s.to === undefined ||
-                  s.tasks.length === 0
-                )
-                  return s;
-                if ($editing) {
-                  editing.set({
-                    from: s.from,
-                    to: s.to,
-                    tasks: cloneDeep(s.tasks),
-                  });
-                } else {
-                  $currentPage.sections.push({
-                    from: s.from,
-                    to: s.to,
-                    tasks: cloneDeep(s.tasks),
-                  });
+              if (
+                $sectionState.from === undefined ||
+                $sectionState.to === undefined ||
+                $sectionState.tasks.length === 0
+              )
+                return;
+              if ($editing) {
+                $currentPage.sections[$editing] = {
+                  from: $sectionState.from,
+                  to: $sectionState.to,
+                  tasks: cloneDeep($sectionState.tasks),
                 }
-                $state.mode = "practicing";
-                $editing = undefined;
-                return sectionState.empty();
-              });
+              } else {
+                $currentPage.sections = [...$currentPage.sections, {
+                  from: $sectionState.from,
+                  to: $sectionState.to,
+                  tasks: cloneDeep($sectionState.tasks),
+                }]
+              }
+              $state.mode = "practicing";
+              $editing = undefined;
+              sectionState.reset()
+              return
             }}
           />
         </div>

@@ -1,8 +1,7 @@
 <script lang="ts">
   import { between, inRange, intersects } from "~/common/math";
-  import { cloneDeep } from "lodash";
   import { withoutElement } from "~/common/general";
-
+  import { derived } from "svelte/store";
   import { getContext } from "svelte";
   import { contextID, Context } from "./common";
 
@@ -12,6 +11,13 @@
   export let measure: number;
 
   const { state, sectionState, currentPage, sectionMap, editing } = getContext<Context>(contextID);
+
+  const editedSection = derived(
+    [currentPage, editing],
+    ([$currentPage, $editing]) => $editing !== undefined ?
+      $currentPage.sections[$editing] :
+      undefined
+  )
 </script>
 
 {#if $state.mode === "editing"}
@@ -24,8 +30,8 @@
       (s) =>
         inRange(measure, s.from, s.to) &&
         !(
-          $editing &&
-          inRange(measure, $editing.from, $editing.to)
+          $editedSection &&
+          inRange(measure, $editedSection.from, $editedSection.to)
         )
     ).length > 0}
   <Measure
@@ -52,12 +58,12 @@
               if (
                 intersects(s.from, s.to, section.from, section.to) &&
                 !(
-                  $editing &&
+                  $editedSection &&
                   intersects(
                     s.from,
                     s.to,
-                    $editing.from,
-                    $editing.to
+                    $editedSection.from,
+                    $editedSection.to
                   )
                 )
               ) {
@@ -98,11 +104,6 @@
       on:edit={(s) => {
         $state.hoveredMeasure = undefined;
         $editing = s.detail;
-
-        $sectionState.tasks = cloneDeep($editing.tasks);
-        $sectionState.from = $editing.from;
-        $sectionState.to = $editing.to;
-
         $state.mode = "editing";
       }}
       on:delete={(s) => {

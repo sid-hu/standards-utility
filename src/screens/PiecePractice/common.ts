@@ -44,6 +44,6 @@ export type Context = {
   currentPage: Writable<Page>
   state: Writable<State>
   sectionState: ReturnType<typeof makeSectionState>
-  editing: Writable<Section | undefined>
+  editing: Writable<number | undefined>
 }
 export const contextID = Symbol()
