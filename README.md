@@ -1,6 +1,6 @@
 ## standards-utility
 
-***a digital version of Oclef's standards matrix.***
+***a digital practice app***
 
 you can grab a copy of the PWA [here](https://deft-sherbet-ad968f.netlify.app/), it works correctly for both mobile and desktop layouts.
 
