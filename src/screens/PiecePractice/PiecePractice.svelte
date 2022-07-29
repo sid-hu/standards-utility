@@ -32,11 +32,6 @@
   const pieceStore = writable(piece);
   $: $pieceStore = piece;
 
-  const hasSections = derived(
-    pieceStore,
-    ($piece) => $piece.pages[0].sections.length !== 0
-  );
-
   const state = makeState(piece.pages[0].sections.length === 0);
 
   const page = derived(state, $state => $state.page)
@@ -44,6 +39,11 @@
   page.subscribe(($page) => {
     currentPage.set($pieceStore.pages[$page]);
   });
+
+  const hasSections = derived(
+    currentPage,
+    ($currentPage) => $currentPage.sections.length !== 0
+  );
 
   const sectionMap = writable<SectionMap>({});
   currentPage.subscribe((p) => {
