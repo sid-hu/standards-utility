@@ -2,14 +2,7 @@
   import { fly } from "svelte/transition";
 
   import { getContext } from "svelte";
-  import {
-    stateID,
-    sectionStateID,
-    SectionStateStore,
-    StateStore,
-    CurrentPageStore,
-    currentPageID,
-  } from "./common";
+  import { contextID, Context } from "./common";
   import { propertyOnSize } from "~/common/actions";
   import { cloneDeep } from "lodash";
 
@@ -19,21 +12,29 @@
   import ConditionalWrap from "~/wrappers/ConditionalWrap.svelte";
   import Position from "~/wrappers/Position.svelte";
 
-  const state = getContext<StateStore>(stateID);
-  const sectionState = getContext<SectionStateStore>(sectionStateID);
-  const currentPage = getContext<CurrentPageStore>(currentPageID);
+  const { state, sectionState, currentPage, hasSections, editing } =
+    getContext<Context>(contextID);
 
-  $: ok =
-    $sectionState.tasks?.length > 0 &&
-    $sectionState.tasks.filter((t) => t.tools.length === 0).length === 0 &&
-    $sectionState.from !== undefined &&
-    $sectionState.to !== undefined;
+  let ok = false;
+  sectionState.subscribe(($section) => {
+    ok =
+      $section.tasks?.length > 0 &&
+      $section.tasks.filter((t) => t.tools.length === 0).length === 0 &&
+      $section.from !== undefined &&
+      $section.to !== undefined;
+  });
 
-  $: {
-    if (!$state.hasSections) {
-      sectionState.reset()
+  hasSections.subscribe(($hasSections) => {
+    if (!$hasSections) {
+      sectionState.reset();
     }
-  }
+  });
+
+  editing.subscribe((editing) => {
+    if (editing) {
+      sectionState.use(editing);
+    }
+  });
 </script>
 
 {#if $state.mode === "editing"}
@@ -79,13 +80,14 @@
             from={$sectionState.from}
             to={$sectionState.to}
             tasks={$sectionState.tasks}
-            title={`${$sectionState.editing ? "Edit" : "Create"} a section`}
-            cancelable={$state.hasSections}
+            title={`${$editing ? "Edit" : "Create"} a section`}
+            cancelable={$hasSections}
             on:cancel={() => {
-              if ($state.hasSections) {
+              if ($hasSections) {
                 sectionState.reset();
               }
               $state.mode = "practicing";
+              $editing = undefined;
             }}
             on:submit={() => {
               sectionState.update((s) => {
@@ -95,10 +97,12 @@
                   s.tasks.length === 0
                 )
                   return s;
-                if (s.editing) {
-                  s.editing.from = s.from;
-                  s.editing.to = s.to;
-                  s.editing.tasks = cloneDeep(s.tasks);
+                if ($editing) {
+                  editing.set({
+                    from: s.from,
+                    to: s.to,
+                    tasks: cloneDeep(s.tasks),
+                  });
                 } else {
                   $currentPage.sections.push({
                     from: s.from,
@@ -107,6 +111,7 @@
                   });
                 }
                 $state.mode = "practicing";
+                $editing = undefined;
                 return sectionState.empty();
               });
             }}

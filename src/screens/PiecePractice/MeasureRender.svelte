@@ -4,25 +4,14 @@
   import { withoutElement } from "~/common/general";
 
   import { getContext } from "svelte";
-  import {
-    currentPageID,
-    CurrentPageStore,
-    SectionMap,
-    sectionStateID,
-    SectionStateStore,
-    stateID,
-    StateStore,
-  } from "./common";
+  import { contextID, Context } from "./common";
 
   import Measure from "~/components/rendering/Measure.svelte";
   import SectionRenderer from "~/components/practice/Section.svelte";
 
   export let measure: number;
-  export let sectionMap: SectionMap;
 
-  const state = getContext<StateStore>(stateID);
-  const sectionState = getContext<SectionStateStore>(sectionStateID);
-  const currentPage = getContext<CurrentPageStore>(currentPageID);
+  const { state, sectionState, currentPage, sectionMap, editing } = getContext<Context>(contextID);
 </script>
 
 {#if $state.mode === "editing"}
@@ -35,8 +24,8 @@
       (s) =>
         inRange(measure, s.from, s.to) &&
         !(
-          $sectionState.editing &&
-          inRange(measure, $sectionState.editing.from, $sectionState.editing.to)
+          $editing &&
+          inRange(measure, $editing.from, $editing.to)
         )
     ).length > 0}
   <Measure
@@ -49,50 +38,53 @@
       : undefined}
     styleActionable
     on:click={() => {
-      if ($sectionState.from && measure !== $sectionState.from) {
-        $sectionState.to = $sectionState.to !== measure ? measure : undefined;
-        if ($sectionState.to && $sectionState.to < $sectionState.from) {
-          const less = $sectionState.to;
-          $sectionState.to = $sectionState.from;
-          $sectionState.from = less;
-        }
-        if ($sectionState.to) {
-          //check for gaps taken up by sections
-          for (const s of $currentPage.sections) {
-            if (
-              intersects(s.from, s.to, $sectionState.from, $sectionState.to) &&
-              !(
-                $sectionState.editing &&
-                intersects(
-                  s.from,
-                  s.to,
-                  $sectionState.editing.from,
-                  $sectionState.editing.to
+      sectionState.update(section => {
+        if (section.from && measure !== section.from) {
+          section.to = section.to !== measure ? measure : undefined;
+          if (section.to && section.to < section.from) {
+            const less = section.to;
+            section.to = section.from;
+            section.from = less;
+          }
+          if (section.to) {
+            //check for gaps taken up by sections
+            for (const s of $currentPage.sections) {
+              if (
+                intersects(s.from, s.to, section.from, section.to) &&
+                !(
+                  $editing &&
+                  intersects(
+                    s.from,
+                    s.to,
+                    $editing.from,
+                    $editing.to
+                  )
                 )
-              )
-            ) {
-              $sectionState.to = undefined;
-              break;
+              ) {
+                section.to = undefined;
+                break;
+              }
             }
           }
+          return section;
         }
-        return;
-      }
-      if ($sectionState.from === measure) {
-        $sectionState.from = $sectionState.to;
-        $sectionState.to = undefined;
-        return;
-      }
-      $sectionState.from = measure;
+        if (section.from === measure) {
+          section.from = section.to
+          section.to = undefined
+          return section;
+        }
+        section.from = measure;
+        return section
+      })
     }}
   />
 {:else if $state.mode === "practicing"}
-  {#if sectionMap[measure]}
-    {@const sectionNumber = sectionMap[measure].section}
+  {#if $sectionMap[measure]}
+    {@const sectionNumber = $sectionMap[measure].section}
     <SectionRenderer
       {sectionNumber}
       section={$currentPage.sections[sectionNumber]}
-      type={sectionMap[measure].type}
+      type={$sectionMap[measure].type}
       hovered={$state.hoveredMeasure === measure}
       selected={$state.selectedSection === sectionNumber}
       on:hover={(e) => {
@@ -105,17 +97,17 @@
       }}
       on:edit={(s) => {
         $state.hoveredMeasure = undefined;
-        $sectionState.editing = s.detail;
+        $editing = s.detail;
 
-        $sectionState.tasks = cloneDeep($sectionState.editing.tasks);
-        $sectionState.from = $sectionState.editing.from;
-        $sectionState.to = $sectionState.editing.to;
+        $sectionState.tasks = cloneDeep($editing.tasks);
+        $sectionState.from = $editing.from;
+        $sectionState.to = $editing.to;
 
         $state.mode = "editing";
       }}
       on:delete={(s) => {
         $state.hoveredMeasure = undefined;
-        $currentPage.sections = withoutElement($currentPage.sections, s.detail)
+        $currentPage.sections = withoutElement($currentPage.sections, s.detail);
       }}
     />
   {/if}

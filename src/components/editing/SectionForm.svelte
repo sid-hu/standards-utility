@@ -44,6 +44,7 @@
         placeholder="from"
         limitNumbers
         value={from?.toString()}
+        disabled
       />
     </Labeled>
     <Labeled label="To">
@@ -52,6 +53,7 @@
         placeholder="to"
         limitNumbers
         value={to?.toString()}
+        disabled
       />
     </Labeled>
   </div>

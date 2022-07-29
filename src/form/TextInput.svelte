@@ -1,9 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-
   import { slide } from "svelte/transition";
-
   import { classList } from "~/common/general";
+
   import Information from "~/icons/Information.svelte";
 
   const dispatcher = createEventDispatcher<{ input: string }>();
@@ -13,22 +12,24 @@
   export let placeholder: string | null = null;
   export let error: string | null = null;
   export let limitNumbers = false;
+  export let disabled: boolean | undefined = undefined;
 </script>
 
 <div>
   <input
     type="text"
     {placeholder}
+    {disabled}
     bind:value
     on:input={() => {
       if (limitNumbers) {
         const parsed = parseInt(value);
         if (isNaN(parsed) && value.length > 0) {
-          value = value.replaceAll(/[^0-9]/gm, "")
+          value = value.replaceAll(/[^0-9]/gm, "");
           return;
         }
         if (!isNaN(parsed)) {
-          value = parsed.toString()
+          value = parsed.toString();
         }
       }
       dispatcher("input", value);

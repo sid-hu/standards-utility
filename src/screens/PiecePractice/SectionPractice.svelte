@@ -8,15 +8,9 @@
   import Expandable from "~/form/Expandable.svelte";
   import PracticeForm from "~/components/practice/PracticeForm.svelte";
   import { getContext } from "svelte";
-  import {
-    currentPageID,
-    CurrentPageStore,
-    stateID,
-    StateStore,
-  } from "./common";
+  import { contextID, Context } from "./common";
 
-  const state = getContext<StateStore>(stateID);
-  const currentPage = getContext<CurrentPageStore>(currentPageID);
+  const { state, currentPage } = getContext<Context>(contextID);
 </script>
 
 {#if $state.selectedSection !== undefined && $state.mode === "practicing"}

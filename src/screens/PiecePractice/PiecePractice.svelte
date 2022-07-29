@@ -2,15 +2,8 @@
   import { createEventDispatcher, setContext } from "svelte";
   import { useClose } from "~/common/hooks";
 
-  import {
-    currentPageID,
-    makeSectionState,
-    makeState,
-    SectionMap,
-    sectionStateID,
-    stateID,
-  } from "./common";
-  import { writable } from "svelte/store";
+  import { makeSectionState, makeState, SectionMap, contextID, Context } from "./common";
+  import { derived, writable } from "svelte/store";
   import type { Piece } from "~/proto/local/data";
 
   import PieceViewer from "~/components/rendering/PieceViewer.svelte";
@@ -29,30 +22,22 @@
 
   export let piece: Piece;
 
-  useClose((e) => {
-    if ($state.selectedSection !== undefined) {
-      e.stopImmediatePropagation();
-      $state.selectedSection = undefined;
-    }
-    if ($state.mode === "editing" && $state.hasSections) {
-      e.stopImmediatePropagation();
-      $state.mode = "practicing";
-    }
-  });
+  //state
+  const pieceStore = writable(piece);
+  $: $pieceStore = piece
+
+  const hasSections = derived(
+    pieceStore,
+    ($piece) => $piece.pages[0].sections.length !== 0
+  );
 
   const state = makeState(piece.pages[0].sections.length === 0);
-  setContext(stateID, state);
-  $: $state.hasSections = piece.pages[0].sections.length === 0;
 
   const currentPage = writable(piece.pages[0]);
-  setContext(currentPageID, currentPage);
   $: $currentPage = piece.pages[$state.page];
 
-  //section creation state
-  const sectionState = makeSectionState();
-  setContext(sectionStateID, sectionState);
-
-  $: sectionMap = (function (): SectionMap {
+  const sectionMap = writable<SectionMap>({})
+  $: $sectionMap = (function (): SectionMap {
     const result: {
       [key: number]: {
         type: "left" | "right" | "inbetween";
@@ -78,6 +63,24 @@
     }
     return result;
   })();
+
+  setContext<Context>(contextID, {
+    currentPage, state, hasSections, sectionMap,
+    sectionState: makeSectionState(),
+    editing: writable(undefined),
+  })
+
+  //back handling
+  useClose((e) => {
+    if ($state.selectedSection !== undefined) {
+      e.stopImmediatePropagation();
+      $state.selectedSection = undefined;
+    }
+    if ($state.mode === "editing" && $hasSections) {
+      e.stopImmediatePropagation();
+      $state.mode = "practicing";
+    }
+  });
 </script>
 
 <!-- main content -->
@@ -99,7 +102,7 @@
         $state.page = p.detail;
       }}
     >
-      <MeasureRender {measure} {sectionMap} />
+      <MeasureRender {measure} />
     </PieceViewer>
   </div>
 </WithBack>
