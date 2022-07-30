@@ -13,8 +13,10 @@
     reset: boolean;
   }>();
 
-  useKey(",", () => dispatcher("increment", true));
-  useKey(".", () => dispatcher("increment", false));
+  useKey("y", () => dispatcher("increment", true));
+  useKey("Y", () => dispatcher("increment", true));
+  useKey("n", () => dispatcher("increment", false));
+  useKey("N", () => dispatcher("increment", false));
   useKey("Delete", () => dispatcher("reset"));
 </script>
 
