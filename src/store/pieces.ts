@@ -5,11 +5,13 @@ import { BufferedUpdater } from "~/common/store";
 
 import type { Piece } from "~/proto/local/data"
 
+/* eslint-disable */
 function proxyPB<T extends object>(pb: T, handler: () => void) {
   //@ts-ignore
   pb.__proxied = true
-  const validator: ProxyHandler<any> = {
+  const validator: ProxyHandler<T> = {
     get: (target, k) => {
+      //@ts-ignore
       const value = target[k]
       if (
         typeof value === 'object' &&
@@ -23,11 +25,13 @@ function proxyPB<T extends object>(pb: T, handler: () => void) {
       return value
     },
     deleteProperty: (target, p) => {
+      //@ts-ignore
       delete target[p]
       handler()
       return true
     },
-    set: (target, p, v) => {
+    set: (target, p, v: unknown) => {
+      //@ts-ignore
       target[p] = v
       handler()
       return true
@@ -51,13 +55,13 @@ function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
     },
     add: (piece: Piece) => {
       pieceStore.update(pieces => {
-        db.set(piece)
+        db.set(piece).catch(e => { throw e })
         return [...pieces, constructPieceObject(piece)]
       })
     },
     remove: (piece: Piece) => {
       pieceStore.update(pieces => {
-        db.remove(piece)
+        db.remove(piece).catch(e => { throw e })
         return pieces.filter(v => v.id !== piece.id)
       })
     }
@@ -67,7 +71,7 @@ function createPieceStore(initial: Piece[]): Writable<Piece[]> & {
 function constructPieceObject(p: Piece) {
   const updater = new BufferedUpdater(() => {
     console.info("updated", p.id)
-    db.set(p);
+    db.set(p).catch(e => { throw e });
   });
   return proxyPB<Piece>(p, () => {
     updater.update();

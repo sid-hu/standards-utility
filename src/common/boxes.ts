@@ -6,11 +6,13 @@ import type { Measures, Row } from "~/proto/local/data";
 import { avg, max, min } from "~/common/math";
 
 export function containedX(b1: Box, b2: Box) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, my] = Wrap.Box(b2).midpoint()
   return my >= b1.y1 && my <= b1.y2
 }
 
 export function containedY(b1: Box, b2: Box) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [mx, _] = Wrap.Box(b2).midpoint()
   return mx >= b1.x1 && mx <= b1.x2
 }

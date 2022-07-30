@@ -12,7 +12,7 @@ export class ImageStore {
 
   fetch(data: Uint8Array): string {
     const hash = createHash().update(data).digest("hex")
-    if (!this.store[hash]) {
+    if (!(hash in this.store)) {
       const url = imageFromBytes(data)
       this.store[hash] = {
         url: url,
@@ -27,6 +27,7 @@ export class ImageStore {
     const hash = createHash().update(data).digest("hex")
     this.store[hash].references--
     if (this.store[hash].timeout) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       clearTimeout(this.store[hash].timeout!)
     }
     this.store[hash].timeout = setTimeout(() => {

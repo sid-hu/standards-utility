@@ -1,0 +1,9 @@
+node_modules/
+
+build/
+src/proto/
+src-tauri/
+
+.eslintrc.js
+vite.config.js
+tailwind.config.cjs

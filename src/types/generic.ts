@@ -21,15 +21,20 @@ export class Wrap {
   static Section(o: Section) {
     return {
       ...o,
-      completion: function() {
+      reset: function () {
+        for (const t of this.tasks) {
+          if (!t.state) continue
+          Wrap.TaskState(t.state).reset()
+        }
+      },
+      completion: function () {
         let completed = 0
         let max = 0
         for (const t of this.tasks) {
-          if (t.state) {
-            const stats = Wrap.TaskState(t.state).completion()
-            completed += stats.completed
-            max += stats.max
-          }
+          if (!t.state) continue
+          const stats = Wrap.TaskState(t.state).completion()
+          completed += stats.completed
+          max += stats.max
         }
         return { completed, max }
       }
@@ -38,6 +43,53 @@ export class Wrap {
   static TaskState(o: TaskState) {
     return {
       ...o,
+      reset: function () {
+        if (this.hands.oneofKind === "handsSeparate") {
+          this.hands.handsSeparate.left = []
+          this.hands.handsSeparate.right = []
+        } else if (this.hands.oneofKind === "handsTogether") {
+          this.hands.handsTogether.completed = []
+        }
+        if (this.eyesClosed) {
+          this.eyesClosed.completed = []
+        }
+        if (this.memorized) {
+          this.memorized.completed = []
+        }
+      },
+      increment: function (state: boolean): boolean {
+        if (this.hands.oneofKind === "handsSeparate") {
+          if (this.hands.handsSeparate.left.length < this.hands.handsSeparate.number) {
+            this.hands.handsSeparate.left = [...this.hands.handsSeparate.left, state]
+            return true
+          } else if (this.hands.handsSeparate.right.length < this.hands.handsSeparate.number) {
+            this.hands.handsSeparate.right = [...this.hands.handsSeparate.right, state]
+            return true
+          }
+        }
+        if (
+          this.hands.oneofKind === "handsTogether" &&
+          this.hands.handsTogether.completed.length < this.hands.handsTogether.number
+        ) {
+          this.hands.handsTogether.completed = [...this.hands.handsTogether.completed, state]
+          return true
+        }
+        if (
+          this.eyesClosed &&
+          this.eyesClosed.completed.length < this.eyesClosed.number
+        ) {
+          this.eyesClosed.completed = [...this.eyesClosed.completed, state]
+          return true
+        }
+        if (
+          this.memorized &&
+          this.memorized.completed.length < this.memorized.number
+        ) {
+          this.memorized.completed = [...this.memorized.completed, state]
+          return true
+        }
+        return false
+      },
       completion: function () {
         let completed = 0
         let max = 0

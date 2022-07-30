@@ -18,6 +18,7 @@
     rounded,
     className
   )}
+  on:click
 >
   <slot />
 </div>

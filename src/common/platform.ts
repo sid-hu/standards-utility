@@ -8,7 +8,7 @@ export const target = "kPlatform" as Platform
 
 let touch: boolean | undefined
 export function isTouch() {
-  if (!touch) {
+  if (touch === undefined) {
     const mediaList = window.matchMedia("(pointer: coarse)")
     touch = mediaList.matches
     mediaList.onchange = (value) => {

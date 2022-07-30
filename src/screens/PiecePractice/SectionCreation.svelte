@@ -31,7 +31,7 @@
   });
 
   editing.subscribe((editing) => {
-    if (editing) {
+    if (editing !== undefined) {
       sectionState.use($currentPage.sections[editing]);
     }
   });

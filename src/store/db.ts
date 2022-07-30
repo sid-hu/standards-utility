@@ -12,26 +12,30 @@ export class DummyDB implements DB {
     load(): Promise<Piece[]> {
         throw new Error("Method not implemented.");
     }
-    set(piece: Piece): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    set(_piece: Piece): Promise<void> {
         throw new Error("Method not implemented.");
     }
-    remove(piece: Piece): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    remove(_piece: Piece): Promise<void> {
         throw new Error("Method not implemented.");
     }
 }
 
+type Data = { id: string, serialized: Uint8Array }
+
 export class WebDB implements DB {
     name = "pieces"
-    db?: IDBPDatabase<{ id: string, serialized: Uint8Array }>
+    db?: IDBPDatabase<Data>
 
     async load(): Promise<Piece[]> {
         this.db = await openDB("standards-utility", 1, {
-            upgrade: (db, oldVersion, newVersion, transaction) => {
+            upgrade: db => {
                 db.createObjectStore(this.name, { keyPath: "id" })
             }
         })
         return (await this.db.getAll(this.name))
-            .map(v => Piece.fromBinary(new Uint8Array(v.serialized)))
+            .map((v: Data) => Piece.fromBinary(new Uint8Array(v.serialized)))
     }
 
     async set(piece: Piece): Promise<void> {
@@ -39,7 +43,7 @@ export class WebDB implements DB {
             throw new Error("store has not been loaded yet! please call load() first")
         }
         const tx = this.db.transaction(this.name, "readwrite")
-        tx.store.put({
+        await tx.store.put({
             id: piece.id,
             serialized: Piece.toBinary(piece).buffer
         })
@@ -51,7 +55,7 @@ export class WebDB implements DB {
             throw new Error("store has not been loaded yet! please call load() first")
         }
         const tx = this.db.transaction(this.name, "readwrite")
-        tx.store.delete(piece.id)
+        await tx.store.delete(piece.id)
         await tx.done
     }
 }

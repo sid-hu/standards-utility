@@ -33,14 +33,10 @@ export function classList(...classes: string[]): string {
   return list.join(" ")
 }
 
-export function styleList(style: { [key: string]: string | null }): string {
-  let result = []
-  for (const rule in style) {
-    if (style[rule] !== null) {
-      result.push(`${rule}: ${style[rule]};`)
-    }
-  }
-  return result.join(" ")
+export function styleList(style: Partial<CSSStyleDeclaration>): string {
+  const rules = document.createElement("div").style;
+  Object.assign(rules, style)
+  return rules.cssText
 }
 
 export function debounce(callback: () => void, time = 200): () => void {

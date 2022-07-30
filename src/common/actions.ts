@@ -22,7 +22,7 @@ export type PropertyOnSizeOptions = {
   [key in keyof CSSStyleDeclaration]+?: {
     axis: "x" | "y"
     compare: "greater" | "lesser"
-    value: string
+    value: CSSStyleDeclaration[key]
     threshold: number | (() => number)
   }
 }
@@ -32,18 +32,19 @@ export function propertyOnSize(
 ) {
   const observer = new ResizeObserver(() => {
     for (const property in options) {
-      const value = options[property]!.axis === "x" ?
+      const value = options[property]?.axis === "x" ?
         node.clientWidth :
         node.clientHeight
 
-      const threshold = (typeof options[property]!.threshold) === "number" ?
-        options[property]!.threshold as number :
-        (options[property]!.threshold as (() => number))()
+      const threshold = (typeof options[property]?.threshold) === "number" ?
+        options[property]?.threshold as number :
+        (options[property]?.threshold as (() => number))()
 
-      if (options[property]!.compare === "greater" ?
+      if (options[property]?.compare === "greater" ?
         value > threshold :
         value < threshold
       ) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         node.style[property] = options[property]!.value
         continue
       }
@@ -72,10 +73,7 @@ export function clickOutside(node: HTMLElement, options: ClickOutsideOptions) {
   const handler = (e: MouseEvent) => {
     if (!e.target) return
     let current = e.target as HTMLElement
-    while (true) {
-      if (current.parentElement === null) {
-        break
-      }
+    while (current.parentElement !== null) {
       current = current.parentElement
       if (current.getAttribute(key) === "true") {
         return
