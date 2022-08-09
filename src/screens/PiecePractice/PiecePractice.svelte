@@ -1,16 +1,9 @@
 <script lang="ts">
-  import { createEventDispatcher, setContext } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { useClose } from "~/common/hooks";
 
-  import {
-    makeSectionState,
-    makeState,
-    SectionMap,
-    contextID,
-    Context,
-  } from "./common";
-  import { derived, writable } from "svelte/store";
   import type { Piece } from "~/proto/local/data";
+  import { hasSections, mode, page, root, selectedSection } from "./state";
 
   import PieceViewer from "~/components/rendering/PieceViewer.svelte";
   import Edit from "~/icons/Edit.svelte";
@@ -27,70 +20,38 @@
   const dispatcher = createEventDispatcher<{ close: void }>();
 
   export let piece: Piece;
+  $: root.set(piece)
 
   //state
-  const pieceStore = writable(piece);
-  $: $pieceStore = piece;
+  // const page = derived(state, $state => $state.page)
+  // const currentPage = writable(piece.pages[0]);
+  // page.subscribe(($page) => {
+  //   currentPage.set($pieceStore.pages[$page]);
+  // });
 
-  const state = makeState(piece.pages[0].sections.length === 0);
+  // const hasSections = derived(
+  //   currentPage,
+  //   ($currentPage) => $currentPage.sections.length !== 0
+  // );
 
-  const page = derived(state, $state => $state.page)
-  const currentPage = writable(piece.pages[0]);
-  page.subscribe(($page) => {
-    currentPage.set($pieceStore.pages[$page]);
-  });
-
-  const hasSections = derived(
-    currentPage,
-    ($currentPage) => $currentPage.sections.length !== 0
-  );
-
-  const sectionMap = writable<SectionMap>({});
-  currentPage.subscribe((p) => {
-    const map: {
-      [key: number]: {
-        type: "left" | "right" | "inbetween";
-        section: number;
-      };
-    } = {};
-    for (let i = 0; i < p.sections.length; i++) {
-      const s = p.sections[i];
-      map[s.from] = {
-        type: "left",
-        section: i,
-      };
-      map[s.to] = {
-        type: "right",
-        section: i,
-      };
-      for (let m = s.from + 1; m < s.to; m++) {
-        map[m] = {
-          type: "inbetween",
-          section: i,
-        };
-      }
-    }
-    sectionMap.set(map)
-  });
-
-  setContext<Context>(contextID, {
-    currentPage,
-    state,
-    hasSections,
-    sectionMap,
-    sectionState: makeSectionState(),
-    editing: writable(undefined),
-  });
+  // setContext<Context>(contextID, {
+  //   currentPage,
+  //   state,
+  //   hasSections,
+  //   sectionMap,
+  //   sectionState: makeSectionState(),
+  //   editing: writable(undefined),
+  // });
 
   //back handling
   useClose((e) => {
-    if ($state.selectedSection !== undefined) {
+    if ($selectedSection !== undefined) {
       e.stopImmediatePropagation();
-      $state.selectedSection = undefined;
+      $selectedSection = undefined;
     }
-    if ($state.mode === "editing" && $hasSections) {
+    if ($mode === "editing" && $hasSections) {
       e.stopImmediatePropagation();
-      $state.mode = "practicing";
+      $mode = "practicing";
     }
   });
 </script>
@@ -98,7 +59,7 @@
 <!-- main content -->
 <WithBack
   on:close={(e) => {
-    if ($state.selectedSection === undefined || e.detail.clicked) {
+    if ($selectedSection === undefined || e.detail.clicked) {
       dispatcher("close");
     }
   }}
@@ -108,10 +69,10 @@
       {piece}
       let:measure
       on:page={(p) => {
-        if ($state.selectedSection !== undefined) {
-          $state.selectedSection = undefined;
+        if ($selectedSection !== undefined) {
+          $selectedSection = undefined;
         }
-        $state.page = p.detail;
+        $page = p.detail;
       }}
     >
       <MeasureRender {measure} />
@@ -143,17 +104,17 @@
     marginAxis="y"
   >
     <div class="flex">
-      <Actionable on:click={() => ($state.mode = "practicing")}>
+      <Actionable on:click={() => ($mode = "practicing")}>
         <PanelIcon
-          styleActionable={$state.mode !== "practicing"}
-          bare={$state.mode !== "practicing"}
+          styleActionable={$mode !== "practicing"}
+          bare={$mode !== "practicing"}
           icon={Play}
         />
       </Actionable>
-      <Actionable on:click={() => ($state.mode = "editing")}>
+      <Actionable on:click={() => ($mode = "editing")}>
         <PanelIcon
-          styleActionable={$state.mode !== "editing"}
-          bare={$state.mode !== "editing"}
+          styleActionable={$mode !== "editing"}
+          bare={$mode !== "editing"}
           icon={Edit}
         />
       </Actionable>

@@ -2,31 +2,30 @@
   import { between, inRange, intersects } from "~/common/math";
   import { withoutElement } from "~/common/general";
   import { derived } from "svelte/store";
-  import { getContext } from "svelte";
-  import { contextID, Context } from "./common";
+  import { mode, editing, sections, sectionState, sectionMap, selectedSection } from "./state";
 
   import Measure from "~/components/rendering/Measure.svelte";
   import SectionRenderer from "~/components/practice/Section.svelte";
 
   export let measure: number;
 
-  const { state, sectionState, currentPage, sectionMap, editing } = getContext<Context>(contextID);
+  let hoveredMeasure: number | undefined
 
   const editedSection = derived(
-    [currentPage, editing],
-    ([$currentPage, $editing]) => $editing !== undefined ?
-      $currentPage.sections[$editing] :
+    [sections, editing],
+    ([$sections, $editing]) => $editing !== undefined ?
+      $sections[$editing] :
       undefined
   )
 </script>
 
-{#if $state.mode === "editing"}
+{#if $mode === "editing"}
   {@const inbetween =
     !!$sectionState.from &&
     !!$sectionState.to &&
     between(measure, $sectionState.from, $sectionState.to)}
   {@const hide =
-    $currentPage.sections.filter(
+    $sections.filter(
       (s) =>
         inRange(measure, s.from, s.to) &&
         !(
@@ -54,7 +53,7 @@
           }
           if (section.to) {
             //check for gaps taken up by sections
-            for (const s of $currentPage.sections) {
+            for (const s of $sections) {
               if (
                 intersects(s.from, s.to, section.from, section.to) &&
                 !(
@@ -84,31 +83,31 @@
       })
     }}
   />
-{:else if $state.mode === "practicing"}
+{:else if $mode === "practicing"}
   {#if $sectionMap[measure]}
     {@const sectionNumber = $sectionMap[measure].section}
     <SectionRenderer
       {sectionNumber}
-      section={$currentPage.sections[sectionNumber]}
+      section={$sections[sectionNumber]}
       type={$sectionMap[measure].type}
-      hovered={$state.hoveredMeasure === measure}
-      selected={$state.selectedSection === sectionNumber}
+      hovered={hoveredMeasure === measure}
+      selected={$selectedSection === sectionNumber}
       on:hover={(e) => {
-        if ($state.selectedSection === sectionNumber) return;
-        $state.hoveredMeasure = e.detail ? measure : undefined;
+        if ($selectedSection === sectionNumber) return;
+        hoveredMeasure = e.detail ? measure : undefined;
       }}
       on:select={(s) => {
-        $state.hoveredMeasure = undefined;
-        $state.selectedSection = s.detail;
+        hoveredMeasure = undefined
+        $selectedSection = s.detail;
       }}
       on:edit={(s) => {
-        $state.hoveredMeasure = undefined;
+        hoveredMeasure = undefined
         $editing = s.detail;
-        $state.mode = "editing";
+        $mode = "editing";
       }}
       on:delete={(s) => {
-        $state.hoveredMeasure = undefined;
-        $currentPage.sections = withoutElement($currentPage.sections, s.detail);
+        hoveredMeasure = undefined
+        $sections = withoutElement($sections, s.detail);
       }}
     />
   {/if}

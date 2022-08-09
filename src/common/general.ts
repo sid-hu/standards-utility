@@ -49,12 +49,12 @@ export function debounce(callback: () => void, time = 200): () => void {
   }
 }
 
-export type Stop<T> = {
+export type Stop = {
   position: number
-  value: T
+  value: string
 }
 
-export function ramp<T>(value: number, stops: Stop<T>[]): T {
+export function ramp(value: number, stops: [...stop: Stop[]]): (typeof stops[number])["value"] {
   stops = stops.sort((a, b) => a.position - b.position)
   for (let i = 0; i < stops.length; i++) {
     if (

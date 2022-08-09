@@ -1,11 +1,9 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import { classList } from "~/common/general";
-  import { getContext } from "svelte";
-  import { contextID, Context } from "./common";
   import { Wrap } from "~/types/generic";
-  import { writable } from "svelte/store";
-  import type { Section } from "~/proto/local/data";
+  import { mode, section } from "./state";
+  import { exit } from "./actions";
 
   import Adaptive from "~/components/common/Adaptive.svelte";
   import ConditionalWrap from "~/wrappers/ConditionalWrap.svelte";
@@ -14,20 +12,9 @@
   import PracticeForm from "~/components/practice/PracticeForm.svelte";
   import Shortcut from "~/components/practice/Shortcut.svelte";
 
-  const { state, currentPage } = getContext<Context>(contextID);
-
-  const section = writable<Section | undefined>();
-  state.subscribe(s => {
-    if (s.selectedSection === undefined) {
-      $section = undefined
-      return
-    }
-    $section = $currentPage.sections[s.selectedSection]
-  })
-
   const reset = () => {
-    if ($state.selectedSection === undefined) return;
-    const s = Wrap.Section($currentPage.sections[$state.selectedSection]);
+    if ($section === undefined) return;
+    const s = Wrap.Section($section);
     s.reset();
     $section = s;
   };
@@ -52,7 +39,7 @@
   };
 </script>
 
-{#if $section !== undefined && $state.mode === "practicing"}
+{#if $section !== undefined && $mode === "practicing"}
   <Adaptive
     stops={[
       {
@@ -90,7 +77,7 @@
         >
           <PracticeForm
             section={$section}
-            on:exit={() => ($state.selectedSection = undefined)}
+            on:exit={() => (exit("practicing"))}
           />
           {#if size === "large"}
             <Shortcut on:reset={reset} on:increment={increment} />

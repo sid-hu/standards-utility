@@ -25,10 +25,10 @@
       : defaultMargin;
 
   $: style = styleList({
-    left: x === "left" ? marginX : null,
-    right: x === "right" ? marginX : null,
-    top: y === "top" ? marginY : null,
-    bottom: y === "bottom" ? marginY : null,
+    left: x === "left" ? marginX : undefined,
+    right: x === "right" ? marginX : undefined,
+    top: y === "top" ? marginY : undefined,
+    bottom: y === "bottom" ? marginY : undefined,
   });
 </script>
 

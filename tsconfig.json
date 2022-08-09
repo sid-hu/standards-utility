@@ -2,10 +2,12 @@
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,
+    "module": "esnext",
     "baseUrl": "src",
     "paths": {
       "~/*": ["*"]
     },
+    "types": ["jest"]
   },
   "extends": "@tsconfig/svelte/tsconfig.json",
   "include": [

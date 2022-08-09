@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { key } from "~/wrappers/Message.svelte"
+  import { messageKey } from "~/globals";
   import { createEventDispatcher, getContext } from "svelte";
 
   import type { Piece } from "~/proto/local/data";
@@ -17,7 +17,7 @@
   import FormPanel from "~/form/FormPanel.svelte";
   import Measure from "~/components/rendering/Measure.svelte";
 
-  const { showMessage } = getContext(key)
+  const { showMessage } = getContext(messageKey);
 
   const dispatcher = createEventDispatcher<{ submit: Piece | null }>();
   let piece: Piece = {
@@ -84,26 +84,6 @@
       </FormPanel>
     </Position>
   </Route>
-{:else if inferring >= 0}
-  <Inference
-    image={piece.pages[inferring].image}
-    on:finish={(e) => {
-      measures[inferring] = e.detail;
-      controls[inferring] = {
-        lineMargin: 0.02,
-        threshold: 0.5,
-      };
-      inferring++;
-      if (inferring === piece.pages.length) {
-        for (let i = 0; i < piece.pages.length; i++) {
-          updatePieceMeasures(i);
-        }
-        showMessage(undefined)
-        inferring = -1;
-        filtering = 0;
-      }
-    }}
-  />
 {:else}
   <PieceEditor
     {piece}
@@ -114,7 +94,29 @@
         return;
       }
       inferring = 0;
-      showMessage("detecting measures...")
+      showMessage("detecting measures...");
     }}
   />
+  {#if inferring >= 0}
+    <Inference
+      image={piece.pages[inferring].image}
+      on:finish={(e) => {
+        measures[inferring] = e.detail;
+        controls[inferring] = {
+          lineMargin: 0.02,
+          threshold: 0.5,
+        };
+        inferring++;
+        console.log(`done ${inferring} / ${piece.pages.length}`);
+        if (inferring === piece.pages.length) {
+          for (let i = 0; i < piece.pages.length; i++) {
+            updatePieceMeasures(i);
+          }
+          showMessage(undefined);
+          inferring = -1;
+          filtering = 0;
+        }
+      }}
+    />
+  {/if}
 {/if}

@@ -1,14 +1,13 @@
 import { resolve } from "path"
 import { defineConfig } from 'vite';
-import sveltePreprocess from 'svelte-preprocess';
 import mkcert from "vite-plugin-mkcert"
+import sveltePreprocess from 'svelte-preprocess'
 
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { replaceCodePlugin } from "vite-plugin-replace"
 import { viteStaticCopy } from "vite-plugin-static-copy"
 import { VitePWA } from "vite-plugin-pwa";
 
-const production = !process.env.ROLLUP_WATCH;
 const platform = process.env.PLATFORM;
 
 export default defineConfig({
@@ -37,14 +36,14 @@ export default defineConfig({
     }),
     svelte({
       preprocess: sveltePreprocess({
-        sourceMap: !production,
+        sourceMap: true,
         postcss: {
           plugins: [
             require('tailwindcss')(),
             require('autoprefixer')(),
           ],
         },
-      }),
+      })
     }),
     VitePWA({
       registerType: "autoUpdate",

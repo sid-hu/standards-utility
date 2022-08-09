@@ -1,28 +1,21 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
 
-  import { getContext } from "svelte";
-  import { contextID, Context } from "./common";
   import { propertyOnSize } from "~/common/actions";
-  import { cloneDeep } from "lodash";
+  import { editing, sections, hasSections, sectionState, mode } from "./state";
 
   import Adaptive from "~/components/common/Adaptive.svelte";
   import SectionForm from "~/components/editing/SectionForm.svelte";
   import Expandable from "~/form/Expandable.svelte";
   import ConditionalWrap from "~/wrappers/ConditionalWrap.svelte";
   import Position from "~/wrappers/Position.svelte";
+  import { exit } from "./actions";
 
-  const { state, sectionState, currentPage, hasSections, editing } =
-    getContext<Context>(contextID);
-
-  let ok = false;
-  sectionState.subscribe(($section) => {
-    ok =
-      $section.tasks?.length > 0 &&
-      $section.tasks.filter((t) => t.tools.length === 0).length === 0 &&
-      $section.from !== undefined &&
-      $section.to !== undefined;
-  });
+  $: ok =
+    $sectionState.tasks?.length > 0 &&
+    $sectionState.tasks.filter((t) => t.tools.length === 0).length === 0 &&
+    $sectionState.from !== undefined &&
+    $sectionState.to !== undefined;
 
   hasSections.subscribe(($hasSections) => {
     if (!$hasSections) {
@@ -32,12 +25,12 @@
 
   editing.subscribe((editing) => {
     if (editing !== undefined) {
-      sectionState.use($currentPage.sections[editing]);
+      sectionState.use($sections[editing]);
     }
   });
 </script>
 
-{#if $state.mode === "editing"}
+{#if $mode === "editing"}
   <Adaptive
     stops={[
       {
@@ -83,36 +76,39 @@
             title={`${$editing ? "Edit" : "Create"} a section`}
             cancelable={$hasSections}
             on:cancel={() => {
-              if ($hasSections) {
+              if (!$hasSections) {
                 sectionState.reset();
               }
-              $state.mode = "practicing";
-              $editing = undefined;
+              exit("editing");
             }}
             on:submit={() => {
-              if (
-                $sectionState.from === undefined ||
-                $sectionState.to === undefined ||
-                $sectionState.tasks.length === 0
-              )
-                return;
-              if ($editing) {
-                $currentPage.sections[$editing] = {
-                  from: $sectionState.from,
-                  to: $sectionState.to,
-                  tasks: cloneDeep($sectionState.tasks),
+              sections.update(($sections) => {
+                if (
+                  $sectionState.from === undefined ||
+                  $sectionState.to === undefined ||
+                  $sectionState.tasks.length === 0
+                )
+                  return $sections;
+                if ($editing) {
+                  $sections[$editing] = {
+                    from: $sectionState.from,
+                    to: $sectionState.to,
+                    tasks: $sectionState.tasks,
+                  };
+                } else {
+                  $sections = [
+                    ...$sections,
+                    {
+                      from: $sectionState.from,
+                      to: $sectionState.to,
+                      tasks: $sectionState.tasks,
+                    },
+                  ];
                 }
-              } else {
-                $currentPage.sections = [...$currentPage.sections, {
-                  from: $sectionState.from,
-                  to: $sectionState.to,
-                  tasks: cloneDeep($sectionState.tasks),
-                }]
-              }
-              $state.mode = "practicing";
-              $editing = undefined;
-              sectionState.reset()
-              return
+                return $sections;
+              });
+              sectionState.reset();
+              exit("editing");
             }}
           />
         </div>

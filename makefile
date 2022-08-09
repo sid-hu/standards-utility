@@ -1,15 +1,7 @@
 NPX := pnpm exec
 
-PROTO_IN := $(addprefix ./proto/local/,data.proto)
-PROTO_OUT := src
+PROTO_IN := $(addprefix local/,data.proto generic.proto)
+PROTO_OUT := src/proto
 
 protobuf:
-	$(NPX) protoc --ts_out $(PROTO_OUT)/ $(PROTO_IN)
-
-start: export PLATFORM = web
-start:
-	pnpm run dev
-
-desktop: export PLATFORM = web
-desktop:
-	$(NPX) tauri build
+	$(NPX) protoc -I=proto --ts_out $(PROTO_OUT) $(PROTO_IN)

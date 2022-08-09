@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+message Empty {}
+
+message Box {
+    double x1 = 1;
+    double y1 = 2;
+    double x2 = 3;
+    double y2 = 4;
+}
+
+enum Tool {
+    ANALYSIS = 0;
+    BACKWARDS = 1;
+    CLAPPING = 2;
+    CLAPPING_MEMORIZED = 3;
+    CONDUCT = 4;
+    COUNT_OUT_LOUD = 5;
+    GHOSTING = 6;
+    LOOP = 7;
+    METRONOME = 8;
+    RADIO = 9;
+    RHYTHMS = 10;
+    SING = 11;
+    SLOW = 12;
+    TAPPING = 13;
+    TRANSPOSITION = 14;
+}

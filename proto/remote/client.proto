@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "local/generic.proto";
+import "local/data.proto";
+
+message Organization {
+    string name = 1;
+    bytes icon = 2;
+}
+
+enum Action {
+    CREATE = 1;
+    MODIFY = 2;
+    DELETE = 3;
+}
+
+message Status {
+    string message = 1;
+    bool error = 2;
+}
+
+message Context {
+    string token = 1;
+}
+
+message Index {
+    Status status = 1;
+    repeated Piece pieces = 2;
+}
+
+message SectionChange {
+    Context Context = 1;
+
+    string pieceId = 2;
+    Action action = 3;
+    Section section = 4;
+}
+
+service FromClient {
+    rpc Info(Empty) returns (Organization);
+    rpc Check(Context) returns (Status);
+    rpc GetIndex(Context) returns (Index);
+    rpc Push(SectionChange) returns (Status);
+}

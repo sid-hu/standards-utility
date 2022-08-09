@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+import "local/generic.proto";
+
+service Public {
+    rpc Info(Empty) returns (Organization);
+}

@@ -1,20 +1,19 @@
 <script lang="ts">
-  // import { loadGraphModel } from "@tensorflow/tfjs";
   import { GlobalWorkerOptions } from "pdfjs-dist";
 
   import { db } from "~/store/db";
   import { pieces } from "~/store/pieces";
   import { measureModelPB } from "~/store/models";
-  import { key } from "~/wrappers/Message.svelte";
+  import { messageKey, tfjs } from "~/globals";
   import { getContext } from "svelte";
 
-  const { showMessage } = getContext(key);
+  const { showMessage } = getContext(messageKey);
   let loaded = false;
 
   const load = async () => {
     GlobalWorkerOptions.workerSrc = "/workers/pdf.worker.js";
 
-    const { loadGraphModel } = await import("@tensorflow/tfjs")
+    const { loadGraphModel } = await tfjs
 
     showMessage("loading model...");
     const modelPB = await loadGraphModel(

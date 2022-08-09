@@ -2,15 +2,15 @@
   import { onDestroy } from "svelte";
   import { ramp, Stop } from "~/common/general";
 
-  export let stops: Stop<string>[];
+  export let stops: Stop[];
   export let axis: "x" | "y" = "x";
 
   const onresize = () => {
     const value = axis === "x" ? window.innerWidth : window.innerHeight;
-    triggered = ramp<string>(value, stops);
+    triggered = ramp(value, stops);
   };
 
-  let triggered = "";
+  let triggered: string;
   onresize();
 
   window.addEventListener("resize", onresize);

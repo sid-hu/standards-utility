@@ -6,6 +6,7 @@
   import { imageStore } from "~/store/image";
 
   import type { Box } from "~/proto/local/data";
+  import { tfjs } from "~/globals";
 
   export let image: Uint8Array;
 
@@ -19,7 +20,7 @@
   let element: HTMLImageElement;
 
   const infer = async () => {
-    const { browser } = await import("@tensorflow/tfjs")
+    const { browser } = await tfjs;
 
     const img = browser.fromPixels(element).toInt();
 

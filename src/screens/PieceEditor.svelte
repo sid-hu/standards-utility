@@ -1,7 +1,7 @@
 <script lang="ts">
   import { v4 } from "uuid";
   import { getDocument } from "pdfjs-dist";
-  import { key } from "~/wrappers/Message.svelte";
+  import { messageKey } from "~/globals"
 
   import { fade, fly } from "svelte/transition";
 
@@ -32,7 +32,7 @@
     submit: Piece | null;
   }>();
 
-  const { showMessage } = getContext(key);
+  const { showMessage } = getContext(messageKey);
   const config = { validateOnChange: true };
 
   const name = field("name", piece.name, [required()], config);

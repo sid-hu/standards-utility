@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
-import { Readable, Writable, writable } from "svelte/store";
-import type { Page, Section, Task } from "~/proto/local/data";
+import { writable } from "svelte/store";
+import type { Section, Task } from "~/proto/local/data";
 import { presets } from "~/types/generic";
 
 export type SectionMap = {
@@ -10,40 +10,27 @@ export type SectionMap = {
   }
 }
 
-export type State = {
-  mode: "practicing" | "editing"
-  page: number
-  hoveredMeasure?: number
-  selectedSection?: number
-}
-export const makeState = (initial: boolean) => writable<State>({
-  mode: initial ? "editing" : "practicing",
-  page: 0,
-})
-
 export type SectionState = {
   tasks: Task[]
   from?: number
   to?: number
 }
-export const makeSectionState = () => {
-  const { set, subscribe, update } = writable<SectionState>({
-    tasks: presets.standard,
-  })
-  const empty = (): SectionState => { return { tasks: presets.standard } }
+
+export const createSectionState = () => {
+  const { set, subscribe, update } = writable<SectionState>()
   return {
-    set, subscribe, update, empty,
-    reset: () => set(empty()),
+    set, subscribe, update,
+    reset: () => set({ tasks: cloneDeep(presets.standard) }),
     use: (section: Section) => set(cloneDeep(section)),
   }
 }
 
-export type Context = {
-  sectionMap: Writable<SectionMap>,
-  hasSections: Readable<boolean>
-  currentPage: Writable<Page>
-  state: Writable<State>
-  sectionState: ReturnType<typeof makeSectionState>
-  editing: Writable<number | undefined>
-}
-export const contextID = Symbol()
+// export type Context = {
+//   sectionMap: Writable<SectionMap>,
+//   hasSections: Readable<boolean>
+//   currentPage: Writable<Page>
+//   state: Writable<State>
+//   sectionState: ReturnType<typeof createSectionState>
+//   editing: Writable<number | undefined>
+// }
+// export const contextID = Symbol()
