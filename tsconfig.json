@@ -7,7 +7,6 @@
     "paths": {
       "~/*": ["*"]
     },
-    "types": ["jest"]
   },
   "extends": "@tsconfig/svelte/tsconfig.json",
   "include": [

@@ -2,8 +2,7 @@
   import { fly } from "svelte/transition";
   import { classList } from "~/common/general";
   import { Wrap } from "~/types/generic";
-  import { mode, section } from "./state";
-  import { exit } from "./actions";
+  import { requestContext } from "./state";
 
   import Adaptive from "~/components/common/Adaptive.svelte";
   import ConditionalWrap from "~/wrappers/ConditionalWrap.svelte";
@@ -12,16 +11,18 @@
   import PracticeForm from "~/components/practice/PracticeForm.svelte";
   import Shortcut from "~/components/practice/Shortcut.svelte";
 
+  const { mode, currentSection, selectedSection } = requestContext();
+
   const reset = () => {
-    if ($section === undefined) return;
-    const s = Wrap.Section($section);
+    if ($currentSection === undefined) return;
+    const s = Wrap.Section($currentSection);
     s.reset();
-    $section = s;
+    $currentSection = s;
   };
 
   const increment = (s: CustomEvent<boolean>) => {
-    if (!$section) return;
-    const tasks = $section.tasks;
+    if (!$currentSection) return;
+    const tasks = $currentSection.tasks;
 
     for (const task of tasks) {
       if (!task.state) continue;
@@ -31,15 +32,19 @@
 
       if (completion.completed < completion.max) {
         if (taskState.increment(s.detail)) {
-          $section.tasks = tasks;
+          $currentSection.tasks = tasks;
           return;
         }
       }
     }
   };
+
+  const exit = () => {
+    selectedSection.set(undefined);
+  };
 </script>
 
-{#if $section !== undefined && $mode === "practicing"}
+{#if $currentSection !== undefined && $mode === "practicing"}
   <Adaptive
     stops={[
       {
@@ -76,8 +81,8 @@
           wrap={size === "small"}
         >
           <PracticeForm
-            section={$section}
-            on:exit={() => (exit("practicing"))}
+            section={$currentSection}
+            on:exit={() => exit()}
           />
           {#if size === "large"}
             <Shortcut on:reset={reset} on:increment={increment} />

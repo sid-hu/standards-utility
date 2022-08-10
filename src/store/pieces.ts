@@ -7,10 +7,11 @@ import type { Piece } from "~/proto/local/data"
 
 /* eslint-disable */
 function proxyPB<T extends object>(pb: T, handler: () => void) {
-  //@ts-ignore
-  pb.__proxied = true
   const validator: ProxyHandler<T> = {
     get: (target, k) => {
+      if (k === "__proxied") {
+        return true
+      }
       //@ts-ignore
       const value = target[k]
       if (

@@ -1,4 +1,5 @@
-import { TaskState, Section, Box, Task, Tool } from "~/proto/local/data"
+import type { TaskState, Section, Task } from "~/proto/local/data"
+import { Box, Tool } from "~/proto/local/generic"
 
 export class Wrap {
   static Box(o: Box) {

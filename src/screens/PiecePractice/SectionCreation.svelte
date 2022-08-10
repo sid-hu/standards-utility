@@ -2,14 +2,16 @@
   import { fly } from "svelte/transition";
 
   import { propertyOnSize } from "~/common/actions";
-  import { editing, sections, hasSections, sectionState, mode } from "./state";
+  import { requestContext } from "./state";
 
   import Adaptive from "~/components/common/Adaptive.svelte";
   import SectionForm from "~/components/editing/SectionForm.svelte";
   import Expandable from "~/form/Expandable.svelte";
   import ConditionalWrap from "~/wrappers/ConditionalWrap.svelte";
   import Position from "~/wrappers/Position.svelte";
-  import { exit } from "./actions";
+
+  const { editing, sections, hasSections, sectionState, mode } =
+    requestContext();
 
   $: ok =
     $sectionState.tasks?.length > 0 &&
@@ -28,6 +30,11 @@
       sectionState.use($sections[editing]);
     }
   });
+
+  const exit = () => {
+    editing.set(undefined);
+    mode.set("practicing");
+  };
 </script>
 
 {#if $mode === "editing"}
@@ -79,7 +86,7 @@
               if (!$hasSections) {
                 sectionState.reset();
               }
-              exit("editing");
+              exit();
             }}
             on:submit={() => {
               sections.update(($sections) => {
@@ -96,19 +103,16 @@
                     tasks: $sectionState.tasks,
                   };
                 } else {
-                  $sections = [
-                    ...$sections,
-                    {
-                      from: $sectionState.from,
-                      to: $sectionState.to,
-                      tasks: $sectionState.tasks,
-                    },
-                  ];
+                  $sections.push({
+                    from: $sectionState.from,
+                    to: $sectionState.to,
+                    tasks: $sectionState.tasks,
+                  });
                 }
                 return $sections;
               });
               sectionState.reset();
-              exit("editing");
+              exit();
             }}
           />
         </div>

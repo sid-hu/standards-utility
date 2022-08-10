@@ -7,15 +7,13 @@
     "dev": "vite --host",
     "preview": "vite preview --host",
     "check": "svelte-check --tsconfig tsconfig.json",
-    "test": "vitest run src",
-    "test:watch": "vitest src"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
     "@protobuf-ts/plugin": "^2.6.0",
     "@sveltejs/vite-plugin-svelte": "1.0.0-next.47",
     "@tauri-apps/cli": "1.0.0-rc.13",
-    "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/svelte": "^3.1.3",
     "@tsconfig/svelte": "^2.0.0",
     "@types/lodash": "^4.14.182",
@@ -25,7 +23,6 @@
     "autoprefixer": "^10.4.7",
     "eslint": "^8.20.0",
     "eslint-plugin-svelte3": "^4.0.0",
-    "jsdom": "^20.0.0",
     "postcss": "^8.4.13",
     "svelte": "^3.0.0",
     "svelte-check": "^2.0.0",
@@ -37,8 +34,7 @@
     "vite-plugin-mkcert": "^1.9.0",
     "vite-plugin-pwa": "^0.12.3",
     "vite-plugin-replace": "^0.1.1",
-    "vite-plugin-static-copy": "^0.5.0",
-    "vitest": "^0.20.2"
+    "vite-plugin-static-copy": "^0.5.0"
   },
   "dependencies": {
     "@protobuf-ts/runtime": "^2.6.0",

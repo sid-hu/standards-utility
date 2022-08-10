@@ -1,6 +1,6 @@
 import { Wrap } from "~/types/generic";
 
-import type { Box } from "~/proto/local/data";
+import type { Box } from "~/proto/local/generic";
 import type { Measures, Row } from "~/proto/local/data";
 
 import { avg, max, min } from "~/common/math";

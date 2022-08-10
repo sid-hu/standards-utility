@@ -2,21 +2,21 @@
   import { between, inRange, intersects } from "~/common/math";
   import { withoutElement } from "~/common/general";
   import { derived } from "svelte/store";
-  import { mode, editing, sections, sectionState, sectionMap, selectedSection } from "./state";
+  import { requestContext } from "./state";
 
   import Measure from "~/components/rendering/Measure.svelte";
   import SectionRenderer from "~/components/practice/Section.svelte";
 
+  const { mode, editing, sections, sectionState, sectionMap, selectedSection } =
+    requestContext();
+
   export let measure: number;
 
-  let hoveredMeasure: number | undefined
+  let hoveredMeasure: number | undefined;
 
-  const editedSection = derived(
-    [sections, editing],
-    ([$sections, $editing]) => $editing !== undefined ?
-      $sections[$editing] :
-      undefined
-  )
+  const editedSection = derived([sections, editing], ([$sections, $editing]) =>
+    $editing !== undefined ? $sections[$editing] : undefined
+  );
 </script>
 
 {#if $mode === "editing"}
@@ -43,7 +43,7 @@
       : undefined}
     styleActionable
     on:click={() => {
-      sectionState.update(section => {
+      sectionState.update((section) => {
         if (section.from && measure !== section.from) {
           section.to = section.to !== measure ? measure : undefined;
           if (section.to && section.to < section.from) {
@@ -74,13 +74,13 @@
           return section;
         }
         if (section.from === measure) {
-          section.from = section.to
-          section.to = undefined
+          section.from = section.to;
+          section.to = undefined;
           return section;
         }
         section.from = measure;
-        return section
-      })
+        return section;
+      });
     }}
   />
 {:else if $mode === "practicing"}
@@ -97,17 +97,17 @@
         hoveredMeasure = e.detail ? measure : undefined;
       }}
       on:select={(s) => {
-        hoveredMeasure = undefined
+        hoveredMeasure = undefined;
         $selectedSection = s.detail;
       }}
       on:edit={(s) => {
-        hoveredMeasure = undefined
+        hoveredMeasure = undefined;
         $editing = s.detail;
         $mode = "editing";
       }}
       on:delete={(s) => {
-        hoveredMeasure = undefined
-        $sections = withoutElement($sections, s.detail);
+        hoveredMeasure = undefined;
+        sections.update($sections => withoutElement($sections, s.detail))
       }}
     />
   {/if}

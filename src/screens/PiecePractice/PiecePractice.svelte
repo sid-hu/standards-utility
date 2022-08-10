@@ -3,7 +3,7 @@
   import { useClose } from "~/common/hooks";
 
   import type { Piece } from "~/proto/local/data";
-  import { hasSections, mode, page, root, selectedSection } from "./state";
+  import { makeContext } from "./state";
 
   import PieceViewer from "~/components/rendering/PieceViewer.svelte";
   import Edit from "~/icons/Edit.svelte";
@@ -20,7 +20,8 @@
   const dispatcher = createEventDispatcher<{ close: void }>();
 
   export let piece: Piece;
-  $: root.set(piece)
+
+  const { hasSections, mode, page, selectedSection } = makeContext(piece);
 
   //state
   // const page = derived(state, $state => $state.page)
